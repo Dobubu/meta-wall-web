@@ -3,14 +3,34 @@ import formsPlugin from 'windicss/plugin/forms';
 
 export default defineConfig({
   attributify: true,
-  darkMode: 'class',
-  safelist: 'p-3 p-4 p-5',
+  // darkMode: 'class',
+  // safelist: 'p-3 p-4 p-5',
   theme: {
     extend: {
       colors: {
-        teal: {
-          100: '#096',
+        primary: '#03438D',
+        dark: {
+          '100': '#EFECE7',
+          '200': '#00040029',
+          '300': '#9B9893',
+          '400': '#707070',
+          '500': '#000400',
         },
+        danger: '#F57375',
+        active: '#FECB02',
+      },
+      fontFamily: {
+        paytone: ['Paytone One', 'sans-serif'],
+        helvetica: ['Helvetica Neue', 'sans-serif'],
+      },
+      boxShadow: {
+        main: '-8px 8px 0px #00040029',
+      },
+      lineHeight: {
+        text: '1.4',
+      },
+      transitionDuration: {
+        base: '0.3s',
       },
     },
   },

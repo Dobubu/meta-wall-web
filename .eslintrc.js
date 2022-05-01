@@ -34,6 +34,7 @@ module.exports = {
     ],
     'no-debugger': 'warn',
     semi: 'off',
+    'no-unused-vars': 'warn',
 
     // typescript related rules
     '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
@@ -44,7 +45,7 @@ module.exports = {
 
     // not ok
     '@typescript-eslint/no-explicit-any': 'off',
-    // '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
 
     // template related rules
     'vue/html-indent': [
