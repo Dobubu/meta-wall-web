@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const isLogin = ref(true);
 
 const login = async () => {
-  //
+  await router.push({ name: 'Create' });
 };
 </script>
 
