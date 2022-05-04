@@ -18,6 +18,9 @@ export default defineConfig({
         },
         danger: '#F57375',
         active: '#FECB02',
+        icon: {
+          '100': '#E2EDFA',
+        },
       },
       fontFamily: {
         paytone: ['Paytone One', 'sans-serif'],
