@@ -21,6 +21,10 @@ export default defineConfig({
         icon: {
           '100': '#E2EDFA',
         },
+        disable: {
+          '100': '#A8B0B9',
+          '200': '#808080',
+        },
       },
       fontFamily: {
         paytone: ['Paytone One', 'sans-serif'],
