@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const dropDownMenu = ref(false);
 const menuList = ref(['我的貼文牆', '修改個人資料']);
@@ -16,7 +17,7 @@ const hideMenu = () => {
 <template>
   <header display="flex justify-center" w="full" bg="white" border="b-3 dark-500">
     <div h="60px" p="y-3" w="full max-1200px" display="flex justify-between items-center">
-      <h1 text="dark-500 26px" font="paytone">MetaWall</h1>
+      <RouterLink :to="{ name: 'Post' }" class="text-26px" font="paytone">MetaWall</RouterLink>
 
       <div position="relative" cursor="pointer" @mouseover="showMenu" @mouseleave="hideMenu">
         <div display="flex items-center">

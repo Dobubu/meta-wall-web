@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const menuList = ref([
   {
@@ -20,19 +21,21 @@ const menuList = ref([
     display="flex flex-col justify-center items-center"
     p="x-6 y-8"
   >
-    <button
-      type="button"
-      transition="duration-base"
-      bg="primary hover:active"
-      p="y-3"
-      m="b-6"
-      text="white hover:dark-500"
-      border="2 dark-500 rounded-8px"
-      w="full"
-      font="bold"
-    >
-      張貼動態
-    </button>
+    <RouterLink :to="{ name: 'Create' }" class="w-full">
+      <button
+        type="button"
+        transition="duration-base"
+        bg="primary hover:active"
+        p="y-3"
+        m="b-6"
+        text="white hover:dark-500"
+        border="2 dark-500 rounded-8px"
+        w="full"
+        font="bold"
+      >
+        張貼動態
+      </button>
+    </RouterLink>
 
     <ul w="full">
       <li cursor="pointer" display="flex items-center">

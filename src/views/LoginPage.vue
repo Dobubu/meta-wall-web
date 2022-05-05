@@ -7,7 +7,7 @@ const router = useRouter();
 const isLogin = ref(true);
 
 const login = async () => {
-  await router.push({ name: 'Create' });
+  await router.push({ name: 'Post' });
 };
 </script>
 
