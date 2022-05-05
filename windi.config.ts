@@ -25,6 +25,11 @@ export default defineConfig({
           '100': '#A8B0B9',
           '200': '#808080',
         },
+        post: {
+          '1': '#DE4B63',
+          '2': '#FAA722',
+          '3': '#83C51D',
+        },
       },
       fontFamily: {
         paytone: ['Paytone One', 'sans-serif'],

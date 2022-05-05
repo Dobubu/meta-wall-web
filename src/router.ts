@@ -1,4 +1,5 @@
 import { createWebHashHistory, createRouter } from 'vue-router';
+import PostList from '@/views/PostList.vue';
 import CreatePost from '@/views/CreatePost.vue';
 import MenuLayout from '@/layouts/MenuLayout.vue';
 
@@ -12,6 +13,11 @@ const routes = [
     path: '/post',
     component: MenuLayout,
     children: [
+      {
+        path: '',
+        name: 'Post',
+        component: PostList,
+      },
       {
         path: 'create',
         name: 'Create',
