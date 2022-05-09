@@ -62,4 +62,46 @@ export const mock = {
       comments: [],
     },
   ],
+  list: [
+    {
+      name: '波吉',
+      photo:
+        'https://i.picsum.photos/id/443/200/200.jpg?hmac=ceI_qNYuyS_i8MicdRztsYDJLek0_-IDsEwLhAfaIEo',
+      createAt: dayjs().format('YYYY/MM/DD HH:mm'),
+      followTime: dayjs().format('DD'),
+      followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
+    },
+    {
+      name: '多魯米',
+      photo:
+        'https://i.picsum.photos/id/225/200/300.jpg?hmac=HoopVmaDuZW8v_8n33eWQvN3hdmFj9gP2m3AWvybT8s',
+      createAt: dayjs().format('YYYY/MM/DD HH:mm'),
+      followTime: dayjs().format('DD'),
+      followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
+    },
+    {
+      name: '卡克',
+      photo:
+        'https://i.picsum.photos/id/648/200/200.jpg?hmac=Kb_qhDdDfOGevrbabLvz4Tp3fu-M7DxQE6APqQRnwVw',
+      createAt: dayjs().format('YYYY/MM/DD HH:mm'),
+      followTime: dayjs().format('DD'),
+      followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
+    },
+    {
+      name: '希琳',
+      photo:
+        'https://i.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
+      createAt: dayjs().format('YYYY/MM/DD HH:mm'),
+      followTime: dayjs().format('DD'),
+      followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
+    },
+    {
+      name: '多瑪斯',
+      photo:
+        'https://i.picsum.photos/id/777/200/300.jpg?hmac=eJq2XzCPCPppgoS96ReNEmweR3Wloh4ZsbWIgec36Uo',
+      createAt: dayjs().format('YYYY/MM/DD HH:mm'),
+      followTime: dayjs().format('DD'),
+      followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
+    },
+  ],
 };

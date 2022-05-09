@@ -10,10 +10,12 @@ const menuList = ref([
   {
     title: '追蹤名單',
     icon: ['far', 'bell'],
+    routerName: 'Follow',
   },
   {
     title: '我按讚的文章',
     icon: ['far', 'thumbs-up'],
+    routerName: '',
   },
 ]);
 </script>
@@ -57,19 +59,21 @@ const menuList = ref([
         <p font="bold" text="hover:primary">{{ store.user.name }}</p>
       </li>
 
-      <li v-for="o in menuList" :key="o.title" cursor="pointer" display="flex items-center">
-        <div
-          class="icon"
-          m="r-4"
-          display="flex justify-center items-center"
-          bg="icon-100"
-          border="2 dark-500 rounded-1/2"
-          w="50px"
-          h="50px"
-        >
-          <font-awesome-icon :icon="o.icon" size="lg" />
-        </div>
-        <p font="bold" text="hover:primary">{{ o.title }}</p>
+      <li v-for="o in menuList" :key="o.title" cursor="pointer">
+        <RouterLink :to="{ name: o.routerName }" class="w-full flex items-center">
+          <div
+            class="icon"
+            m="r-4"
+            display="flex justify-center items-center"
+            bg="icon-100"
+            border="2 dark-500 rounded-1/2"
+            w="50px"
+            h="50px"
+          >
+            <font-awesome-icon :icon="o.icon" size="lg" />
+          </div>
+          <p font="bold" text="hover:primary">{{ o.title }}</p>
+        </RouterLink>
       </li>
     </ul>
   </div>

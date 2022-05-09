@@ -37,6 +37,7 @@ export default defineConfig({
       },
       boxShadow: {
         main: '-8px 8px 0px #00040029',
+        'item-bottom': '0px 3px 0px #000400',
       },
       lineHeight: {
         text: '1.4',
