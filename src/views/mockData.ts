@@ -10,7 +10,13 @@ export const mock = {
   },
   postList: [
     {
-      name: '邊緣小杰',
+      _id: '12345',
+      user: {
+        _id: '123451',
+        name: '邊緣小杰',
+        photo:
+          'https://i.picsum.photos/id/443/200/200.jpg?hmac=ceI_qNYuyS_i8MicdRztsYDJLek0_-IDsEwLhAfaIEo',
+      },
       tags: ['test'],
       type: PostType.PERSON,
       image:
@@ -38,7 +44,13 @@ export const mock = {
       ],
     },
     {
-      name: '波吉',
+      _id: '22222',
+      user: {
+        _id: '222221',
+        name: '波吉',
+        photo:
+          'https://i.picsum.photos/id/648/200/200.jpg?hmac=Kb_qhDdDfOGevrbabLvz4Tp3fu-M7DxQE6APqQRnwVw',
+      },
       tags: ['test'],
       type: PostType.PERSON,
       image: '',
@@ -50,7 +62,13 @@ export const mock = {
       comments: [],
     },
     {
-      name: '阿爾敏',
+      _id: '33333',
+      user: {
+        _id: '333331',
+        name: '阿爾敏',
+        photo:
+          'https://i.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
+      },
       tags: ['test'],
       type: PostType.GROUP,
       image: '',
@@ -64,6 +82,7 @@ export const mock = {
   ],
   list: [
     {
+      _id: '22222',
       name: '波吉',
       photo:
         'https://i.picsum.photos/id/443/200/200.jpg?hmac=ceI_qNYuyS_i8MicdRztsYDJLek0_-IDsEwLhAfaIEo',
@@ -72,6 +91,7 @@ export const mock = {
       followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
     },
     {
+      _id: '55555',
       name: '多魯米',
       photo:
         'https://i.picsum.photos/id/225/200/300.jpg?hmac=HoopVmaDuZW8v_8n33eWQvN3hdmFj9gP2m3AWvybT8s',
@@ -80,6 +100,7 @@ export const mock = {
       followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
     },
     {
+      _id: '66666',
       name: '卡克',
       photo:
         'https://i.picsum.photos/id/648/200/200.jpg?hmac=Kb_qhDdDfOGevrbabLvz4Tp3fu-M7DxQE6APqQRnwVw',
@@ -88,6 +109,7 @@ export const mock = {
       followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
     },
     {
+      _id: '44444',
       name: '希琳',
       photo:
         'https://i.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI',
@@ -96,6 +118,7 @@ export const mock = {
       followFromTime: dayjs().format('YYYY/MM/DD HH:mm'),
     },
     {
+      _id: '77777',
       name: '多瑪斯',
       photo:
         'https://i.picsum.photos/id/777/200/300.jpg?hmac=eJq2XzCPCPppgoS96ReNEmweR3Wloh4ZsbWIgec36Uo',

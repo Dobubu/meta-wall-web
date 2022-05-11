@@ -15,6 +15,7 @@ export default defineConfig({
           '300': '#9B9893',
           '400': '#707070',
           '500': '#000400',
+          '600': '#eeece6',
         },
         danger: '#F57375',
         active: '#FECB02',
