@@ -10,12 +10,13 @@ import router from './router';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBell, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
+import { faBell, faThumbsUp, faCircleRight } from '@fortawesome/free-regular-svg-icons';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faBell);
 library.add(faThumbsUp);
 library.add(faMagnifyingGlass);
+library.add(faCircleRight);
 
 createApp(App)
   .use(createPinia())

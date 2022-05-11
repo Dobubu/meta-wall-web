@@ -15,7 +15,7 @@ const menuList = ref([
   {
     title: '我按讚的文章',
     icon: ['far', 'thumbs-up'],
-    routerName: '',
+    routerName: 'Likes',
   },
 ]);
 </script>
