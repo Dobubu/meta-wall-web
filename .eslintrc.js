@@ -35,6 +35,15 @@ module.exports = {
     'no-debugger': 'warn',
     semi: 'off',
     'no-unused-vars': 'warn',
+    'prettier/prettier': [
+      'warn',
+      {
+        printWidth: 100,
+        singleQuote: true,
+        trailingComma: 'all',
+        arrowParens: 'avoid',
+      },
+    ],
 
     // typescript related rules
     '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
@@ -48,17 +57,18 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
 
     // template related rules
-    'vue/html-indent': [
-      'warn',
-      2,
-      {
-        attribute: 1,
-        baseIndent: 1,
-        closeBracket: 0,
-        alignAttributesVertically: true,
-        ignores: [],
-      },
-    ],
+    'vue/html-indent': 'off',
+    // 'vue/html-indent': [
+    //   'warn',
+    //   2,
+    //   {
+    //     attribute: 1,
+    //     baseIndent: 1,
+    //     closeBracket: 0,
+    //     alignAttributesVertically: true,
+    //     ignores: [],
+    //   },
+    // ],
     // 'vue/max-attributes-per-line': [
     //   'warn',
     //   {

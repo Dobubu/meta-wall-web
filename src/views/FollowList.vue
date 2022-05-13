@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router';
+
 import { mock } from './mockData';
 
 import TitleBlock from '@/components/TitleBlock.vue';
@@ -31,9 +33,15 @@ const { list } = mock;
         m="r-4"
       ></div>
       <div display="flex flex-col justify-center">
-        <p font="bold" cursor="pointer" m="b-5px" text="16px hover:(primary underline)">
+        <RouterLink
+          :to="{ name: 'UserWall' }"
+          class="text-dark-500 16px"
+          m="b-5px"
+          font="bold"
+          hover="text-primary underline"
+        >
           {{ o.name }}
-        </p>
+        </RouterLink>
         <p text="14px dark-300">追蹤時間：{{ o.createAt }}</p>
       </div>
     </div>

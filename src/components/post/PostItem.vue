@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { PropType, computed, ref } from 'vue';
+import { RouterLink } from 'vue-router';
+
 import { User, Post } from './type';
 
 defineProps({
@@ -50,7 +52,14 @@ const postComment = () => {
         m="r-4"
       ></div>
       <div display="flex flex-col justify-center">
-        <p font="bold" text="dark-500">{{ post.user.name }}</p>
+        <RouterLink
+          :to="{ name: 'UserWall' }"
+          class="text-dark-500"
+          font="bold"
+          hover="text-primary underline"
+        >
+          {{ post.user.name }}
+        </RouterLink>
         <p text="xs dark-300">{{ post.createdAt }}</p>
       </div>
     </div>
@@ -126,7 +135,14 @@ const postComment = () => {
           m="r-4"
         ></div>
         <div display="flex flex-col justify-center">
-          <p font="bold" text="dark-500">{{ o.name }}</p>
+          <RouterLink
+            :to="{ name: 'UserWall' }"
+            class="text-dark-500"
+            font="bold"
+            hover="text-primary underline"
+          >
+            {{ o.name }}
+          </RouterLink>
           <p text="xs dark-300">{{ o.createdAt }}</p>
         </div>
       </div>
