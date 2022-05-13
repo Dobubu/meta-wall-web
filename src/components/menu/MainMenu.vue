@@ -7,7 +7,16 @@ const router = useRouter();
 const store = useUserStore();
 
 const dropDownMenu = ref(false);
-const menuList = ref(['我的貼文牆', '修改個人資料']);
+const menuList = ref([
+  {
+    title: '我的貼文牆',
+    routerName: '',
+  },
+  {
+    title: '修改個人資料',
+    routerName: 'Edit',
+  },
+]);
 
 const showMenu = () => {
   dropDownMenu.value = true;
@@ -61,9 +70,14 @@ const logout = () => {
             bg="white"
             z="10"
           >
-            <li v-for="o in menuList" :key="o" p="y-2" border="b-2 dark-500" bg="hover:dark-100">
-              {{ o }}
-            </li>
+            <template v-for="o in menuList" :key="o.title">
+              <RouterLink :to="{ name: o.routerName }">
+                <li p="y-2" border="b-2 dark-500" bg="hover:dark-100">
+                  {{ o.title }}
+                </li>
+              </RouterLink>
+            </template>
+
             <li p="y-2" bg="hover:dark-100" @click="logout">登出</li>
           </ul>
           <div

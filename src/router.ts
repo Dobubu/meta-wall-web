@@ -4,6 +4,7 @@ import CreatePost from '@/views/CreatePost.vue';
 import FollowList from '@/views/FollowList.vue';
 import LikeList from '@/views/LikeList.vue';
 import UserWall from '@/views/UserWall.vue';
+import UserEdit from '@/views/UserEdit.vue';
 import MenuLayout from '@/layouts/MenuLayout.vue';
 
 const routes = [
@@ -40,6 +41,17 @@ const routes = [
         path: 'userWall',
         name: 'UserWall',
         component: UserWall,
+      },
+    ],
+  },
+  {
+    path: '/user',
+    component: MenuLayout,
+    children: [
+      {
+        path: 'edit',
+        name: 'Edit',
+        component: UserEdit,
       },
     ],
   },
