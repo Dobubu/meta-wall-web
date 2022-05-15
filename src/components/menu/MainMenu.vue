@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
+import { useUserStore } from '@/store/user';
 
 const router = useRouter();
+const store = useUserStore();
 
 const dropDownMenu = ref(false);
 const menuList = ref(['我的貼文牆', '修改個人資料']);
@@ -29,12 +31,17 @@ const logout = () => {
     <div h="60px" p="y-3" w="full max-1200px" display="flex justify-between items-center">
       <RouterLink :to="{ name: 'Post' }" class="text-26px" font="paytone">MetaWall</RouterLink>
 
-      <div position="relative" cursor="pointer" @mouseover="showMenu" @mouseleave="hideMenu">
+      <div
+        v-if="store.user"
+        position="relative"
+        cursor="pointer"
+        @mouseover="showMenu"
+        @mouseleave="hideMenu"
+      >
         <div display="flex items-center">
           <div
             :style="{
-              'background-image':
-                'url(https://i.picsum.photos/id/443/200/200.jpg?hmac=ceI_qNYuyS_i8MicdRztsYDJLek0_-IDsEwLhAfaIEo)',
+              'background-image': `url(${store.user.photo})`,
             }"
             bg="center cover no-repeat"
             border="2 dark-500 rounded-1/2"
@@ -42,7 +49,7 @@ const logout = () => {
             h="30px"
           ></div>
           <div border="b-2 dark-500 hover:primary" m="ml-6.5px" p="x-3.5px" text="hover:primary">
-            <p font="bold" text="dark-500" leading="text">Member</p>
+            <p font="bold" text="dark-500" leading="text">{{ store.user.name }}</p>
           </div>
           <ul
             v-show="dropDownMenu"

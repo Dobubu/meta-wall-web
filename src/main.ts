@@ -4,6 +4,7 @@ import './assets/scss/index.scss';
 import 'animate.css';
 
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 
@@ -16,4 +17,8 @@ library.add(faBell);
 library.add(faThumbsUp);
 library.add(faMagnifyingGlass);
 
-createApp(App).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app');
+createApp(App)
+  .use(createPinia())
+  .use(router)
+  .component('font-awesome-icon', FontAwesomeIcon)
+  .mount('#app');

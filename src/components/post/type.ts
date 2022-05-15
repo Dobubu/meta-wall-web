@@ -3,7 +3,7 @@ export interface Comment {
   name: string;
   photo: string;
   content: string;
-  createAt: string;
+  createdAt: string;
 }
 
 export enum PostType {
@@ -12,18 +12,20 @@ export enum PostType {
 }
 
 export interface Post {
-  name: string;
+  _id: string;
+  user: User;
   tags: string[];
   type: PostType;
   image: string;
   photo: string;
-  createAt: string;
+  createdAt: string;
   content: string;
   likes: number;
   comments: Comment[];
 }
 
 export interface User {
+  _id: string;
   name: string;
   photo: string;
 }

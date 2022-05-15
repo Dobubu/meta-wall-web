@@ -41,7 +41,7 @@ const postComment = () => {
     <div display="flex items-center" m="b-4">
       <div
         :style="{
-          'background-image': `url(${post.photo})`,
+          'background-image': `url(${post.user.photo})`,
         }"
         bg="center cover no-repeat"
         border="2 dark-500 rounded-1/2"
@@ -50,8 +50,8 @@ const postComment = () => {
         m="r-4"
       ></div>
       <div display="flex flex-col justify-center">
-        <p font="bold" text="dark-500">{{ post.name }}</p>
-        <p text="xs dark-300">{{ post.createAt }}</p>
+        <p font="bold" text="dark-500">{{ post.user.name }}</p>
+        <p text="xs dark-300">{{ post.createdAt }}</p>
       </div>
     </div>
     <p className="mb-4">{{ post.content }}</p>
@@ -127,7 +127,7 @@ const postComment = () => {
         ></div>
         <div display="flex flex-col justify-center">
           <p font="bold" text="dark-500">{{ o.name }}</p>
-          <p text="xs dark-300">{{ o.createAt }}</p>
+          <p text="xs dark-300">{{ o.createdAt }}</p>
         </div>
       </div>
       <div m="l-56px">{{ o.content }}</div>

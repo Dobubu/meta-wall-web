@@ -2,6 +2,10 @@
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
+import { useUserStore } from '@/store/user';
+
+const store = useUserStore();
+
 const menuList = ref([
   {
     title: '追蹤名單',
@@ -38,12 +42,11 @@ const menuList = ref([
     </RouterLink>
 
     <ul w="full">
-      <li cursor="pointer" display="flex items-center">
+      <li v-if="store.user" cursor="pointer" display="flex items-center">
         <div
           class="icon"
           :style="{
-            'background-image':
-              'url(https://i.picsum.photos/id/443/200/200.jpg?hmac=ceI_qNYuyS_i8MicdRztsYDJLek0_-IDsEwLhAfaIEo)',
+            'background-image': `url(${store.user.photo})`,
           }"
           bg="icon-100 center cover no-repeat"
           m="r-4"
@@ -51,7 +54,7 @@ const menuList = ref([
           w="50px"
           h="50px"
         ></div>
-        <p font="bold" text="hover:primary">Member</p>
+        <p font="bold" text="hover:primary">{{ store.user.name }}</p>
       </li>
 
       <li v-for="o in menuList" :key="o.title" cursor="pointer" display="flex items-center">
