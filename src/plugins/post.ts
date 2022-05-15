@@ -10,5 +10,15 @@ export enum SortType {
   DESC = 'desc',
 }
 
+export interface AddPostReq {
+  user: string;
+  tags: string[];
+  type: string;
+  image?: string;
+  content: string;
+}
+
 export const apiGetPostList = async (payload: GetPostListReq) =>
   PostAPI.get('/posts', { params: payload });
+
+export const apiAddPost = async (payload: AddPostReq) => PostAPI.post('/post', payload);

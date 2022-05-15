@@ -9,9 +9,16 @@ interface UploadFile {
 
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { usePost } from '@/service/usePost';
 import TitleBlock from '@/components/TitleBlock.vue';
 
+const postService = usePost();
+const router = useRouter();
+
 const content = ref('');
+const tmpImageUrl = ref('');
 
 const file = reactive<UploadFile>({
   file: null,
@@ -38,9 +45,22 @@ const createPostClass = computed(() => {
   };
 });
 
-const createPost = () => {
-  if (!content.value) return alert('貼文內容必填');
-  alert('貼文成功');
+const createPost = async () => {
+  try {
+    if (!content.value) throw new Error('貼文內容必填');
+
+    const dict = {
+      image: tmpImageUrl.value,
+      content: content.value,
+    };
+
+    await postService.addPost(dict);
+
+    alert('貼文成功');
+    router.push({ name: 'Post' });
+  } catch (e: any) {
+    alert(e.message);
+  }
 };
 </script>
 
@@ -66,8 +86,9 @@ const createPost = () => {
       <label htmlFor="uploadPostImage">
         <div display="flex items-center" m="b-4">
           <div
+            v-if="false"
             w="128px"
-            display="flex justify-center  items-center"
+            display="flex justify-center items-center"
             bg="dark-500"
             text="white"
             border="rounded"
@@ -76,6 +97,20 @@ const createPost = () => {
             cursor="pointer"
           >
             上傳新圖片
+          </div>
+
+          <div display="flex flex-col items-center" w="full">
+            <input
+              v-model="tmpImageUrl"
+              type="text"
+              placeholder="貼上圖片網址"
+              border="2 dark-500"
+              w="full"
+              h="12"
+              p="l-6"
+              m="b-2"
+            />
+            <img v-if="tmpImageUrl" :src="tmpImageUrl" alt="" />
           </div>
           <span v-if="file.file">{{ file.name }}</span>
         </div>
@@ -98,7 +133,7 @@ const createPost = () => {
         bg="center no-repeat"
       ></div>
     </div>
-    <p text="danger sm" m="b-4">圖片檔案過大，僅限 1mb 以下檔案</p>
+    <p v-if="false" text="danger sm" m="b-4">圖片檔案過大，僅限 1mb 以下檔案</p>
     <button
       type="button"
       :class="createPostClass"

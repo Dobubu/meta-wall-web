@@ -1,14 +1,18 @@
 import { reactive, ref } from 'vue';
+import { useUserStore } from '@/store/user';
 
-import { Post } from '@/components/post/type';
-import { apiGetPostList } from '@/plugins/post';
+import { Post, PostType } from '@/components/post/type';
+import { apiGetPostList, apiAddPost, AddPostReq } from '@/plugins/post';
 import { dayFormate } from '@/plugins/formate';
 
 export const usePost = () => {
   const list = ref<Post[]>([]);
   const loading = reactive({
     list: false,
+    add: false,
   });
+
+  const store = useUserStore();
 
   const fetchList = async (query = {}) => {
     try {
@@ -28,9 +32,29 @@ export const usePost = () => {
     }
   };
 
+  const addPost = async (payload: Pick<AddPostReq, 'image' | 'content'>) => {
+    try {
+      loading.add = true;
+
+      const dict = {
+        user: store.user._id,
+        tags: ['test'],
+        type: PostType.PERSON,
+        ...payload,
+      };
+
+      await apiAddPost(dict);
+    } catch (e: any) {
+      console.warn(e.message);
+    } finally {
+      loading.add = false;
+    }
+  };
+
   return {
     list,
     loading,
     fetchList,
+    addPost,
   };
 };
