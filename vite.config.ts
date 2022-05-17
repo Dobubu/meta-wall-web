@@ -6,7 +6,7 @@ import WindiCSS from 'vite-plugin-windicss';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  base: process.env.NODE_ENV === 'production' ? '/meta-wall-web/' : './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '/src'),
