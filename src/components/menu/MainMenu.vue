@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const dropDownMenu = ref(false);
 const menuList = ref(['我的貼文牆', '修改個人資料']);
@@ -11,6 +13,14 @@ const showMenu = () => {
 
 const hideMenu = () => {
   dropDownMenu.value = false;
+};
+
+const logout = () => {
+  localStorage.clear();
+
+  router.push({
+    name: 'Login',
+  });
 };
 </script>
 
@@ -47,7 +57,7 @@ const hideMenu = () => {
             <li v-for="o in menuList" :key="o" p="y-2" border="b-2 dark-500" bg="hover:dark-100">
               {{ o }}
             </li>
-            <li p="y-2" bg="hover:dark-100">登出</li>
+            <li p="y-2" bg="hover:dark-100" @click="logout">登出</li>
           </ul>
           <div
             v-show="dropDownMenu"
