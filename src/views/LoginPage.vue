@@ -1,13 +1,85 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import useVuelidate from '@vuelidate/core';
+import { required, email, minLength } from '@vuelidate/validators';
+
+import { useAuth } from '@/service/useAuth';
+import { StorageType } from '@/service/type';
 
 const router = useRouter();
+const authService = useAuth();
 
 const isLogin = ref(true);
+const globalErrMsg = ref('');
+
+const user = reactive({
+  name: '',
+  email: '',
+  password: '',
+});
+
+const rules = {
+  name: { required, minLength: minLength(2) },
+  email: { required, email },
+  password: { required, minLength: minLength(8) },
+};
+
+const v$ = useVuelidate(rules, user);
+
+const changeStatus = () => {
+  isLogin.value = !isLogin.value;
+
+  v$.value.$reset();
+  globalErrMsg.value = '';
+
+  user.name = '';
+  user.email = '';
+  user.password = '';
+};
+
+const signUp = async () => {
+  try {
+    if (!user.name || !user.email || !user.password) throw new Error('上述欄位有誤！');
+
+    const isValidate = await v$.value.$validate();
+    if (!isValidate) return;
+
+    const dict = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    };
+
+    const res = await authService.signUp(dict);
+    localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
+
+    await router.push({ name: 'Post' });
+  } catch (e: any) {
+    globalErrMsg.value = e.message;
+  }
+};
 
 const login = async () => {
-  await router.push({ name: 'Post' });
+  try {
+    if (!user.email || !user.password) throw new Error('上述欄位有誤！');
+
+    const isValidateEmail = await v$.value.email.$validate();
+    const isValidatePassword = await v$.value.password.$validate();
+    if (!isValidateEmail || !isValidatePassword) return;
+
+    const dict = {
+      email: user.email,
+      password: user.password,
+    };
+
+    const res = await authService.login(dict);
+    localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
+
+    await router.push({ name: 'Post' });
+  } catch (e: any) {
+    globalErrMsg.value = e.message;
+  }
 };
 </script>
 
@@ -28,25 +100,67 @@ const login = async () => {
           <h2 m="b-9" text="24px dark-500" font="helvetica bold">
             {{ isLogin ? '到元宇宙展開全新社交圈' : '註冊' }}
           </h2>
+
           <template v-if="!isLogin">
-            <input type="text" w="373px" h="51px" border="2 dark-500" m="b-4" placeholder="暱稱" />
-            <span m="b-4 -t-2" text="14px danger left">暱稱至少 2 個字元以上</span>
+            <input
+              v-model="user.name"
+              type="text"
+              w="373px"
+              h="51px"
+              border="2 dark-500"
+              m="b-4"
+              placeholder="暱稱"
+              @blur="v$.name.$touch"
+            />
+            <span
+              v-for="error of v$.name.$errors"
+              :key="error.$uid"
+              m="b-4 -t-2"
+              text="14px danger left"
+            >
+              {{ error.$message }}
+            </span>
           </template>
 
-          <input type="text" w="373px" h="51px" border="2 dark-500" m="b-4" placeholder="Email" />
-          <span m="b-4 -t-2" text="14px danger left">帳號已被註冊，請替換新的 Email！</span>
+          <input
+            v-model="user.email"
+            type="text"
+            w="373px"
+            h="51px"
+            border="2 dark-500"
+            m="b-4"
+            placeholder="Email"
+            @blur="v$.email.$touch"
+          />
+          <span
+            v-for="error of v$.email.$errors"
+            :key="error.$uid"
+            m="b-4 -t-2"
+            text="14px danger left"
+          >
+            {{ error.$message }}
+          </span>
 
           <input
-            type="text"
+            v-model="user.password"
+            type="password"
             w="373px"
             h="51px"
             border="2 dark-500"
             m="b-8"
             placeholder="Password"
+            @blur="v$.password.$touch"
           />
-          <span m="b-4 -t-6" text="14px danger left">密碼需至少 8 碼以上，並中英混合</span>
+          <span
+            v-for="error of v$.password.$errors"
+            :key="error.$uid"
+            m="b-4 -t-6"
+            text="14px danger left"
+          >
+            {{ error.$message }}
+          </span>
 
-          <span m="b-4" text="14px danger">帳號或密碼錯誤，請重新輸入！</span>
+          <span m="b-4" text="14px danger">{{ globalErrMsg }}</span>
           <template v-if="isLogin">
             <button
               v-if="isLogin"
@@ -57,11 +171,18 @@ const login = async () => {
               m="b-4"
               text="white hover:dark-500"
               border="2 dark-500 rounded-8px"
-              @click="login"
+              @click.prevent="login"
             >
               登入
+              <font-awesome-icon
+                v-if="authService.loading.auth"
+                :icon="['fa', 'circle-notch']"
+                pulse
+                size="lg"
+                m="l-2"
+              />
             </button>
-            <span cursor="pointer" text="center" display="block" @click="isLogin = false">
+            <span cursor="pointer" text="center" display="block" @click="changeStatus">
               註冊帳號
             </span>
           </template>
@@ -74,13 +195,18 @@ const login = async () => {
               m="b-4"
               text="white hover:dark-500"
               border="2 dark-500 rounded-8px"
-              @click="isLogin = true"
+              @click.prevent="signUp"
             >
               註冊
+              <font-awesome-icon
+                v-if="authService.loading.auth"
+                :icon="['fa', 'circle-notch']"
+                pulse
+                size="lg"
+                m="l-2"
+              />
             </button>
-            <span cursor="pointer" text="center" display="block" @click="isLogin = true">
-              登入
-            </span>
+            <span cursor="pointer" text="center" display="block" @click="changeStatus"> 登入 </span>
           </template>
         </form>
       </div>

@@ -34,6 +34,8 @@ export const usePost = () => {
 
   const addPost = async (payload: Pick<AddPostReq, 'image' | 'content'>) => {
     try {
+      if (!store.user) throw new Error('找不到使用者');
+
       loading.add = true;
 
       const dict = {

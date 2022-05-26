@@ -1,10 +1,26 @@
 import { ref } from 'vue';
 
-import { apiGetUserList } from '@/plugins/user';
+import { apiGetProfile, apiGetUserList } from '@/plugins/user';
+import { useUserStore } from '@/store/user';
+
 import { User } from '@/components/post/type';
+import DefaultPhoto from '@/assets/images/default_photo.jpg';
 
 export const useUser = () => {
   const list = ref<User[]>([]);
+  const user = ref<User | null>(null);
+
+  const store = useUserStore();
+
+  const fetchProfile = async () => {
+    const res = await apiGetProfile();
+
+    if (!res.data.photo) {
+      res.data.photo = DefaultPhoto;
+    }
+
+    store.user = res.data;
+  };
 
   const fetchList = async () => {
     try {
@@ -15,5 +31,5 @@ export const useUser = () => {
     }
   };
 
-  return { list, fetchList };
+  return { user, fetchProfile, list, fetchList };
 };

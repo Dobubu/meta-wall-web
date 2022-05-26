@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted } from 'vue';
 
 import { useUser } from '@/service//useUser';
-import { useUserStore } from '@/store/user';
 import MainMenu from '@/components/menu/MainMenu.vue';
 import SubMenu from '@/components/menu/SubMenu.vue';
 
 const userService = useUser();
-const store = useUserStore();
-
-const userList = computed(() => userService.list.value);
 
 onMounted(async () => {
-  await userService.fetchList();
-  store.userList = userList.value;
+  await userService.fetchProfile();
 });
 </script>
 
