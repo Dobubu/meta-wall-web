@@ -45,18 +45,20 @@ const menuList = ref([
 
     <ul w="full">
       <li v-if="store.user" cursor="pointer" display="flex items-center">
-        <div
-          class="icon"
-          :style="{
-            'background-image': `url(${store.user.photo})`,
-          }"
-          bg="icon-100 center cover no-repeat"
-          m="r-4"
-          border="2 dark-500 rounded-1/2"
-          w="50px"
-          h="50px"
-        ></div>
-        <p font="bold" text="hover:primary">{{ store.user.name }}</p>
+        <RouterLink :to="{ name: 'Edit' }" class="w-full flex items-center">
+          <div
+            class="icon"
+            :style="{
+              'background-image': `url(${store.user.photo})`,
+            }"
+            bg="icon-100 center cover no-repeat"
+            m="r-4"
+            border="2 dark-500 rounded-1/2"
+            w="50px"
+            h="50px"
+          ></div>
+          <p font="bold" text="hover:primary">{{ store.user.name }}</p>
+        </RouterLink>
       </li>
 
       <li v-for="o in menuList" :key="o.title" cursor="pointer">

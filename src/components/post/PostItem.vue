@@ -63,7 +63,7 @@ const postComment = () => {
         <p text="xs dark-300">{{ post.createdAt }}</p>
       </div>
     </div>
-    <p className="mb-4">{{ post.content }}</p>
+    <p m="b-4">{{ post.content }}</p>
     <div
       v-if="post.image"
       :style="{ backgroundImage: `url(${post.image})` }"
