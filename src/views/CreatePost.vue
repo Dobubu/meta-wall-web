@@ -1,65 +1,63 @@
-<script lang="ts">
-interface UploadFile {
-  file: File | null;
-  url: String;
-  size: Number;
-  name: String;
-}
-</script>
-
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 
 import { usePost } from '@/service/usePost';
+import { useUpload } from '@/service/useUpload';
+
 import TitleBlock from '@/components/TitleBlock.vue';
 
-const postService = usePost();
 const router = useRouter();
+const postService = usePost();
+const uploadService = useUpload();
 
-const content = ref('');
+const globalErrMsg = ref('');
 const tmpImageUrl = ref('');
 
-const file = reactive<UploadFile>({
-  file: null,
-  url: '',
-  size: 0,
-  name: '',
+const post = reactive({
+  content: '',
+  photos: '',
 });
 
-const uploadFile = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  if (!target.files) return;
-
-  file.file = target.files[0];
-  file.url = URL.createObjectURL(target.files[0]);
-  file.size = target.files[0].size;
-  file.name = target.files[0].name;
+const rules = {
+  content: { required },
 };
 
-const uploadFileStyle = computed(() => `url(${file.url})`);
+const v$ = useVuelidate(rules, post);
+
+const postImgs = computed(() => uploadService.file.url);
 const createPostClass = computed(() => {
   return {
-    'bg-disable-100 cursor-not-allowed': !content.value,
-    'bg-active': content.value,
+    'bg-disable-100 cursor-not-allowed': !post.content,
+    'bg-active': post.content,
   };
 });
 
 const createPost = async () => {
   try {
-    if (!content.value) throw new Error('貼文內容必填');
+    if (!post.content) throw new Error('貼文內容必填');
+
+    const isValidate = await v$.value.$validate();
+    if (!isValidate) return;
+
+    if (uploadService.file.file) {
+      const res = await uploadService.uploadFile();
+      post.photos = res;
+    }
 
     const dict = {
-      image: tmpImageUrl.value,
-      content: content.value,
+      image: post.photos,
+      content: post.content,
     };
 
     await postService.addPost(dict);
 
-    alert('貼文成功');
+    alert('貼文成功！');
     router.push({ name: 'Post' });
   } catch (e: any) {
-    alert(e.message);
+    globalErrMsg.value = e.message;
   }
 };
 </script>
@@ -70,8 +68,16 @@ const createPost = async () => {
   <div bg="white" border="2 dark-500 rounded-lg" display="flex flex-col items-center" p="8">
     <div w="full">
       <p text="dark-500" m="b-1">貼文內容</p>
+      <span
+        v-for="error of v$.content.$errors"
+        :key="error.$uid"
+        m="b-4 -t-2"
+        text="14px danger left"
+      >
+        {{ error.$message }}
+      </span>
       <textarea
-        v-model="content"
+        v-model="post.content"
         rows="4"
         cols="50"
         w="full"
@@ -81,51 +87,66 @@ const createPost = async () => {
         p="4"
         m="b-4"
         placeholder="輸入您的貼文內容..."
+        @blur="v$.content.$touch"
       ></textarea>
 
-      <label htmlFor="uploadPostImage">
-        <div display="flex items-center" m="b-4">
-          <div
-            v-if="false"
-            w="128px"
-            display="flex justify-center items-center"
-            bg="dark-500"
-            text="white"
-            border="rounded"
-            p="y-1"
-            m="r-4"
-            cursor="pointer"
-          >
-            上傳新圖片
-          </div>
+      <div display="flex items-center" m="b-4">
+        <label htmlFor="uploadPostImage">
+          <div display="flex items-center">
+            <div
+              w="128px"
+              display="flex justify-center items-center"
+              bg="dark-500"
+              text="white"
+              border="rounded"
+              p="y-1"
+              m="r-4"
+              cursor="pointer"
+            >
+              選擇新圖片
+            </div>
 
-          <div display="flex flex-col items-center" w="full">
-            <input
-              v-model="tmpImageUrl"
-              type="text"
-              placeholder="貼上圖片網址"
-              border="2 dark-500"
-              w="full"
-              h="12"
-              p="l-6"
-              m="b-2"
-            />
-            <img v-if="tmpImageUrl" :src="tmpImageUrl" alt="" />
+            <div v-if="false" display="flex flex-col items-center" w="full">
+              <input
+                v-model="tmpImageUrl"
+                type="text"
+                placeholder="貼上圖片網址"
+                border="2 dark-500"
+                w="full"
+                h="12"
+                p="l-6"
+                m="b-2"
+              />
+              <img v-if="tmpImageUrl" :src="tmpImageUrl" alt="" />
+            </div>
           </div>
-          <span v-if="file.file">{{ file.name }}</span>
-        </div>
-        <input
-          id="uploadPostImage"
-          type="file"
-          accept="image/jpg,image/jpeg,image/png"
-          class="hidden"
-          h="0"
-          @change="uploadFile"
-        />
-      </label>
+          <input
+            id="uploadPostImage"
+            type="file"
+            accept="image/jpg,image/jpeg,image/png"
+            class="hidden"
+            h="0"
+            @change="uploadService.onChangeFile"
+          />
+        </label>
+
+        <template v-if="uploadService.file.file">
+          <span>{{ uploadService.file.name }}</span>
+          <font-awesome-icon
+            :icon="['fa', 'xmark']"
+            size="lg"
+            m="l-5"
+            cursor="pointer"
+            @click="uploadService.resetFile"
+          />
+        </template>
+      </div>
+
       <div
-        v-if="file.file"
-        class="upload-file"
+        v-if="uploadService.file.file"
+        :style="{
+          'background-image': `url(${postImgs})`,
+        }"
         position="relative"
         h="40"
         border="2 rounded dark-500"
@@ -133,7 +154,7 @@ const createPost = async () => {
         bg="center no-repeat"
       ></div>
     </div>
-    <p v-if="false" text="danger sm" m="b-4">圖片檔案過大，僅限 1mb 以下檔案</p>
+    <p text="danger sm" m="b-4">{{ globalErrMsg }}</p>
     <button
       type="button"
       :class="createPostClass"
@@ -148,8 +169,4 @@ const createPost = async () => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-.upload-file {
-  background-image: v-bind(uploadFileStyle);
-}
-</style>
+<style lang="scss" scoped></style>

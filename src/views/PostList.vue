@@ -86,6 +86,8 @@ onMounted(async () => {
     </div>
   </div>
 
+  <p m="b-4">total: {{ list.length }}</p>
+
   <template v-if="isLoading">
     <div h="8/10" display="flex items-center justify-center">loading...</div>
   </template>
