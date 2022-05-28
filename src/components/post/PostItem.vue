@@ -2,9 +2,10 @@
 import { PropType, computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
+import { useUserStore } from '@/store/user';
 import { User, Post } from './type';
 
-defineProps({
+const props = defineProps({
   user: {
     type: Object as PropType<User>,
     default: () => ({}),
@@ -15,6 +16,8 @@ defineProps({
   },
 });
 
+const store = useUserStore();
+
 const comment = ref('');
 const isLoading = ref(false);
 
@@ -23,6 +26,24 @@ const createPostClass = computed(() => {
     'bg-disable-100 cursor-not-allowed': !comment.value,
     'bg-primary text-white hover:(bg-active text-dark-500)': comment.value,
   };
+});
+
+const isLikesExistUser = computed(() => !!props.post.likes.find(o => o === store.user?._id));
+
+const likesIconClass = computed(() => {
+  return {
+    'text-primary': props.post.likes,
+    'text-dark-300': !props.post.likes,
+    'border-2 rounded-1/2 p-1 border-primary': isLikesExistUser.value,
+  };
+});
+
+const likesWording = computed(() => {
+  if (isLikesExistUser.value && props.post.likes.length - 1 === 0) return '你說了說讚';
+  if (isLikesExistUser.value) return `你，和 ${props.post.likes.length - 1} 位朋友說讚`;
+  if (!isLikesExistUser.value && props.post.likes.length)
+    return `${props.post.likes.length} 位朋友說讚`;
+  return '成為第一個按讚的朋友';
 });
 
 const postComment = () => {
@@ -75,13 +96,14 @@ const postComment = () => {
 
     <div display="flex items-center" m="b-5">
       <font-awesome-icon
+        :class="likesIconClass"
         :icon="['far', 'thumbs-up']"
         size="lg"
         m="r-2"
-        :class="{ 'text-primary': post.likes, 'text-dark-300': !post.likes }"
+        cursor="pointer"
       />
-      <span :class="{ 'text-dark-300': !post.likes }">
-        {{ post.likes || '成為第一個按讚的朋友' }}
+      <span :class="{ 'text-dark-300': !post.likes.length }">
+        {{ likesWording }}
       </span>
     </div>
 
