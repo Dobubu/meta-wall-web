@@ -50,6 +50,10 @@ onMounted(async () => {
 
   await postService.fetchList(getQueryObject.value);
 });
+
+const updateLike = (postId: string, type: string) => {
+  postService.updateListLike(postId, type);
+};
 </script>
 
 <template>
@@ -93,7 +97,13 @@ onMounted(async () => {
   </template>
   <template v-else>
     <template v-if="list.length">
-      <PostItem v-for="o in list" :key="o._id" :post="o" :user="store.user" />
+      <PostItem
+        v-for="o in list"
+        :key="o._id"
+        :post="o"
+        :user="store.user"
+        @update-like="updateLike"
+      />
     </template>
     <div v-else bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" h="132px">
       <div w="full" h="6" border="b-2 dark-500" display="flex items-center">

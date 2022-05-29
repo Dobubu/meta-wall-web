@@ -20,7 +20,7 @@ export interface Post {
   photo: string;
   createdAt: string;
   content: string;
-  likes: number;
+  likes: string[];
   comments: Comment[];
 }
 
@@ -28,4 +28,9 @@ export interface User {
   _id: string;
   name: string;
   photo: string;
+}
+
+export enum LikeType {
+  ADD = 'add',
+  DELETE = 'delete',
 }

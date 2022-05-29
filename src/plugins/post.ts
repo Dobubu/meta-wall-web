@@ -22,3 +22,7 @@ export const apiGetPostList = async (payload: GetPostListReq) =>
   PostAPI.get('/posts', { params: payload });
 
 export const apiAddPost = async (payload: AddPostReq) => PostAPI.post('/post', payload);
+
+export const apiAddPostLike = async (postId: string) => PostAPI.post(`/post/${postId}/like`);
+
+export const apiDeletePostLike = async (postId: string) => PostAPI.delete(`/post/${postId}/like`);

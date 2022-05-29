@@ -3,7 +3,8 @@ import { PropType, computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
-import { User, Post } from './type';
+import { usePost } from '@/service/usePost';
+import { User, Post, LikeType } from './type';
 
 const props = defineProps({
   user: {
@@ -16,7 +17,10 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['updateLike']);
+
 const store = useUserStore();
+const postService = usePost();
 
 const comment = ref('');
 const isLoading = ref(false);
@@ -45,6 +49,32 @@ const likesWording = computed(() => {
     return `${props.post.likes.length} 位朋友說讚`;
   return '成為第一個按讚的朋友';
 });
+
+const addLike = async () => {
+  try {
+    await postService.addLike(props.post._id);
+  } catch (e: any) {
+    console.error(e.message);
+  }
+};
+
+const deleteLike = async () => {
+  try {
+    await postService.deleteLike(props.post._id);
+  } catch (e: any) {
+    console.error(e.message);
+  }
+};
+
+const updateLike = () => {
+  if (isLikesExistUser.value) {
+    deleteLike();
+    emit('updateLike', props.post._id, LikeType.DELETE);
+  } else {
+    addLike();
+    emit('updateLike', props.post._id, LikeType.ADD);
+  }
+};
 
 const postComment = () => {
   if (!comment.value) return alert('留言內容必填');
@@ -101,6 +131,7 @@ const postComment = () => {
         size="lg"
         m="r-2"
         cursor="pointer"
+        @click="updateLike"
       />
       <span :class="{ 'text-dark-300': !post.likes.length }">
         {{ likesWording }}
