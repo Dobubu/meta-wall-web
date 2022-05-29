@@ -41,3 +41,5 @@ export const apiUpdatePassword = async (payload: UpdatePasswordReq) =>
   PostAPI.post('/user/updatePassword', payload);
 
 export const apiGetUserList = async () => PostAPI.get('/users');
+
+export const apiGetUserLikeList = async () => PostAPI.get('/user/likes/list');

@@ -1,19 +1,27 @@
 <script setup lang="ts">
+import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 
-import { mock } from './mockData';
+import { useUser } from '@/service/useUser';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 
-const { list } = mock;
+const userService = useUser();
+
+const list = computed(() => userService.likeList.value);
+
+onMounted(async () => {
+  await userService.fetchLikeList();
+});
 </script>
 
 <template>
   <TitleBlock>我按讚的貼文</TitleBlock>
+  <p m="-t-4 b-4">total: {{ list.length }}</p>
 
   <div
     v-for="o in list"
-    :key="o.name"
+    :key="o._id"
     display="flex items-stretch justify-between items-end"
     border="2 dark-500 rounded-lg"
     bg="white"
@@ -24,7 +32,7 @@ const { list } = mock;
     <div display="flex">
       <div
         :style="{
-          'background-image': `url(${o.photo})`,
+          'background-image': `url(${o.user.photo})`,
         }"
         bg="center cover no-repeat"
         border="2 dark-500 rounded-1/2"
@@ -40,9 +48,9 @@ const { list } = mock;
           font="bold"
           hover="text-primary underline"
         >
-          {{ o.name }}
+          {{ o.user.name }}
         </RouterLink>
-        <p text="14px dark-300">發文時間：{{ o.createAt }}</p>
+        <p text="14px dark-300">發文時間：{{ o.createdAt }}</p>
       </div>
     </div>
 

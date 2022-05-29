@@ -7,15 +7,18 @@ import {
   apiUpdateProfile,
   UpdatePasswordReq,
   apiUpdatePassword,
+  apiGetUserLikeList,
 } from '@/plugins/user';
+import { dayFormate } from '@/plugins/formate';
 import { useUserStore } from '@/store/user';
 import { StorageType } from '@/service/type';
 
-import { User } from '@/components/post/type';
+import { User, Post } from '@/components/post/type';
 import DefaultPhoto from '@/assets/images/default_photo.jpg';
 
 export const useUser = () => {
   const list = ref<User[]>([]);
+  const likeList = ref<Post[]>([]);
   const user = ref<User | null>(null);
   const loading = reactive({
     password: false,
@@ -71,5 +74,29 @@ export const useUser = () => {
     }
   };
 
-  return { loading, user, fetchProfile, list, fetchList, updateProfile, updatePassword };
+  const fetchLikeList = async () => {
+    try {
+      const res = await apiGetUserLikeList();
+      likeList.value = res.data.map((o: Post) => {
+        return {
+          ...o,
+          createdAt: dayFormate(o.createdAt),
+        };
+      });
+    } catch (e: any) {
+      console.warn(e.message);
+    }
+  };
+
+  return {
+    loading,
+    user,
+    fetchProfile,
+    list,
+    fetchList,
+    likeList,
+    fetchLikeList,
+    updateProfile,
+    updatePassword,
+  };
 };
