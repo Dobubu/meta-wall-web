@@ -14,6 +14,10 @@ import {
   apiDeletePostLike,
 } from '@/plugins/post';
 import { dayFormate } from '@/plugins/formate';
+import { useAuth } from '@/service/useAuth';
+
+import DefaultPhotoUser from '@/assets/images/default_user.jpg';
+import DefaultPhotoUsers from '@/assets/images/default_users.jpg';
 
 export const usePost = () => {
   const list = ref<Post[]>([]);
@@ -27,6 +31,7 @@ export const usePost = () => {
   const store = useUserStore();
   const route = useRoute();
   const router = useRouter();
+  const authService = useAuth();
 
   const getQueryObject = computed(() => {
     return {
@@ -58,7 +63,19 @@ export const usePost = () => {
       loading.list = true;
 
       const res = await apiGetPost(postId);
-      postInfo.value = { ...res.data, createdAt: dayFormate(res.data.createdAt) };
+
+      postInfo.value = {
+        ...res.data,
+        createdAt: dayFormate(res.data.createdAt),
+        user: {
+          ...res.data.user,
+          photo: res.data.user.photo
+            ? res.data.user.photo
+            : authService.getUserId() === res.data.user._id
+            ? DefaultPhotoUser
+            : DefaultPhotoUsers,
+        },
+      };
     } catch (e: any) {
       console.warn(e.message);
     } finally {
@@ -81,10 +98,19 @@ export const usePost = () => {
       loading.list = true;
 
       const res = await apiGetPostList(query);
+
       list.value = res.data.map((o: Post) => {
         return {
           ...o,
           createdAt: dayFormate(o.createdAt),
+          user: {
+            ...o.user,
+            photo: o.user.photo
+              ? o.user.photo
+              : authService.getUserId() === o.user._id
+              ? DefaultPhotoUser
+              : DefaultPhotoUsers,
+          },
         };
       });
     } catch (e: any) {
@@ -97,10 +123,13 @@ export const usePost = () => {
   const fetchUserPostsList = async (userId: string, query?: any) => {
     try {
       const res = await apiGetUserPostsList(userId, query);
+      const photo = authService.getUserId() === userId ? DefaultPhotoUser : DefaultPhotoUsers;
+
       userPostList.value = res.data.map((o: Post) => {
         return {
           ...o,
           createdAt: dayFormate(o.createdAt),
+          user: { ...o.user, photo: o.user.photo || photo },
         };
       });
     } catch (e: any) {
