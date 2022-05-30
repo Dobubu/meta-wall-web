@@ -1,5 +1,6 @@
 import { createWebHashHistory, createRouter } from 'vue-router';
 import PostList from '@/views/PostList.vue';
+import PostInfo from '@/views/PostInfo.vue';
 import CreatePost from '@/views/CreatePost.vue';
 import FollowList from '@/views/FollowList.vue';
 import LikeList from '@/views/LikeList.vue';
@@ -21,6 +22,11 @@ const routes = [
         path: '',
         name: 'Post',
         component: PostList,
+      },
+      {
+        path: ':id',
+        name: 'PostInfo',
+        component: PostInfo,
       },
       {
         path: 'create',

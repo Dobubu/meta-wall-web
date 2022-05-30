@@ -76,10 +76,12 @@ const deleteLike = async (postId: string) => {
         <font-awesome-icon text="primary" :icon="['far', 'thumbs-up']" size="lg" />
         <span text="14px dark-300">取消</span>
       </div>
-      <div display="flex flex-col justify-between" cursor="pointer">
-        <font-awesome-icon text="dark-500" :icon="['far', 'circle-right']" size="lg" />
-        <span text="14px dark-300">查看</span>
-      </div>
+      <RouterLink :to="{ name: 'PostInfo', params: { id: o._id } }">
+        <div display="flex flex-col justify-between" cursor="pointer" h="full">
+          <font-awesome-icon text="dark-500" :icon="['far', 'circle-right']" size="lg" />
+          <span text="14px dark-300">查看</span>
+        </div>
+      </RouterLink>
     </div>
   </div>
 </template>

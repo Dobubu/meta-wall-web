@@ -23,6 +23,8 @@ type GetUserPostListReq = GetPostListReq;
 export const apiGetPostList = async (payload: GetPostListReq) =>
   PostAPI.get('/posts', { params: payload });
 
+export const apiGetPost = async (postId: string) => PostAPI.get(`/post/${postId}`);
+
 export const apiGetUserPostsList = async (userId: string, payload: GetUserPostListReq) =>
   PostAPI.get(`/posts/user/${userId}`, { params: payload });
 

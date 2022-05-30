@@ -5,6 +5,7 @@ import { useUserStore } from '@/store/user';
 
 import { Post, PostType, LikeType } from '@/components/post/type';
 import {
+  apiGetPost,
   apiGetPostList,
   apiGetUserPostsList,
   apiAddPost,
@@ -16,6 +17,7 @@ import { dayFormate } from '@/plugins/formate';
 
 export const usePost = () => {
   const list = ref<Post[]>([]);
+  const postInfo = ref<Post>();
   const userPostList = ref<Post[]>([]);
   const loading = reactive({
     list: false,
@@ -48,6 +50,29 @@ export const usePost = () => {
     }
     if (route.name === 'UserWall') {
       await fetchUserPostsList(userId, dict);
+    }
+  };
+
+  const fetchPost = async (postId: string) => {
+    try {
+      loading.list = true;
+
+      const res = await apiGetPost(postId);
+      postInfo.value = { ...res.data, createdAt: dayFormate(res.data.createdAt) };
+    } catch (e: any) {
+      console.warn(e.message);
+    } finally {
+      loading.list = false;
+    }
+  };
+
+  const updatePostLike = (postId: string, type: string) => {
+    if (!postInfo.value || !store.user) return;
+
+    if (type === LikeType.ADD) {
+      postInfo.value.likes = [store.user._id, ...postInfo.value.likes];
+    } else {
+      postInfo.value.likes = postInfo.value.likes.filter(o => o !== store.user?._id);
     }
   };
 
@@ -136,6 +161,9 @@ export const usePost = () => {
     list,
     loading,
     search,
+    postInfo,
+    fetchPost,
+    updatePostLike,
     fetchList,
     userPostList,
     fetchUserPostsList,
