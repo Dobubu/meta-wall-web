@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 
+import { useRoute } from 'vue-router';
 import { mock } from './mockData';
+import { usePost } from '@/service/usePost';
 
 import PostItem from '@/components/post/PostItem.vue';
 
 const { user, postList } = mock;
+
+const route = useRoute();
+const postService = usePost();
 
 const isFollow = ref(false);
 const postType = ref('1');
@@ -15,6 +20,12 @@ const followText = computed(() => (isFollow.value ? '取消追蹤' : '追蹤'));
 const updateFollow = () => {
   isFollow.value = !isFollow.value;
 };
+
+const list = computed(() => postService.userPostList.value);
+
+onMounted(async () => {
+  await postService.fetchUserPostsList(route.params.id as string);
+});
 </script>
 
 <template>
@@ -95,8 +106,10 @@ const updateFollow = () => {
     </div>
   </div>
 
-  <template v-if="postList.length">
-    <PostItem v-for="o in postList" :key="o._id" :post="o" :user="user" />
+  <p m="b-4">total: {{ list.length }}</p>
+
+  <template v-if="list.length">
+    <PostItem v-for="o in list" :key="o._id" :post="o" :user="user" />
   </template>
 
   <div v-else bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" h="132px">

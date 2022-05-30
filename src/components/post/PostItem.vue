@@ -104,7 +104,7 @@ const postComment = () => {
       ></div>
       <div display="flex flex-col justify-center">
         <RouterLink
-          :to="{ name: 'UserWall' }"
+          :to="{ name: 'UserWall', params: { id: post.user._id } }"
           class="text-dark-500"
           font="bold"
           hover="text-primary underline"
@@ -189,7 +189,7 @@ const postComment = () => {
         ></div>
         <div display="flex flex-col justify-center">
           <RouterLink
-            :to="{ name: 'UserWall' }"
+            :to="{ name: 'UserWall', params: { id: 'xxx' } }"
             class="text-dark-500"
             font="bold"
             hover="text-primary underline"

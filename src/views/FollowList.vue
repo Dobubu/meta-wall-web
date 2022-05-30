@@ -34,7 +34,7 @@ const { list } = mock;
       ></div>
       <div display="flex flex-col justify-center">
         <RouterLink
-          :to="{ name: 'UserWall' }"
+          :to="{ name: 'UserWall', params: { id: 'xxx' } }"
           class="text-dark-500 16px"
           m="b-5px"
           font="bold"

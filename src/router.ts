@@ -38,7 +38,7 @@ const routes = [
         component: LikeList,
       },
       {
-        path: 'userWall',
+        path: 'userWall/:id',
         name: 'UserWall',
         component: UserWall,
       },

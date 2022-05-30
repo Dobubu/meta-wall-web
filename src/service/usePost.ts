@@ -4,6 +4,7 @@ import { useUserStore } from '@/store/user';
 import { Post, PostType, LikeType } from '@/components/post/type';
 import {
   apiGetPostList,
+  apiGetUserPostsList,
   apiAddPost,
   AddPostReq,
   apiAddPostLike,
@@ -13,6 +14,7 @@ import { dayFormate } from '@/plugins/formate';
 
 export const usePost = () => {
   const list = ref<Post[]>([]);
+  const userPostList = ref<Post[]>([]);
   const loading = reactive({
     list: false,
     add: false,
@@ -35,6 +37,20 @@ export const usePost = () => {
       console.warn(e.message);
     } finally {
       loading.list = false;
+    }
+  };
+
+  const fetchUserPostsList = async (userId: string) => {
+    try {
+      const res = await apiGetUserPostsList(userId);
+      userPostList.value = res.data.map((o: Post) => {
+        return {
+          ...o,
+          createdAt: dayFormate(o.createdAt),
+        };
+      });
+    } catch (e: any) {
+      console.warn(e.message);
     }
   };
 
@@ -91,6 +107,8 @@ export const usePost = () => {
     list,
     loading,
     fetchList,
+    userPostList,
+    fetchUserPostsList,
     addPost,
     addLike,
     deleteLike,

@@ -9,10 +9,6 @@ const store = useUserStore();
 const dropDownMenu = ref(false);
 const menuList = ref([
   {
-    title: '我的貼文牆',
-    routerName: '',
-  },
-  {
     title: '修改個人資料',
     routerName: 'Edit',
   },
@@ -70,6 +66,9 @@ const logout = () => {
             bg="white"
             z="10"
           >
+            <RouterLink :to="{ name: 'UserWall', params: { id: store.user._id } }">
+              <li p="y-2" border="b-2 dark-500" bg="hover:dark-100">我的貼文牆</li>
+            </RouterLink>
             <template v-for="o in menuList" :key="o.title">
               <RouterLink :to="{ name: o.routerName }">
                 <li p="y-2" border="b-2 dark-500" bg="hover:dark-100">
