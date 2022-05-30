@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 import { usePost } from '@/service/usePost';
 import { SortType } from '@/plugins/post';
@@ -10,7 +10,6 @@ import { useUserStore } from '@/store/user';
 const store = useUserStore();
 
 const route = useRoute();
-const router = useRouter();
 const postService = usePost();
 
 const list = computed(() => postService.list.value);
@@ -27,16 +26,11 @@ const keyWord = ref('');
 
 const search = async () => {
   const dict = {
-    ...getQueryObject.value,
     q: keyWord.value,
     sort: sort.value,
   };
 
-  await router.push({
-    name: 'Post',
-    query: dict,
-  });
-  await postService.fetchList(dict);
+  postService.search(dict);
 };
 
 onMounted(async () => {
@@ -119,7 +113,7 @@ const updateLike = (postId: string, type: string) => {
         ></div>
       </div>
       <div display="flex justify-center items-center" h="100px">
-        <p text="dark-300">目前尚無動態，新增一則貼文吧！</p>
+        <p text="dark-300">查無任何貼文！</p>
       </div>
     </div>
   </template>

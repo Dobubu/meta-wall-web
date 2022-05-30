@@ -1,4 +1,6 @@
-import { reactive, ref } from 'vue';
+import { reactive, ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 import { useUserStore } from '@/store/user';
 
 import { Post, PostType, LikeType } from '@/components/post/type';
@@ -21,6 +23,33 @@ export const usePost = () => {
   });
 
   const store = useUserStore();
+  const route = useRoute();
+  const router = useRouter();
+
+  const getQueryObject = computed(() => {
+    return {
+      ...route.query,
+    };
+  });
+
+  const search = async (query: any, userId = '') => {
+    const dict = {
+      ...getQueryObject.value,
+      ...query,
+    };
+
+    await router.push({
+      name: route.name as string,
+      query: dict,
+    });
+
+    if (route.name === 'Post') {
+      await fetchList(dict);
+    }
+    if (route.name === 'UserWall') {
+      await fetchUserPostsList(userId, dict);
+    }
+  };
 
   const fetchList = async (query = {}) => {
     try {
@@ -40,9 +69,9 @@ export const usePost = () => {
     }
   };
 
-  const fetchUserPostsList = async (userId: string) => {
+  const fetchUserPostsList = async (userId: string, query?: any) => {
     try {
-      const res = await apiGetUserPostsList(userId);
+      const res = await apiGetUserPostsList(userId, query);
       userPostList.value = res.data.map((o: Post) => {
         return {
           ...o,
@@ -106,6 +135,7 @@ export const usePost = () => {
   return {
     list,
     loading,
+    search,
     fetchList,
     userPostList,
     fetchUserPostsList,

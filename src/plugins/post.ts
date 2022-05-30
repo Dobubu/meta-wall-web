@@ -18,10 +18,13 @@ export interface AddPostReq {
   content: string;
 }
 
+type GetUserPostListReq = GetPostListReq;
+
 export const apiGetPostList = async (payload: GetPostListReq) =>
   PostAPI.get('/posts', { params: payload });
 
-export const apiGetUserPostsList = async (userId: string) => PostAPI.get(`/posts/user/${userId}`);
+export const apiGetUserPostsList = async (userId: string, payload: GetUserPostListReq) =>
+  PostAPI.get(`/posts/user/${userId}`, { params: payload });
 
 export const apiAddPost = async (payload: AddPostReq) => PostAPI.post('/post', payload);
 

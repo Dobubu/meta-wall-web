@@ -2,10 +2,11 @@
 import { onMounted, ref, computed, watch } from 'vue';
 
 import { useRoute } from 'vue-router';
+import { useUserStore } from '@/store/user';
+import { SortType } from '@/plugins/post';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';
-import { useUserStore } from '@/store/user';
 
 import PostItem from '@/components/post/PostItem.vue';
 
@@ -17,31 +18,64 @@ const postService = usePost();
 const authService = useAuth();
 
 const isFollow = ref(false);
-const postType = ref('1');
 const userInfo = ref();
+const sort = ref(SortType.DESC);
+const keyWord = ref('');
 
-const followText = computed(() => (isFollow.value ? '取消追蹤' : '追蹤'));
+const followWording = computed(() => (isFollow.value ? '取消追蹤' : '追蹤'));
 
 const updateFollow = () => {
   isFollow.value = !isFollow.value;
 };
 
+const getQueryObject = computed(() => {
+  return {
+    ...route.query,
+  };
+});
+
 const list = computed(() => postService.userPostList.value);
 const userId = computed(() => route.params.id as string);
 const showUserBlock = computed(() => route.params.id !== authService.getUserId() && userInfo.value);
+const emptyWording = computed(() => {
+  if (showUserBlock.value) return '查無任何貼文！';
+  // if (!showUserBlock.value && keyWord.value) return '查無任何貼文！';
+  // if (!showUserBlock.value && !list.value.length) return '查無任何貼文！';
+  return '目前尚無動態，新增一則貼文吧！';
+});
+
+const search = async () => {
+  const dict = {
+    q: keyWord.value,
+    sort: sort.value,
+  };
+
+  postService.search(dict, userId.value);
+};
 
 watch(
   () => userId.value,
   async v => {
     if (v) {
+      keyWord.value = '';
+      sort.value = SortType.DESC;
+
       await postService.fetchUserPostsList(v);
     }
   },
 );
 
 onMounted(async () => {
+  const { q, sort: querySort } = route.query;
+  if (q) {
+    keyWord.value = q as string;
+  }
+  if (querySort) {
+    sort.value = querySort as SortType;
+  }
+
   userInfo.value = await userService.fetchProfile(userId.value);
-  await postService.fetchUserPostsList(userId.value);
+  await postService.fetchUserPostsList(userId.value, getQueryObject.value);
 });
 </script>
 
@@ -87,7 +121,7 @@ onMounted(async () => {
         w="96px"
         @click="updateFollow"
       >
-        {{ followText }}
+        {{ followWording }}
       </button>
     </div>
     <div
@@ -101,14 +135,23 @@ onMounted(async () => {
 
   <div display="flex flex-col md:flex-row" m="b-4">
     <div position="relative" m="b-1.5 md:b-0 md:r-3">
-      <select v-model="postType" w="full md:156px" p="y-2.5 x-4" border="2 dark-500">
-        <option value="1">從新到舊</option>
-        <option value="0">從舊到新</option>
+      <select v-model="sort" w="full md:156px" p="y-2.5 x-4" border="2 dark-500" @change="search">
+        <option :value="SortType.DESC">從新到舊</option>
+        <option :value="SortType.ASC">從舊到新</option>
       </select>
     </div>
 
     <div display="flex" w="full">
-      <input type="text" placeholder="搜尋貼文" border="2 dark-500" w="full" h="12" p="l-6" />
+      <input
+        v-model="keyWord"
+        type="text"
+        placeholder="搜尋貼文"
+        border="2 dark-500"
+        w="full"
+        h="12"
+        p="l-6"
+        @keyup.enter="search"
+      />
       <button
         transition="duration-base"
         w="12"
@@ -116,6 +159,7 @@ onMounted(async () => {
         border="2 dark-500 rounded-none"
         bg="primary hover:active"
         text="white hover:dark-500"
+        @click="search"
       >
         <font-awesome-icon :icon="['fa', 'magnifying-glass']" size="lg" />
       </button>
@@ -142,7 +186,7 @@ onMounted(async () => {
       ></div>
     </div>
     <div display="flex justify-center items-center" h="100px">
-      <p text="dark-300">目前尚無動態，新增一則貼文吧！</p>
+      <p text="dark-300">{{ emptyWording }}</p>
     </div>
   </div>
 </template>
