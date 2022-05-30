@@ -3,16 +3,28 @@ import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import { useUser } from '@/service/useUser';
+import { usePost } from '@/service/usePost';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 
 const userService = useUser();
+const postService = usePost();
 
 const list = computed(() => userService.likeList.value);
 
 onMounted(async () => {
   await userService.fetchLikeList();
 });
+
+const deleteLike = async (postId: string) => {
+  try {
+    await postService.deleteLike(postId);
+    alert('取消成功！');
+    userService.updateLikeList(postId);
+  } catch (e: any) {
+    console.error(e.message);
+  }
+};
 </script>
 
 <template>
@@ -55,7 +67,12 @@ onMounted(async () => {
     </div>
 
     <div display="flex">
-      <div display="flex flex-col justify-between" cursor="pointer" m="r-9">
+      <div
+        display="flex flex-col justify-between"
+        cursor="pointer"
+        m="r-9"
+        @click="deleteLike(o._id)"
+      >
         <font-awesome-icon text="primary" :icon="['far', 'thumbs-up']" size="lg" />
         <span text="14px dark-300">取消</span>
       </div>

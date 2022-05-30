@@ -94,6 +94,10 @@ export const useUser = () => {
     }
   };
 
+  const updateLikeList = (postId: string) => {
+    likeList.value = likeList.value.filter(o => o._id !== postId);
+  };
+
   return {
     loading,
     user,
@@ -102,6 +106,7 @@ export const useUser = () => {
     fetchList,
     likeList,
     fetchLikeList,
+    updateLikeList,
     updateProfile,
     updatePassword,
   };
