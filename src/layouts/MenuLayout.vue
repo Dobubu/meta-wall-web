@@ -2,13 +2,19 @@
 import { onMounted } from 'vue';
 
 import { useUser } from '@/service//useUser';
+import { useAuth } from '@/service/useAuth';
+
 import MainMenu from '@/components/menu/MainMenu.vue';
 import SubMenu from '@/components/menu/SubMenu.vue';
 
+const authService = useAuth();
 const userService = useUser();
 
 onMounted(async () => {
-  await userService.fetchProfile();
+  const userId = authService.getUserId();
+  if (!userId) return;
+
+  await userService.fetchProfile(userId);
 });
 </script>
 

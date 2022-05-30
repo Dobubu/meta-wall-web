@@ -73,8 +73,7 @@ const login = async () => {
       password: user.password,
     };
 
-    const res = await authService.login(dict);
-    localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
+    await authService.login(dict);
 
     await router.push({ name: 'Post' });
   } catch (e: any) {

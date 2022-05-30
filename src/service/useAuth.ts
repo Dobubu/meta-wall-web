@@ -10,6 +10,8 @@ export const useAuth = () => {
 
   const getToken = () => localStorage.getItem(StorageType.ACCESSTOKEN);
 
+  const getUserId = () => localStorage.getItem(StorageType.USERID);
+
   const signUp = async (payload: SignUpReq) => {
     try {
       loading.auth = true;
@@ -27,6 +29,10 @@ export const useAuth = () => {
     try {
       loading.auth = true;
       const res = await apiLogin(payload);
+
+      localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
+      localStorage.setItem(StorageType.USERID, res.data.id);
+
       return res;
     } catch (e) {
       console.error('error: ', e);
@@ -38,6 +44,7 @@ export const useAuth = () => {
 
   return {
     getToken,
+    getUserId,
     loading,
     signUp,
     login,

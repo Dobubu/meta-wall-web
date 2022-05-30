@@ -32,7 +32,7 @@ export const apiSignUp = async (payload: SignUpReq) => PostAPI.post('/user/sign_
 
 export const apiLogin = async (payload: LoginReq) => PostAPI.post('/user/sign_in', payload);
 
-export const apiGetProfile = async () => PostAPI.get('/user/profile');
+export const apiGetProfile = async (userId: string) => PostAPI.get(`/user/profile/${userId}`);
 
 export const apiUpdateProfile = async (payload: UpdateProfileReq) =>
   PostAPI.patch('/user/profile', payload);

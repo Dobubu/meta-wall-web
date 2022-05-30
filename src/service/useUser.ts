@@ -12,6 +12,7 @@ import {
 import { dayFormate } from '@/plugins/formate';
 import { useUserStore } from '@/store/user';
 import { StorageType } from '@/service/type';
+import { useAuth } from '@/service/useAuth';
 
 import { User, Post } from '@/components/post/type';
 import DefaultPhoto from '@/assets/images/default_photo.jpg';
@@ -25,15 +26,20 @@ export const useUser = () => {
   });
 
   const store = useUserStore();
+  const authService = useAuth();
 
-  const fetchProfile = async () => {
-    const res = await apiGetProfile();
+  const fetchProfile = async (userId: string) => {
+    const res = await apiGetProfile(userId);
 
     if (!res.data.photo) {
       res.data.photo = DefaultPhoto;
     }
 
-    store.user = res.data;
+    if (userId === authService.getUserId()) {
+      store.user = res.data;
+    }
+
+    return res.data;
   };
 
   const updateProfile = async (payload: UpdateProfileReq) => {
