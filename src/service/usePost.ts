@@ -26,6 +26,7 @@ export const usePost = () => {
   const loading = reactive({
     list: false,
     add: false,
+    search: false,
   });
 
   const store = useUserStore();
@@ -40,6 +41,8 @@ export const usePost = () => {
   });
 
   const search = async (query: any, userId = '') => {
+    loading.search = true;
+
     const dict = {
       ...getQueryObject.value,
       ...query,
@@ -56,6 +59,8 @@ export const usePost = () => {
     if (route.name === 'UserWall') {
       await fetchUserPostsList(userId, dict);
     }
+
+    loading.search = false;
   };
 
   const fetchPost = async (postId: string) => {

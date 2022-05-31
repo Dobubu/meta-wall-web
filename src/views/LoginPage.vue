@@ -170,6 +170,7 @@ const login = async () => {
               m="b-4"
               text="white hover:dark-500"
               border="2 dark-500 rounded-8px"
+              :disabled="authService.loading.auth"
               @click.prevent="login"
             >
               登入
@@ -194,6 +195,7 @@ const login = async () => {
               m="b-4"
               text="white hover:dark-500"
               border="2 dark-500 rounded-8px"
+              :disabled="authService.loading.auth"
               @click.prevent="signUp"
             >
               註冊

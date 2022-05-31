@@ -15,6 +15,7 @@ const uploadService = useUpload();
 
 const globalErrMsg = ref('');
 const tmpImageUrl = ref('');
+const loading = ref(false);
 
 const post = reactive({
   content: '',
@@ -30,7 +31,7 @@ const v$ = useVuelidate(rules, post);
 const postImgs = computed(() => uploadService.file.url);
 const createPostClass = computed(() => {
   return {
-    'bg-disable-100 cursor-not-allowed': !post.content,
+    'bg-disable-100 cursor-not-allowed': !post.content || loading.value,
     'bg-active': post.content,
   };
 });
@@ -41,6 +42,8 @@ const createPost = async () => {
 
     const isValidate = await v$.value.$validate();
     if (!isValidate) return;
+
+    loading.value = true;
 
     if (uploadService.file.file) {
       const res = await uploadService.uploadFile();
@@ -58,6 +61,8 @@ const createPost = async () => {
     router.push({ name: 'Post' });
   } catch (e: any) {
     globalErrMsg.value = e.message;
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -162,9 +167,11 @@ const createPost = async () => {
       w="3/5"
       text="white"
       border="2 black rounded-8px"
+      :disabled="loading"
       @click="createPost"
     >
       送出貼文
+      <font-awesome-icon v-if="loading" :icon="['fa', 'circle-notch']" pulse size="lg" m="l-2" />
     </button>
   </div>
 </template>

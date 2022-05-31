@@ -14,6 +14,7 @@ const postService = usePost();
 
 const list = computed(() => postService.list.value);
 const isLoading = computed(() => postService.loading.list);
+const isSearchLoading = computed(() => postService.loading.search);
 
 const getQueryObject = computed(() => {
   return {
@@ -25,6 +26,8 @@ const sort = ref(SortType.DESC);
 const keyWord = ref('');
 
 const search = async () => {
+  if (isSearchLoading.value) return;
+
   const dict = {
     q: keyWord.value,
     sort: sort.value,
@@ -68,6 +71,7 @@ const updateLike = (postId: string, type: string) => {
         w="full"
         h="12"
         p="l-6"
+        :disabled="isSearchLoading"
         @keyup.enter="search"
       />
       <button
@@ -77,6 +81,7 @@ const updateLike = (postId: string, type: string) => {
         border="2 dark-500 rounded-none"
         bg="primary hover:active"
         text="white hover:dark-500"
+        :disabled="isSearchLoading"
         @click="search"
       >
         <font-awesome-icon :icon="['fa', 'magnifying-glass']" size="lg" />
@@ -87,7 +92,10 @@ const updateLike = (postId: string, type: string) => {
   <p m="b-4">total: {{ list.length }}</p>
 
   <template v-if="isLoading">
-    <div h="8/10" display="flex items-center justify-center">loading...</div>
+    <div h="8/10" display="flex items-center justify-center" text="20px">
+      Loading
+      <font-awesome-icon :icon="['fa', 'circle-notch']" pulse size="lg" m="l-2" />
+    </div>
   </template>
   <template v-else>
     <template v-if="list.length">

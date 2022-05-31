@@ -35,6 +35,7 @@ const getQueryObject = computed(() => {
 });
 
 const list = computed(() => postService.userPostList.value);
+const isSearchLoading = computed(() => postService.loading.search);
 const userId = computed(() => route.params.id as string);
 const showUserBlock = computed(() => route.params.id !== authService.getUserId() && userInfo.value);
 const emptyWording = computed(() => {
@@ -45,6 +46,8 @@ const emptyWording = computed(() => {
 });
 
 const search = async () => {
+  if (isSearchLoading.value) return;
+
   const dict = {
     q: keyWord.value,
     sort: sort.value,
@@ -150,6 +153,7 @@ onMounted(async () => {
         w="full"
         h="12"
         p="l-6"
+        :disabled="isSearchLoading"
         @keyup.enter="search"
       />
       <button
@@ -159,6 +163,7 @@ onMounted(async () => {
         border="2 dark-500 rounded-none"
         bg="primary hover:active"
         text="white hover:dark-500"
+        :disabled="isSearchLoading"
         @click="search"
       >
         <font-awesome-icon :icon="['fa', 'magnifying-glass']" size="lg" />

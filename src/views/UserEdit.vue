@@ -251,6 +251,7 @@ const isResetPassword = computed(() => {
             text="dark-500"
             border="2 dark-500 rounded-8px"
             shadow="item-bottom"
+            :disabled="loadingProfile"
             @click.prevent="updateUser"
           >
             送出更新
@@ -319,6 +320,7 @@ const isResetPassword = computed(() => {
             text="dark-500"
             border="2 dark-500 rounded-8px"
             shadow="item-bottom"
+            :disabled="userService.loading.password"
             @click.prevent="updatePassword"
           >
             重設密碼
