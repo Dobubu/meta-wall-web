@@ -68,6 +68,10 @@ watch(
   },
 );
 
+const fetchUserPostList = async (user: string) => {
+  await postService.fetchUserPostsList(user, getQueryObject.value);
+};
+
 onMounted(async () => {
   const { q, sort: querySort } = route.query;
   if (q) {
@@ -174,7 +178,13 @@ onMounted(async () => {
   <p m="b-4">total: {{ list.length }}</p>
 
   <template v-if="list.length">
-    <PostItem v-for="o in list" :key="o._id" :post="o" :user="store.user" />
+    <PostItem
+      v-for="o in list"
+      :key="o._id"
+      :post="o"
+      :user="store.user"
+      @fetch-user-post-list="fetchUserPostList"
+    />
   </template>
 
   <div v-else bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" h="132px">

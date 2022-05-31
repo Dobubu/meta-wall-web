@@ -10,6 +10,7 @@ import {
   apiGetUserPostsList,
   apiAddPost,
   AddPostReq,
+  apiDeletePost,
   apiAddPostLike,
   apiDeletePostLike,
 } from '@/plugins/post';
@@ -163,6 +164,14 @@ export const usePost = () => {
     }
   };
 
+  const deletePost = async (postId: string) => {
+    try {
+      await apiDeletePost(postId);
+    } catch (e: any) {
+      console.warn(e.message);
+    }
+  };
+
   const addLike = async (postId: string) => {
     try {
       await apiAddPostLike(postId);
@@ -202,6 +211,7 @@ export const usePost = () => {
     userPostList,
     fetchUserPostsList,
     addPost,
+    deletePost,
     addLike,
     deleteLike,
     updateListLike,

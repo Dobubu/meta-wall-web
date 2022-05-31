@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PropType, computed, ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
 import { usePost } from '@/service/usePost';
@@ -17,8 +17,9 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['updateLike']);
+const emit = defineEmits(['updateLike', 'fetchUserPostList']);
 
+const route = useRoute();
 const store = useUserStore();
 const postService = usePost();
 
@@ -49,6 +50,10 @@ const likesWording = computed(() => {
     return `${props.post.likes.length} 位朋友說讚`;
   return '成為第一個按讚的朋友';
 });
+
+const showDeletePost = computed(
+  () => route.name === 'UserWall' && props.user._id === props.post.user._id,
+);
 
 const addLike = async () => {
   try {
@@ -87,11 +92,21 @@ const postComment = () => {
     alert('留言成功');
   }, 1500);
 };
+
+const deletePost = async (postId: string, userId: string) => {
+  let isDelete = confirm('確定該刪除貼文嗎？');
+
+  if (isDelete) {
+    await postService.deletePost(postId);
+    emit('fetchUserPostList', userId);
+    alert('刪除成功！');
+  }
+};
 </script>
 
 <template>
   <div bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" p="6" m="b-4">
-    <div display="flex items-center" m="b-4">
+    <div display="flex items-center" bg="red-500x" m="b-4">
       <div
         :style="{
           'background-image': `url(${post.user.photo})`,
@@ -113,6 +128,15 @@ const postComment = () => {
         </RouterLink>
         <p text="xs dark-300">{{ post.createdAt }}</p>
       </div>
+      <font-awesome-icon
+        v-if="showDeletePost"
+        text="red-600"
+        :icon="['fas', 'trash-can']"
+        size="lg"
+        m="l-auto"
+        cursor="pointer"
+        @click="deletePost(post._id, user._id)"
+      />
     </div>
     <p m="b-4">{{ post.content }}</p>
     <div
