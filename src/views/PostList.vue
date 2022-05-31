@@ -36,6 +36,10 @@ const search = async () => {
   postService.search(dict);
 };
 
+const fetchList = async () => {
+  await postService.fetchList(getQueryObject.value);
+};
+
 onMounted(async () => {
   const { q, sort: querySort } = route.query;
   if (q) {
@@ -45,7 +49,7 @@ onMounted(async () => {
     sort.value = querySort as SortType;
   }
 
-  await postService.fetchList(getQueryObject.value);
+  await fetchList();
 });
 
 const updateLike = (postId: string, type: string) => {
@@ -105,6 +109,7 @@ const updateLike = (postId: string, type: string) => {
         :post="o"
         :user="store.user"
         @update-like="updateLike"
+        @fetch-post-list="fetchList"
       />
     </template>
     <div v-else bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" h="132px">

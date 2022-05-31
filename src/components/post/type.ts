@@ -1,9 +1,15 @@
 /* eslint-disable no-unused-vars */
 export interface Comment {
-  name: string;
-  photo: string;
-  content: string;
+  _id: string;
+  comment: string;
   createdAt: string;
+  post: string;
+  user: {
+    _id: string;
+    name: string;
+    photo: string;
+    createdAt: string;
+  };
 }
 
 export enum PostType {

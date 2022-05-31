@@ -3,7 +3,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
 
-import { Post, PostType, LikeType } from '@/components/post/type';
+import { Post, PostType, LikeType, Comment } from '@/components/post/type';
 import {
   apiGetPost,
   apiGetPostList,
@@ -13,6 +13,8 @@ import {
   apiDeletePost,
   apiAddPostLike,
   apiDeletePostLike,
+  AddPostComment,
+  apiAddPostComment,
 } from '@/plugins/post';
 import { dayFormate } from '@/plugins/formate';
 import { useAuth } from '@/service/useAuth';
@@ -28,6 +30,7 @@ export const usePost = () => {
     list: false,
     add: false,
     search: false,
+    comment: false,
   });
 
   const store = useUserStore();
@@ -81,6 +84,22 @@ export const usePost = () => {
             ? DefaultPhotoUser
             : DefaultPhotoUsers,
         },
+        comments: res.data.comments.map((o: Comment) => {
+          let dict = {
+            ...o,
+            createdAt: dayFormate(o.createdAt),
+          };
+
+          const photo = o.user.photo
+            ? o.user.photo
+            : authService.getUserId() === o.user._id
+            ? DefaultPhotoUser
+            : DefaultPhotoUsers;
+
+          dict.user.photo = photo;
+
+          return dict;
+        }),
       };
     } catch (e: any) {
       console.warn(e.message);
@@ -117,6 +136,22 @@ export const usePost = () => {
               ? DefaultPhotoUser
               : DefaultPhotoUsers,
           },
+          comments: o.comments.map(o2 => {
+            let dict = {
+              ...o2,
+              createdAt: dayFormate(o2.createdAt),
+            };
+
+            const photo = o2.user.photo
+              ? o2.user.photo
+              : authService.getUserId() === o2.user._id
+              ? DefaultPhotoUser
+              : DefaultPhotoUsers;
+
+            dict.user.photo = photo;
+
+            return dict;
+          }),
         };
       });
     } catch (e: any) {
@@ -136,6 +171,22 @@ export const usePost = () => {
           ...o,
           createdAt: dayFormate(o.createdAt),
           user: { ...o.user, photo: o.user.photo || photo },
+          comments: o.comments.map(o2 => {
+            let dict = {
+              ...o2,
+              createdAt: dayFormate(o2.createdAt),
+            };
+
+            const photo2 = o2.user.photo
+              ? o2.user.photo
+              : authService.getUserId() === o2.user._id
+              ? DefaultPhotoUser
+              : DefaultPhotoUsers;
+
+            dict.user.photo = photo2;
+
+            return dict;
+          }),
         };
       });
     } catch (e: any) {
@@ -200,6 +251,18 @@ export const usePost = () => {
     }
   };
 
+  const addPostComment = async (postId: string, payload: AddPostComment) => {
+    try {
+      loading.comment = true;
+
+      await apiAddPostComment(postId, payload);
+    } catch (e: any) {
+      console.warn(e.message);
+    } finally {
+      loading.comment = false;
+    }
+  };
+
   return {
     list,
     loading,
@@ -215,5 +278,6 @@ export const usePost = () => {
     addLike,
     deleteLike,
     updateListLike,
+    addPostComment,
   };
 };

@@ -17,14 +17,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['updateLike', 'fetchUserPostList']);
+const emit = defineEmits(['updateLike', 'fetchUserPostList', 'fetchPostList']);
 
 const route = useRoute();
 const store = useUserStore();
 const postService = usePost();
 
 const comment = ref('');
-const isLoading = ref(false);
 
 const createPostClass = computed(() => {
   return {
@@ -81,16 +80,23 @@ const updateLike = () => {
   }
 };
 
-const postComment = () => {
-  if (!comment.value) return alert('留言內容必填');
+const addPostComment = async () => {
+  try {
+    if (!comment.value) return alert('留言內容必填');
 
-  isLoading.value = true;
+    const dict = {
+      comment: comment.value,
+    };
 
-  setTimeout(() => {
-    isLoading.value = false;
+    await postService.addPostComment(props.post._id, dict);
+
+    emit('fetchPostList');
     comment.value = '';
     alert('留言成功');
-  }, 1500);
+  } catch (e: any) {
+    console.error(e.message);
+    throw e;
+  }
 };
 
 const deletePost = async (postId: string, userId: string) => {
@@ -183,6 +189,8 @@ const deletePost = async (postId: string, userId: string) => {
         w="full"
         h="10"
         p="l-6"
+        :disabled="postService.loading.comment"
+        @keyup.enter="addPostComment"
       />
       <div w="128px" position="relative">
         <button
@@ -191,19 +199,27 @@ const deletePost = async (postId: string, userId: string) => {
           h="full"
           border="2 dark-500 rounded-none"
           :class="createPostClass"
-          @click="postComment"
+          :disabled="postService.loading.comment"
+          @click="addPostComment"
         >
           留言
-          <span v-show="isLoading" class="animate__animated animate__flash infinite">...</span>
+
+          <font-awesome-icon
+            v-show="postService.loading.comment"
+            :icon="['fa', 'circle-notch']"
+            pulse
+            size="lg"
+            m="l-2"
+          />
         </button>
       </div>
     </div>
 
-    <div v-for="o in post.comments" :key="o.name" bg="dark-100" p="4" m="b-4" border="rounded-12px">
+    <div v-for="o in post.comments" :key="o._id" bg="dark-100" p="4" m="b-4" border="rounded-12px">
       <div display="flex" m="r-2.5 b-4">
         <div
           :style="{
-            'background-image': `url(${o.photo})`,
+            'background-image': `url(${o.user.photo})`,
           }"
           bg="center cover no-repeat"
           border="2 dark-500 rounded-1/2"
@@ -213,17 +229,17 @@ const deletePost = async (postId: string, userId: string) => {
         ></div>
         <div display="flex flex-col justify-center">
           <RouterLink
-            :to="{ name: 'UserWall', params: { id: 'xxx' } }"
+            :to="{ name: 'UserWall', params: { id: o.user._id } }"
             class="text-dark-500"
             font="bold"
             hover="text-primary underline"
           >
-            {{ o.name }}
+            {{ o.user.name }}
           </RouterLink>
           <p text="xs dark-300">{{ o.createdAt }}</p>
         </div>
       </div>
-      <div m="l-56px">{{ o.content }}</div>
+      <div m="l-56px">{{ o.comment }}</div>
     </div>
   </div>
 </template>

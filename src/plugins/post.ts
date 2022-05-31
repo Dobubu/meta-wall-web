@@ -20,6 +20,10 @@ export interface AddPostReq {
 
 type GetUserPostListReq = GetPostListReq;
 
+export interface AddPostComment {
+  comment: string;
+}
+
 export const apiGetPostList = async (payload: GetPostListReq) =>
   PostAPI.get('/posts', { params: payload });
 
@@ -35,3 +39,6 @@ export const apiDeletePost = async (postId: string) => PostAPI.delete(`/post/${p
 export const apiAddPostLike = async (postId: string) => PostAPI.post(`/post/${postId}/like`);
 
 export const apiDeletePostLike = async (postId: string) => PostAPI.delete(`/post/${postId}/like`);
+
+export const apiAddPostComment = async (postId: string, payload: AddPostComment) =>
+  PostAPI.post(`/post/${postId}/comment`, payload);
