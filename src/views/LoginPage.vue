@@ -5,7 +5,6 @@ import useVuelidate from '@vuelidate/core';
 import { required, email, minLength } from '@vuelidate/validators';
 
 import { useAuth } from '@/service/useAuth';
-import { StorageType } from '@/service/type';
 
 const router = useRouter();
 const authService = useAuth();
@@ -51,10 +50,10 @@ const signUp = async () => {
       password: user.password,
     };
 
-    const res = await authService.signUp(dict);
-    localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
+    await authService.signUp(dict);
 
     await router.push({ name: 'Post' });
+    alert('註冊、登入成功！');
   } catch (e: any) {
     globalErrMsg.value = e.message;
   }
@@ -76,6 +75,7 @@ const login = async () => {
     await authService.login(dict);
 
     await router.push({ name: 'Post' });
+    alert('登入成功！');
   } catch (e: any) {
     globalErrMsg.value = e.message;
   }

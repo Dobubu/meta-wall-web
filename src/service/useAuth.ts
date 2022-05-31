@@ -16,6 +16,10 @@ export const useAuth = () => {
     try {
       loading.auth = true;
       const res = await apiSignUp(payload);
+
+      localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
+      localStorage.setItem(StorageType.USERID, res.data.id);
+
       return res;
     } catch (e) {
       console.error('error: ', e);
