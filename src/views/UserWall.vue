@@ -4,6 +4,7 @@ import { onMounted, ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/store/user';
 import { SortType } from '@/plugins/post';
+import { GetProfileRes } from '@/plugins/user';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';
@@ -17,15 +18,27 @@ const userService = useUser();
 const postService = usePost();
 const authService = useAuth();
 
-const isFollow = ref(false);
-const userInfo = ref();
+const userInfo = ref<GetProfileRes>();
 const sort = ref(SortType.DESC);
 const keyWord = ref('');
 
 const followWording = computed(() => (isFollow.value ? '取消追蹤' : '追蹤'));
+const isFollow = computed(() => store.user?.following.find(o => o.user === userId.value));
 
-const updateFollow = () => {
-  isFollow.value = !isFollow.value;
+const updateFollow = async () => {
+  if (isFollow.value) {
+    await userService.unFollowUser(userId.value);
+    alert('您已成功取消追蹤！');
+  } else {
+    await userService.followUser(userId.value);
+    alert('您已成功追蹤！');
+  }
+
+  /*  update local profile */
+  if (store.user) {
+    await userService.fetchProfile(store.user._id);
+  }
+  userInfo.value = await userService.fetchProfile(userId.value);
 };
 
 const getQueryObject = computed(() => {
@@ -101,7 +114,7 @@ onMounted(async () => {
       <div display="flex" border="rounded-8px">
         <div
           :style="{
-            'background-image': `url(${userInfo.photo})`,
+            'background-image': `url(${userInfo?.photo})`,
           }"
           bg="center cover no-repeat"
           display="flex justify-center items-center"
@@ -113,8 +126,8 @@ onMounted(async () => {
           border="r-2 t-2 b-2 dark-500 rounded-l-8px"
         ></div>
         <div display="flex flex-col justify-center">
-          <p text="16px dark-500" m="b-1" font="bold">{{ userInfo.name }}</p>
-          <p text="16px dark-500">? 人追蹤</p>
+          <p text="16px dark-500" m="b-1" font="bold">{{ userInfo?.name }}</p>
+          <p text="16px dark-500">{{ userInfo?.followers.length }} 人追蹤</p>
         </div>
       </div>
       <button

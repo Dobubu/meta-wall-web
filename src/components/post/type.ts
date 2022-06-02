@@ -30,10 +30,18 @@ export interface Post {
   comments: Comment[];
 }
 
+export interface FollowUser {
+  _id: string;
+  user: string;
+  photo: string;
+}
+
 export interface User {
   _id: string;
   name: string;
   photo: string;
+  followers: FollowUser[];
+  following: FollowUser[];
 }
 
 export enum LikeType {

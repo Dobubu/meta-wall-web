@@ -8,6 +8,8 @@ import {
   UpdatePasswordReq,
   apiUpdatePassword,
   apiGetUserLikeList,
+  apiFollowUser,
+  apiUnFollowUser,
 } from '@/plugins/user';
 import { dayFormate } from '@/plugins/formate';
 import { useUserStore } from '@/store/user';
@@ -109,6 +111,22 @@ export const useUser = () => {
     likeList.value = likeList.value.filter(o => o._id !== postId);
   };
 
+  const followUser = async (userId: string) => {
+    try {
+      await apiFollowUser(userId);
+    } catch (e: any) {
+      console.warn(e.message);
+    }
+  };
+
+  const unFollowUser = async (userId: string) => {
+    try {
+      await apiUnFollowUser(userId);
+    } catch (e: any) {
+      console.warn(e.message);
+    }
+  };
+
   return {
     loading,
     user,
@@ -120,5 +138,7 @@ export const useUser = () => {
     updateLikeList,
     updateProfile,
     updatePassword,
+    followUser,
+    unFollowUser,
   };
 };

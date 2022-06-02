@@ -1,5 +1,7 @@
 import PostAPI from './api';
 
+import { FollowUser } from '@/components/post/type';
+
 export interface SignUpReq {
   name: string;
   email: string;
@@ -19,6 +21,8 @@ export interface GetProfileRes {
   createdAt: string;
   photo: string;
   sex: SexType;
+  followers: FollowUser[];
+  following: FollowUser[];
 }
 export type UpdateProfileReq = Partial<Pick<GetProfileRes, 'name' | 'photo' | 'sex'>> &
   Pick<GetProfileRes, 'name'>;
@@ -43,3 +47,7 @@ export const apiUpdatePassword = async (payload: UpdatePasswordReq) =>
 export const apiGetUserList = async () => PostAPI.get('/users');
 
 export const apiGetUserLikeList = async () => PostAPI.get('/user/likes/list');
+
+export const apiFollowUser = async (userId: string) => PostAPI.post(`/user/${userId}/follow`);
+
+export const apiUnFollowUser = async (userId: string) => PostAPI.delete(`/user/${userId}/follow`);
