@@ -13,10 +13,14 @@ const route = useRoute();
 const postService = usePost();
 
 const postInfo = computed(() => postService.postInfo.value);
-const isLoading = computed(() => postService.loading.list);
+const isLoading = computed(() => postService.loading.postInfo);
+
+const fetchPostInfo = async () => {
+  await postService.fetchPost(route.params.id as string);
+};
 
 onMounted(async () => {
-  await postService.fetchPost(route.params.id as string);
+  await fetchPostInfo();
 });
 
 const updateLike = (postId: string, type: string) => {
@@ -26,11 +30,19 @@ const updateLike = (postId: string, type: string) => {
 
 <template>
   <template v-if="isLoading">
-    <div h="8/10" display="flex items-center justify-center">loading...</div>
+    <div h="8/10" display="flex items-center justify-center" text="20px">
+      Loading
+      <font-awesome-icon :icon="['fa', 'circle-notch']" pulse size="lg" m="l-2" />
+    </div>
   </template>
   <template v-else>
     <template v-if="postInfo">
-      <PostItem :post="postInfo" :user="store.user" @update-like="updateLike" />
+      <PostItem
+        :post="postInfo"
+        :user="store.user"
+        @update-like="updateLike"
+        @fetch-post-info="fetchPostInfo"
+      />
     </template>
     <div v-else bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" h="132px">
       <div w="full" h="6" border="b-2 dark-500" display="flex items-center">

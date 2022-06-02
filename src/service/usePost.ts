@@ -28,6 +28,8 @@ export const usePost = () => {
   const userPostList = ref<Post[]>([]);
   const loading = reactive({
     list: false,
+    userWallList: false,
+    postInfo: false,
     add: false,
     search: false,
     comment: false,
@@ -69,7 +71,7 @@ export const usePost = () => {
 
   const fetchPost = async (postId: string) => {
     try {
-      loading.list = true;
+      loading.postInfo = true;
 
       const res = await apiGetPost(postId);
 
@@ -104,7 +106,7 @@ export const usePost = () => {
     } catch (e: any) {
       console.warn(e.message);
     } finally {
-      loading.list = false;
+      loading.postInfo = false;
     }
   };
 
@@ -163,6 +165,8 @@ export const usePost = () => {
 
   const fetchUserPostsList = async (userId: string, query?: any) => {
     try {
+      loading.userWallList = true;
+
       const res = await apiGetUserPostsList(userId, query);
       const photo = authService.getUserId() === userId ? DefaultPhotoUser : DefaultPhotoUsers;
 
@@ -191,6 +195,8 @@ export const usePost = () => {
       });
     } catch (e: any) {
       console.warn(e.message);
+    } finally {
+      loading.userWallList = false;
     }
   };
 

@@ -4,6 +4,7 @@ import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 
 import { useUserStore } from '@/store/user';
+import { UpdateProfileReq } from '@/plugins/user';
 import { SexType } from '@/plugins/user';
 import { useUser } from '@/service/useUser';
 import { useUpload } from '@/service/useUpload';
@@ -51,16 +52,17 @@ const updateUser = async () => {
 
     loadingProfile.value = true;
 
-    if (uploadService.file.file) {
-      const res = await uploadService.uploadFile();
-      user.photo = res;
-    }
-
-    let dict = {
+    let dict: UpdateProfileReq = {
       name: user.name,
-      photo: user.photo,
       sex: user.sex,
     };
+
+    if (uploadService.file.file) {
+      const res = await uploadService.uploadFile('user');
+
+      user.photo = res;
+      dict = { ...dict, photo: user.photo };
+    }
 
     await userService.updateProfile(dict);
 
@@ -118,10 +120,20 @@ watch(
   },
 );
 
+const resetStatus = () => {
+  user.name = store.user?.name;
+  user.sex = store.user?.sex;
+  uploadService.resetFile();
+
+  globalErrMsg.value = '';
+  v$User.value.$reset();
+  v$Password.value.$reset();
+};
+
 const updateActive = (type: string) => {
   activeTab.value = type;
 
-  globalErrMsg.value = '';
+  resetStatus();
 };
 
 const isActive = (type: string) =>

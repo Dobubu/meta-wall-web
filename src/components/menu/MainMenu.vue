@@ -25,6 +25,8 @@ const hideMenu = () => {
 const logout = () => {
   localStorage.clear();
 
+  alert('登出成功！');
+
   router.push({
     name: 'Login',
   });

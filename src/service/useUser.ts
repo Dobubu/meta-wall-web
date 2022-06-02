@@ -29,6 +29,8 @@ export const useUser = () => {
   const user = ref<User | null>(null);
   const loading = reactive({
     password: false,
+    likeList: false,
+    followingList: false,
   });
 
   const store = useUserStore();
@@ -89,6 +91,8 @@ export const useUser = () => {
 
   const fetchLikeList = async () => {
     try {
+      loading.likeList = true;
+
       const res = await apiGetUserLikeList();
 
       likeList.value = res.data.map((o: Post) => {
@@ -107,6 +111,8 @@ export const useUser = () => {
       });
     } catch (e: any) {
       console.warn(e.message);
+    } finally {
+      loading.likeList = false;
     }
   };
 
@@ -132,6 +138,8 @@ export const useUser = () => {
 
   const fetchUserFollowingList = async () => {
     try {
+      loading.followingList = true;
+
       const res = await apiGetUserFollowingList();
 
       followList.value = res.data.map((o: GetFollowListRes) => {
@@ -150,6 +158,8 @@ export const useUser = () => {
       });
     } catch (e: any) {
       console.warn(e.message);
+    } finally {
+      loading.followingList = false;
     }
   };
 

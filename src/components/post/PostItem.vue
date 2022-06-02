@@ -17,7 +17,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['updateLike', 'fetchUserPostList', 'fetchPostList']);
+const emit = defineEmits(['updateLike', 'fetchUserPostList', 'fetchPostList', 'fetchPostInfo']);
 
 const route = useRoute();
 const store = useUserStore();
@@ -90,7 +90,16 @@ const addPostComment = async () => {
 
     await postService.addPostComment(props.post._id, dict);
 
-    emit('fetchPostList');
+    if (route.name === 'Post') {
+      emit('fetchPostList');
+    }
+    if (route.name === 'UserWall') {
+      emit('fetchUserPostList', props.post.user._id);
+    }
+    if (route.name === 'PostInfo') {
+      emit('fetchPostInfo');
+    }
+
     comment.value = '';
     alert('留言成功');
   } catch (e: any) {
@@ -215,33 +224,59 @@ const deletePost = async (postId: string, userId: string) => {
       </div>
     </div>
 
-    <div v-for="o in post.comments" :key="o._id" bg="dark-100" p="4" m="b-4" border="rounded-12px">
-      <div display="flex" m="r-2.5 b-4">
-        <div
-          :style="{
-            'background-image': `url(${o.user.photo})`,
-          }"
-          bg="center cover no-repeat"
-          border="2 dark-500 rounded-1/2"
-          w="40px"
-          h="40px"
-          m="r-4"
-        ></div>
-        <div display="flex flex-col justify-center">
-          <RouterLink
-            :to="{ name: 'UserWall', params: { id: o.user._id } }"
-            class="text-dark-500"
-            font="bold"
-            hover="text-primary underline"
-          >
-            {{ o.user.name }}
-          </RouterLink>
-          <p text="xs dark-300">{{ o.createdAt }}</p>
+    <div
+      v-if="post.comments.length"
+      class="scroll-area"
+      p="4"
+      bg="stone-100"
+      h="max-350px"
+      overflow="scroll"
+    >
+      <div
+        v-for="o in post.comments"
+        :key="o._id"
+        bg="dark-100"
+        p="4"
+        m="b-4 last:b-0"
+        border="rounded-12px"
+      >
+        <div display="flex" m="r-2.5 b-4">
+          <div
+            :style="{
+              'background-image': `url(${o.user.photo})`,
+            }"
+            bg="center cover no-repeat"
+            border="2 dark-500 rounded-1/2"
+            w="40px"
+            h="40px"
+            m="r-4"
+          ></div>
+          <div display="flex flex-col justify-center">
+            <RouterLink
+              :to="{ name: 'UserWall', params: { id: o.user._id } }"
+              class="text-dark-500"
+              font="bold"
+              hover="text-primary underline"
+            >
+              {{ o.user.name }}
+            </RouterLink>
+            <p text="xs dark-300">{{ o.createdAt }}</p>
+          </div>
         </div>
+        <div m="l-56px">{{ o.comment }}</div>
       </div>
-      <div m="l-56px">{{ o.comment }}</div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.scroll-area {
+  &::-webkit-scrollbar {
+    @apply w-7px bg-white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-dark-300 rounded-20px;
+  }
+}
+</style>

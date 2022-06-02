@@ -39,10 +39,9 @@ const changeStatus = () => {
 
 const signUp = async () => {
   try {
-    if (!user.name || !user.email || !user.password) throw new Error('上述欄位有誤！');
-
     const isValidate = await v$.value.$validate();
-    if (!isValidate) return;
+    if (!isValidate || !user.name || !user.email || !user.password)
+      throw new Error('上述欄位有誤！');
 
     const dict = {
       name: user.name,
@@ -61,11 +60,10 @@ const signUp = async () => {
 
 const login = async () => {
   try {
-    if (!user.email || !user.password) throw new Error('上述欄位有誤！');
-
     const isValidateEmail = await v$.value.email.$validate();
     const isValidatePassword = await v$.value.password.$validate();
-    if (!isValidateEmail || !isValidatePassword) return;
+    if (!isValidateEmail || !isValidatePassword || !user.email || !user.password)
+      throw new Error('上述欄位有誤！');
 
     const dict = {
       email: user.email,

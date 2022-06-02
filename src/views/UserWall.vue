@@ -48,6 +48,7 @@ const getQueryObject = computed(() => {
 });
 
 const list = computed(() => postService.userPostList.value);
+const isLoading = computed(() => postService.loading.userWallList);
 const isSearchLoading = computed(() => postService.loading.search);
 const userId = computed(() => route.params.id as string);
 const showUserBlock = computed(() => route.params.id !== authService.getUserId() && userInfo.value);
@@ -194,34 +195,42 @@ const updateLike = (postId: string, type: string) => {
 
   <p m="b-4">total: {{ list.length }}</p>
 
-  <template v-if="list.length">
-    <PostItem
-      v-for="o in list"
-      :key="o._id"
-      :post="o"
-      :user="store.user"
-      @fetch-user-post-list="fetchUserPostList"
-      @update-like="updateLike"
-    />
+  <template v-if="isLoading">
+    <div h="8/10" display="flex items-center justify-center" text="20px">
+      Loading
+      <font-awesome-icon :icon="['fa', 'circle-notch']" pulse size="lg" m="l-2" />
+    </div>
   </template>
+  <template v-else>
+    <template v-if="list.length">
+      <PostItem
+        v-for="o in list"
+        :key="o._id"
+        :post="o"
+        :user="store.user"
+        @update-like="updateLike"
+        @fetch-user-post-list="fetchUserPostList"
+      />
+    </template>
 
-  <div v-else bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" h="132px">
-    <div w="full" h="6" border="b-2 dark-500" display="flex items-center">
-      <div w="9px" h="9px" border="rounded" m="l-15.5px r-6px" bg="post-1"></div>
-      <div
-        v-for="o in ['bg-post-2', 'bg-post-3']"
-        :key="o"
-        w="9px"
-        h="9px"
-        border="rounded"
-        m="r-6px"
-        :class="o"
-      ></div>
+    <div v-else bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" h="132px">
+      <div w="full" h="6" border="b-2 dark-500" display="flex items-center">
+        <div w="9px" h="9px" border="rounded" m="l-15.5px r-6px" bg="post-1"></div>
+        <div
+          v-for="o in ['bg-post-2', 'bg-post-3']"
+          :key="o"
+          w="9px"
+          h="9px"
+          border="rounded"
+          m="r-6px"
+          :class="o"
+        ></div>
+      </div>
+      <div display="flex justify-center items-center" h="100px">
+        <p text="dark-300">{{ emptyWording }}</p>
+      </div>
     </div>
-    <div display="flex justify-center items-center" h="100px">
-      <p text="dark-300">{{ emptyWording }}</p>
-    </div>
-  </div>
+  </template>
 </template>
 
 <style scoped></style>
