@@ -32,6 +32,16 @@ export interface UpdatePasswordReq {
   confirmPassword: string;
 }
 
+export interface GetFollowListRes {
+  user: {
+    _id: string;
+    name: string;
+    photo: string;
+  };
+  _id: string;
+  createdAt: string;
+}
+
 export const apiSignUp = async (payload: SignUpReq) => PostAPI.post('/user/sign_up', payload);
 
 export const apiLogin = async (payload: LoginReq) => PostAPI.post('/user/sign_in', payload);
@@ -51,3 +61,5 @@ export const apiGetUserLikeList = async () => PostAPI.get('/user/likes/list');
 export const apiFollowUser = async (userId: string) => PostAPI.post(`/user/${userId}/follow`);
 
 export const apiUnFollowUser = async (userId: string) => PostAPI.delete(`/user/${userId}/follow`);
+
+export const apiGetUserFollowingList = async () => PostAPI.get('/user/following/list');

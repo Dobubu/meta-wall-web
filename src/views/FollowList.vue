@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 
-import { mock } from './mockData';
+import { useUser } from '@/service/useUser';
+import { dayTimeToNow } from '@/plugins/formate';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 
-const { list } = mock;
+const userService = useUser();
+
+const list = computed(() => userService.followList.value);
+
+onMounted(async () => {
+  await userService.fetchUserFollowingList();
+});
 </script>
 
 <template>
@@ -13,7 +21,7 @@ const { list } = mock;
 
   <div
     v-for="o in list"
-    :key="o.name"
+    :key="o._id"
     display="flex justify-between items-end"
     border="2 dark-500 rounded-lg"
     bg="white"
@@ -24,7 +32,7 @@ const { list } = mock;
     <div display="flex">
       <div
         :style="{
-          'background-image': `url(${o.photo})`,
+          'background-image': `url(${o.user.photo})`,
         }"
         bg="center cover no-repeat"
         border="2 dark-500 rounded-1/2"
@@ -34,18 +42,18 @@ const { list } = mock;
       ></div>
       <div display="flex flex-col justify-center">
         <RouterLink
-          :to="{ name: 'UserWall', params: { id: 'xxx' } }"
+          :to="{ name: 'UserWall', params: { id: o.user._id } }"
           class="text-dark-500 16px"
           m="b-5px"
           font="bold"
           hover="text-primary underline"
         >
-          {{ o.name }}
+          {{ o.user.name }}
         </RouterLink>
-        <p text="14px dark-300">追蹤時間：{{ o.createAt }}</p>
+        <p text="14px dark-300">追蹤時間：{{ o.createdAt }}</p>
       </div>
     </div>
-    <p text="14px dark-500">您已追蹤07天!</p>
+    <p text="14px dark-500">您已追蹤 {{ dayTimeToNow(o.createdAt) }} !</p>
   </div>
 </template>
 

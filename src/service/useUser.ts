@@ -10,6 +10,8 @@ import {
   apiGetUserLikeList,
   apiFollowUser,
   apiUnFollowUser,
+  apiGetUserFollowingList,
+  GetFollowListRes,
 } from '@/plugins/user';
 import { dayFormate } from '@/plugins/formate';
 import { useUserStore } from '@/store/user';
@@ -23,6 +25,7 @@ import DefaultPhotoUsers from '@/assets/images/default_users.jpg';
 export const useUser = () => {
   const list = ref<User[]>([]);
   const likeList = ref<Post[]>([]);
+  const followList = ref<GetFollowListRes[]>([]);
   const user = ref<User | null>(null);
   const loading = reactive({
     password: false,
@@ -127,6 +130,29 @@ export const useUser = () => {
     }
   };
 
+  const fetchUserFollowingList = async () => {
+    try {
+      const res = await apiGetUserFollowingList();
+
+      followList.value = res.data.map((o: GetFollowListRes) => {
+        return {
+          ...o,
+          createdAt: dayFormate(o.createdAt),
+          user: {
+            ...o.user,
+            photo: o.user.photo
+              ? o.user.photo
+              : authService.getUserId() === o.user._id
+              ? DefaultPhotoUser
+              : DefaultPhotoUsers,
+          },
+        };
+      });
+    } catch (e: any) {
+      console.warn(e.message);
+    }
+  };
+
   return {
     loading,
     user,
@@ -140,5 +166,7 @@ export const useUser = () => {
     updatePassword,
     followUser,
     unFollowUser,
+    fetchUserFollowingList,
+    followList,
   };
 };
