@@ -97,6 +97,10 @@ onMounted(async () => {
   userInfo.value = await userService.fetchProfile(userId.value);
   await postService.fetchUserPostsList(userId.value, getQueryObject.value);
 });
+
+const updateLike = (postId: string, type: string) => {
+  postService.updateUserListLike(postId, type);
+};
 </script>
 
 <template>
@@ -197,6 +201,7 @@ onMounted(async () => {
       :post="o"
       :user="store.user"
       @fetch-user-post-list="fetchUserPostList"
+      @update-like="updateLike"
     />
   </template>
 

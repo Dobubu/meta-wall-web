@@ -251,6 +251,18 @@ export const usePost = () => {
     }
   };
 
+  const updateUserListLike = (postId: string, type: string) => {
+    const target = userPostList.value.find(o => o._id === postId);
+
+    if (!target || !store.user) return;
+
+    if (type === LikeType.ADD) {
+      target.likes = [store.user._id, ...target.likes];
+    } else {
+      target.likes = target.likes.filter(o => o !== store.user?._id);
+    }
+  };
+
   const addPostComment = async (postId: string, payload: AddPostComment) => {
     try {
       loading.comment = true;
@@ -278,6 +290,7 @@ export const usePost = () => {
     addLike,
     deleteLike,
     updateListLike,
+    updateUserListLike,
     addPostComment,
   };
 };
