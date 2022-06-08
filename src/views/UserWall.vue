@@ -3,8 +3,8 @@ import { onMounted, ref, computed, watch } from 'vue';
 
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/store/user';
-import { SortType } from '@/plugins/post';
-import { GetProfileRes } from '@/plugins/user';
+import { SortType } from '@/api/post';
+import { GetProfileRes } from '@/api/user';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';

@@ -12,8 +12,8 @@ import {
   apiUnFollowUser,
   apiGetUserFollowingList,
   GetFollowListRes,
-} from '@/plugins/user';
-import { dayFormate } from '@/plugins/formate';
+} from '@/api/user';
+import { dayFormate } from '@/lib/formate';
 import { useUserStore } from '@/store/user';
 import { StorageType } from '@/service/type';
 import { useAuth } from '@/service/useAuth';

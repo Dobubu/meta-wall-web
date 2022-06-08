@@ -1,7 +1,7 @@
 import { reactive } from 'vue';
 
 import { StorageType } from '@/service/type';
-import { SignUpReq, apiSignUp, LoginReq, apiLogin } from '@/plugins/user';
+import { SignUpReq, apiSignUp, LoginReq, apiLogin } from '@/api/user';
 
 export const useAuth = () => {
   const loading = reactive({

@@ -3,7 +3,7 @@ import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { usePost } from '@/service/usePost';
-import { SortType } from '@/plugins/post';
+import { SortType } from '@/api/post';
 import PostItem from '@/components/post/PostItem.vue';
 import { useUserStore } from '@/store/user';
 

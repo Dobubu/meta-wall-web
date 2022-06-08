@@ -15,8 +15,8 @@ import {
   apiDeletePostLike,
   AddPostComment,
   apiAddPostComment,
-} from '@/plugins/post';
-import { dayFormate } from '@/plugins/formate';
+} from '@/api/post';
+import { dayFormate } from '@/lib/formate';
 import { useAuth } from '@/service/useAuth';
 
 import DefaultPhotoUser from '@/assets/images/default_user.jpg';
