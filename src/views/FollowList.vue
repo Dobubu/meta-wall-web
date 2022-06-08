@@ -3,7 +3,7 @@ import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import { useUser } from '@/service/useUser';
-import { dayTimeToNow } from '@/plugins/formate';
+import { dayTimeToNow } from '@/lib/formate';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 

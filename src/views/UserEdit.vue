@@ -4,8 +4,8 @@ import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 
 import { useUserStore } from '@/store/user';
-import { UpdateProfileReq } from '@/plugins/user';
-import { SexType } from '@/plugins/user';
+import { UpdateProfileReq } from '@/api/user';
+import { SexType } from '@/api/user';
 import { useUser } from '@/service/useUser';
 import { useUpload } from '@/service/useUpload';
 

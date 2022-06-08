@@ -1,7 +1,7 @@
 import { createWebHashHistory, createRouter } from 'vue-router';
 
 import { StorageType } from '@/service/type';
-import { apiGetProfile } from '@/plugins/user';
+import { apiGetProfile } from '@/api/user';
 
 import PostList from '@/views/PostList.vue';
 import PostInfo from '@/views/PostInfo.vue';
