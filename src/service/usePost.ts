@@ -2,6 +2,8 @@ import { reactive, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
+import { useWebSocket } from '@/plugins/ws';
+import { WebSocketEvent } from '@/plugins/type';
 
 import { Post, PostType, LikeType, Comment } from '@/components/post/type';
 import {
@@ -34,11 +36,13 @@ export const usePost = () => {
     search: false,
     comment: false,
   });
+  const isReloadList = ref(false);
 
   const store = useUserStore();
   const route = useRoute();
   const router = useRouter();
   const authService = useAuth();
+  const wsPlugin = useWebSocket();
 
   const getQueryObject = computed(() => {
     return {
@@ -213,7 +217,9 @@ export const usePost = () => {
         ...payload,
       };
 
-      await apiAddPost(dict);
+      const res = await apiAddPost(dict);
+
+      wsPlugin.eventEmit(WebSocketEvent.POST_CREATE, res.data._id);
     } catch (e: any) {
       console.warn(e.message);
     } finally {
@@ -282,6 +288,7 @@ export const usePost = () => {
   };
 
   return {
+    isReloadList,
     list,
     loading,
     search,

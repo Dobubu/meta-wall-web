@@ -1,6 +1,11 @@
 import { inject, InjectionKey, Plugin } from 'vue';
 import { io } from 'socket.io-client';
 
+import { useAuth } from '@/service/useAuth';
+import { WebSocketEvent } from './type';
+
+const authService = useAuth();
+
 const useWebSocketCore = () => {
   const url =
     process.env.NODE_ENV === 'production'
@@ -13,8 +18,16 @@ const useWebSocketCore = () => {
     console.log(`%csocket.id = ${ws.id}`, 'background: #fff; color: red');
   });
 
+  const eventEmit = (event: WebSocketEvent, payload: any) => {
+    ws.emit(event, {
+      userId: authService.getUserId(),
+      content: payload,
+    });
+  };
+
   return {
     ws,
+    eventEmit,
   };
 };
 
