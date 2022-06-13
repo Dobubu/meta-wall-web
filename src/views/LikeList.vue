@@ -6,6 +6,7 @@ import { useUser } from '@/service/useUser';
 import { usePost } from '@/service/usePost';
 
 import TitleBlock from '@/components/TitleBlock.vue';
+import UserItem from '@/components/UserItem.vue';
 
 const userService = useUser();
 const postService = usePost();
@@ -51,16 +52,8 @@ const deleteLike = async (postId: string) => {
         shadow="item-bottom"
       >
         <div display="flex">
-          <div
-            :style="{
-              'background-image': `url(${o.user.photo})`,
-            }"
-            bg="center cover no-repeat"
-            border="2 dark-500 rounded-1/2"
-            w="40px"
-            h="40px"
-            m="r-4"
-          ></div>
+          <UserItem :photo="o.user.photo" />
+
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"
