@@ -1,1 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
+
+.scroll-area {
+  &::-webkit-scrollbar {
+    @apply w-7px bg-white;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-dark-300 rounded-20px;
+  }
+}

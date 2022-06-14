@@ -22,6 +22,11 @@ export default defineConfig({
         icon: {
           '100': '#E2EDFA',
         },
+        msg: {
+          '100': '#e1e5eb',
+          '200': '#0287fd',
+          '300': '#bdc3c7',
+        },
         disable: {
           '100': '#A8B0B9',
           '200': '#808080',
