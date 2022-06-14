@@ -18,6 +18,11 @@ const menuList = ref([
     icon: ['far', 'thumbs-up'],
     routerName: 'Likes',
   },
+  {
+    title: '聊天大廳',
+    icon: ['far', 'comments'],
+    routerName: 'ChatWall',
+  },
 ]);
 </script>
 

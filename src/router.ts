@@ -10,6 +10,7 @@ import FollowList from '@/views/FollowList.vue';
 import LikeList from '@/views/LikeList.vue';
 import UserWall from '@/views/UserWall.vue';
 import UserEdit from '@/views/UserEdit.vue';
+import ChatWall from '@/views/ChatWall.vue';
 import MenuLayout from '@/layouts/MenuLayout.vue';
 
 const routes = [
@@ -51,6 +52,11 @@ const routes = [
         path: 'userWall/:id',
         name: 'UserWall',
         component: UserWall,
+      },
+      {
+        path: 'chatWall',
+        name: 'ChatWall',
+        component: ChatWall,
       },
     ],
   },

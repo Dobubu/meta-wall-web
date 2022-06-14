@@ -243,14 +243,4 @@ const deletePost = async (postId: string, userId: string) => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-.scroll-area {
-  &::-webkit-scrollbar {
-    @apply w-7px bg-white;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-dark-300 rounded-20px;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
