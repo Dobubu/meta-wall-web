@@ -20,8 +20,8 @@ const useWebSocketCore = () => {
 
   const eventEmit = (event: WebSocketEvent, payload: any) => {
     ws.emit(event, {
-      userId: authService.getUserId(),
-      content: payload,
+      user: authService.getUserId(),
+      ...payload,
     });
   };
 

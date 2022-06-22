@@ -1,27 +1,79 @@
 <script setup lang="ts">
+import { PropType } from 'vue';
+
+import { useUserStore } from '@/store/user';
+import { WebSocketEvent } from '@/plugins/type';
 import UserItem from '@/components/UserItem.vue';
 
 defineProps({
-  photo: {
-    type: String,
-    default: '',
+  msg: {
+    type: Object as PropType<any>,
+    default: () => ({}),
   },
 });
+
+const store = useUserStore();
 </script>
 
 <template>
-  <div display="flex flex-row-reverse" m="b-8">
-    <UserItem :photo="photo" display="flex-none self-end" m="b-4 l-2" margin="0" />
-    <div>
-      <div bg="msg-200" w="5/6" border="rounded-t-3xl rounded-l-3xl" p="4" m="l-auto" text="white">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus, alias! Ex aperiam
-        aliquam quam odit sequi qui delectus quidem repudiandae rerum nulla praesentium nemo dicta
-        numquam, impedit similique, optio recusandae deleniti maxime accusantium eveniet, non
-        itaque. Velit dolores officiis ex, inventore ut quis fugiat rerum in quae dolorem ad nisi.
+  <template v-if="store.user">
+    <template v-if="msg.user_type === WebSocketEvent.SYSTEM">
+      <div w="full" text="center">
+        <p
+          bg="msg-400"
+          display="inline-block"
+          border="rounded-3xl"
+          p="2"
+          m="y-1 r-1"
+          text="white sm"
+        >
+          {{ msg.content }}
+        </p>
+        <p text="msg-300 sm" display="inline-block">{{ msg.createdAt }}</p>
       </div>
-      <p text="msg-300 right" m="t-2">Message send 1:13pm</p>
-    </div>
-  </div>
+    </template>
+    <template v-else-if="msg.user === store.user._id && msg.user_type === WebSocketEvent.USER">
+      <div
+        class="animate__animated animate__fadeInRight animate__faster"
+        display="flex flex-row-reverse"
+        m="b-8"
+      >
+        <UserItem :photo="msg.photo" display="flex-none self-end" m="l-2" margin="0" />
+        <div>
+          <div display="flex items-center">
+            <p text="msg-300 right" m="t-2 mr-2">{{ msg.createdAt }}</p>
+            <div
+              bg="msg-200"
+              w="5/6"
+              border="rounded-t-3xl rounded-l-3xl"
+              p="3"
+              m="l-auto"
+              text="white"
+            >
+              {{ msg.content }}
+            </div>
+          </div>
+
+          <!-- <p text="dark-500 sm right" m="t-2">{{ msg.name }}</p> -->
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <div class="animate__animated animate__fadeInLeft animate__faster" display="flex" m="b-8">
+        <UserItem :photo="msg.photo" display="flex-none self-end" margin="0.5rem" />
+        <div>
+          <p text="dark-500 sm">{{ msg.name }}</p>
+
+          <div display="flex items-center">
+            <div bg="msg-100" w="5/6" border="rounded-r-3xl rounded-t-3xl" p="3">
+              {{ msg.content }}
+            </div>
+            <p text="msg-300 right" m="t-2 mr-2">{{ msg.createdAt }}</p>
+          </div>
+        </div>
+      </div>
+    </template>
+  </template>
 </template>
 
 <style scoped></style>
