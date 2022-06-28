@@ -12,7 +12,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, '/src'),
     },
   },
-  plugins: [vue(), eslintPlugin({ cache: true }), WindiCSS()],
+  plugins: [vue(), eslintPlugin({ cache: false }), WindiCSS()],
   server: {
     port: 3001,
     host: '0.0.0.0',

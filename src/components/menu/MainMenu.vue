@@ -51,7 +51,9 @@ const logout = () => {
           <UserItem :photo="store.user.photo" size="30px" margin="0" />
 
           <div border="b-2 dark-500 hover:primary" m="ml-6.5px" p="x-3.5px" text="hover:primary">
-            <p font="bold" text="dark-500" leading="text">{{ store.user.name }}</p>
+            <p font="bold" text="dark-500" leading="text">
+              {{ store.user.name }} {{ store.user._id }}
+            </p>
           </div>
           <ul
             v-show="dropDownMenu"

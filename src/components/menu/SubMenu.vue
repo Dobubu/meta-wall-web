@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { ref, watch, computed } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
 
+import { useWebSocket } from '@/plugins/ws';
+import { WebSocketEvent } from '@/plugins/type';
 import { useUserStore } from '@/store/user';
 import UserItem from '@/components/UserItem.vue';
 
+const route = useRoute();
 const store = useUserStore();
+const wsPlugin = useWebSocket();
 
 const menuList = ref([
   {
@@ -24,6 +28,26 @@ const menuList = ref([
     routerName: 'ChatWall',
   },
 ]);
+
+const newMsg = ref(false);
+const routeName = computed(() => route.name);
+
+watch(
+  () => routeName.value,
+  v => {
+    if (v === 'ChatWall') {
+      newMsg.value = false;
+    }
+  },
+);
+
+wsPlugin.ws.on(WebSocketEvent.CHAT_MESSAGE, data => {
+  if (routeName.value === 'ChatWall') return;
+  console.log('data: ', data);
+  if (store.user?._id !== data.user && data) {
+    newMsg.value = true;
+  }
+});
 </script>
 
 <template>
@@ -64,11 +88,21 @@ const menuList = ref([
             class="icon"
             m="r-4"
             display="flex justify-center items-center"
+            position="relative"
             bg="icon-100"
             border="2 dark-500 rounded-1/2"
             w="50px"
             h="50px"
           >
+            <div
+              v-if="o.routerName === 'ChatWall' && newMsg"
+              class="animate__animated animate__bounce"
+              bg="red-500"
+              border="rounded-1/2"
+              w="15px"
+              h="15px"
+              position="absolute right-0 -top-1"
+            ></div>
             <font-awesome-icon :icon="o.icon" size="lg" />
           </div>
           <p font="bold" text="hover:primary">{{ o.title }}</p>
