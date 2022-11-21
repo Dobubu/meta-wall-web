@@ -7,7 +7,7 @@ const authService = useAuth();
 const instance = axios.create({
   baseURL:
     process.env.NODE_ENV === 'production'
-      ? 'https://protected-reaches-46880.herokuapp.com/'
+      ? 'https://meta-wall-backend.onrender.com/'
       : 'http://127.0.0.1:3001',
 });
 
