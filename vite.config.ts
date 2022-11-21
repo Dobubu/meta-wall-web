@@ -53,7 +53,7 @@ export default defineConfig({
     WindiCSS(),
   ],
   server: {
-    port: 3001,
+    port: 3333,
     host: '0.0.0.0',
     // open: true,
   },

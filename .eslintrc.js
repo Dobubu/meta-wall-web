@@ -12,6 +12,7 @@ module.exports = {
     // 'plugin:vue/essential',
     'prettier',
     'plugin:prettier/recommended',
+    'plugin:cypress/recommended',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
@@ -23,7 +24,7 @@ module.exports = {
     defineExpose: 'readonly',
     withDefaults: 'readonly',
   },
-  plugins: ['vue', '@typescript-eslint'],
+  plugins: ['vue', '@typescript-eslint', 'cypress'],
   rules: {
     'no-var': 'error',
     'no-console': [
