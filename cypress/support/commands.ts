@@ -1,37 +1,27 @@
-/// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+declare namespace Cypress {
+  interface Chainable {
+    loginByAPI(email: string, password: string): Chainable<string>;
+    typeLogin(email: string, password: string): Chainable<string>;
+  }
+}
+
+Cypress.Commands.add('loginByAPI', (email: string, password: string) => {
+  localStorage.clear();
+
+  cy.request('POST', 'http://localhost:3001/user/sign_in', {
+    email,
+    password,
+  }).as('comments');
+
+  cy.get('@comments').should((res: any) => {
+    expect(res.body.data).to.have.property('name', 'test');
+
+    localStorage.setItem('meta_wall_access_token', res.body.data.token);
+    localStorage.setItem('meta_wall_user_id', res.body.data.id);
+  });
+});
+
+Cypress.Commands.add('typeLogin', (email: string, password: string) => {
+  cy.get('[data-cy="auth-email"]').type(email);
+  cy.get('[data-cy="auth-password"]').type(password);
+});
