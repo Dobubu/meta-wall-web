@@ -69,6 +69,7 @@ const updateLike = (postId: string, type: string) => {
     <div display="flex" w="full">
       <input
         v-model="keyWord"
+        data-cy="search-post"
         type="text"
         placeholder="搜尋貼文"
         border="2 dark-500"
@@ -93,7 +94,7 @@ const updateLike = (postId: string, type: string) => {
     </div>
   </div>
 
-  <p m="b-4">total: {{ list.length }}</p>
+  <p data-cy="posts-total" m="b-4">total: {{ list.length }}</p>
 
   <template v-if="isLoading">
     <div h="8/10" display="flex items-center justify-center" text="20px">
