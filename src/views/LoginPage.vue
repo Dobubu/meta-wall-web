@@ -101,6 +101,7 @@ const login = async () => {
           <template v-if="!isLogin">
             <input
               v-model="user.name"
+              data-cy="register-name"
               type="text"
               w="373px"
               h="51px"
@@ -121,6 +122,7 @@ const login = async () => {
 
           <input
             v-model="user.email"
+            data-cy="auth-email"
             type="text"
             w="373px"
             h="51px"
@@ -140,6 +142,7 @@ const login = async () => {
 
           <input
             v-model="user.password"
+            data-cy="auth-password"
             type="password"
             w="373px"
             h="51px"
@@ -180,13 +183,20 @@ const login = async () => {
                 m="l-2"
               />
             </button>
-            <span cursor="pointer" text="center" display="block" @click="changeStatus">
+            <span
+              data-cy="toggle-register"
+              cursor="pointer"
+              text="center"
+              display="block"
+              @click="changeStatus"
+            >
               註冊帳號
             </span>
           </template>
           <template v-else>
             <button
               type="submit"
+              data-cy="register-btn"
               transition="duration-base"
               bg="primary hover:active"
               p="y-4"
