@@ -29,6 +29,7 @@ const menuList = ref([
   >
     <RouterLink :to="{ name: 'Create' }" class="w-full">
       <button
+        data-cy="menu-add-post-btn"
         type="button"
         transition="duration-base"
         bg="primary hover:active"

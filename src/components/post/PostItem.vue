@@ -153,7 +153,7 @@ const deletePost = async (postId: string, userId: string) => {
         @click="deletePost(post._id, user._id)"
       />
     </div>
-    <p m="b-4">{{ post.content }}</p>
+    <p data-cy="post-item-content" m="b-4">{{ post.content }}</p>
     <div
       v-if="post.image"
       :style="{ backgroundImage: `url(${post.image})` }"

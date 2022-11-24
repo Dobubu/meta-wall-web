@@ -83,6 +83,7 @@ const createPost = async () => {
       </span>
       <textarea
         v-model="post.content"
+        data-cy="create-post-content"
         rows="4"
         cols="50"
         w="full"
@@ -162,6 +163,7 @@ const createPost = async () => {
     <p text="danger sm" m="b-4">{{ globalErrMsg }}</p>
     <button
       type="button"
+      data-cy="create-post-btn"
       :class="createPostClass"
       p="y-4"
       w="3/5"
