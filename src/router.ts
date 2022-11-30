@@ -12,7 +12,7 @@ import UserWall from '@/views/UserWall.vue';
 import UserEdit from '@/views/UserEdit.vue';
 import MenuLayout from '@/layouts/MenuLayout.vue';
 
-const routes = [
+export const routes = [
   {
     path: '/',
     name: 'Login',
