@@ -23,5 +23,29 @@ Cypress.Commands.add('loginByAPI', (email: string, password: string) => {
 
 Cypress.Commands.add('typeLogin', (email: string, password: string) => {
   cy.get('[data-cy="auth-email"]').type(email);
-  cy.get('[data-cy="auth-password"]').type(password);
+  // ! type error
+  // @ts-ignore
+  cy.get('[data-cy="auth-password"]').type(password, { sensitive: true });
 });
+
+interface TypeOptions extends Cypress.TypeOptions {
+  sensitive: boolean;
+}
+
+Cypress.Commands.overwrite<'type', 'element'>(
+  'type',
+  (originalFn, element, text, options?: Partial<TypeOptions>) => {
+    if (options && options.sensitive) {
+      // turn off original log
+      options.log = false;
+      // create our own log with masked message
+      Cypress.log({
+        $el: element,
+        name: 'type',
+        message: '*'.repeat(text.length),
+      });
+    }
+
+    return originalFn(element, text, options);
+  },
+);
