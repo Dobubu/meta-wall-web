@@ -1,3 +1,5 @@
+require('cypress-downloadfile/lib/downloadFileCommand');
+
 declare namespace Cypress {
   interface Chainable {
     loginByAPI(email: string, password: string): Chainable<string>;

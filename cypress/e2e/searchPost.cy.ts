@@ -6,5 +6,15 @@ describe('Search Posts', () => {
 
     cy.get('[data-cy="search-post"]').type('666{enter}');
     cy.get('[data-cy="posts-total"]').contains('1');
+
+    // 單純測試用
+    // 1. download file
+    // ! type error
+    // @ts-ignore
+    cy.downloadFile(
+      'https://i.pinimg.com/originals/16/96/3f/16963f1eee510c42b464664463040aaa.jpg',
+      'cypress/downloads',
+      'rilakkuma.jpg',
+    );
   });
 });
