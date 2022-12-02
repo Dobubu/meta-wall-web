@@ -16,5 +16,11 @@ describe('Search Posts', () => {
       'cypress/downloads',
       'rilakkuma.jpg',
     );
+
+    // 2. write/read file
+    cy.writeFile('cypress/fixtures/message.txt', 'Hello World');
+    cy.readFile('cypress/fixtures/message.txt').then(text => {
+      expect(text).to.equal('Hello World');
+    });
   });
 });
