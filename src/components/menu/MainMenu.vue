@@ -40,6 +40,7 @@ const logout = () => {
 
       <div
         v-if="store.user"
+        data-cy="main-menu"
         position="relative"
         cursor="pointer"
         @mouseover="showMenu"
