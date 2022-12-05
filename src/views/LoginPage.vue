@@ -134,6 +134,7 @@ const login = async () => {
           <span
             v-for="error of v$.email.$errors"
             :key="error.$uid"
+            data-cy="auth-email-error"
             m="b-4 -t-2"
             text="14px danger left"
           >
