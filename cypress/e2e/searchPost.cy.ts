@@ -22,5 +22,19 @@ describe('Search Posts', () => {
     cy.readFile('cypress/fixtures/message.txt').then(text => {
       expect(text).to.equal('Hello World');
     });
+
+    // 3. deal with target=_blank
+    // 3.1
+    // cy.get('.cy-link')
+    // .should($a => {
+    //   expect($a.attr('href'), 'href').to.equal('https://www.google.com/');
+    //   expect($a.attr('target'), 'target').to.equal('_blank');
+    // })
+    // .click();
+    // cy.location('pathname').should('include', 'create');
+
+    // 3.2
+    // cy.get('.cy-link').invoke('removeAttr', 'target').click();
+    // cy.url().should('include', 'create');
   });
 });
