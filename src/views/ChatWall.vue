@@ -3,12 +3,14 @@ import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { useUserStore } from '@/store/user';
 import { useElementSize, useDebounceFn } from '@vueuse/core';
 import { useWebSocket } from '@/plugins/ws';
+import { useChatroom } from '@/service/useChatroom';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserMessage from '@/components/chat/UserMessage.vue';
 
 const store = useUserStore();
 const wsPlugin = useWebSocket();
+const chatroomService = useChatroom();
 
 const el = ref(null);
 const { height } = useElementSize(el);
@@ -28,11 +30,15 @@ const onPress = () => {
   wsPlugin.sendTyping('WEB_Typing');
 };
 
+const list = computed(() => chatroomService.list.value);
+
 const debouncedFn = useDebounceFn(() => {
   typing.value.content = '';
 }, 1000);
 
-onMounted(() => {
+onMounted(async () => {
+  await chatroomService.fetchList();
+
   wsPlugin.sendInit('WEB_Init');
 
   wsPlugin.ws.onmessage = event => {
@@ -44,6 +50,7 @@ onMounted(() => {
     }
 
     if (data.cmd === 'APP_Add_Message_Response') {
+      chatroomService.updateList(data);
       msg.value = '';
     }
 
@@ -59,15 +66,20 @@ onUnmounted(() => {
 <template>
   <TitleBlock>聊天大廳</TitleBlock>
 
-  <div v-if="store.user" ref="el" h="6/7" m="-t-4" bg="icon-100" p="2" display="flex flex-col">
-    <div class="scroll-area wrap" p="x-2" display="flex-1" overflow="y-scroll">
-      <div v-for="(o, i) in 2" :key="i" display="flex" m="b-8">
-        <UsersMessage :photo="store.user.photo" />
-      </div>
-
-      <div v-for="(o, i) in 3" :key="i" display="flex flex-row-reverse" m="b-8">
-        <UserMessage :photo="store.user.photo" />
-      </div>
+  <div
+    v-if="store.user"
+    ref="el"
+    h="6/7"
+    m="-t-4"
+    bg="icon-100"
+    p="7"
+    display="flex flex-col"
+    position="relative"
+  >
+    <div class="scroll-area wrap" p="x-2" display="flex-1" overflow="y-scroll x-hidden">
+      <template v-for="o in list" :key="o._id">
+        <UserMessage :msg="o" />
+      </template>
     </div>
 
     <input
