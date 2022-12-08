@@ -2,11 +2,13 @@
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/user';
+import { useWebSocket } from '@/plugins/ws';
 
 import UserItem from '@/components/UserItem.vue';
 
 const router = useRouter();
 const store = useUserStore();
+const wsPlugin = useWebSocket();
 
 const dropDownMenu = ref(false);
 const menuList = ref([
@@ -26,6 +28,7 @@ const hideMenu = () => {
 
 const logout = () => {
   localStorage.clear();
+  wsPlugin.ws.close();
 
   alert('登出成功！');
 

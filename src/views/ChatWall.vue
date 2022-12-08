@@ -1,18 +1,59 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { useUserStore } from '@/store/user';
-import { useElementSize } from '@vueuse/core';
+import { useElementSize, useDebounceFn } from '@vueuse/core';
+import { useWebSocket } from '@/plugins/ws';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserMessage from '@/components/chat/UserMessage.vue';
-import UsersMessage from '@/components/chat/UsersMessage.vue';
 
 const store = useUserStore();
+const wsPlugin = useWebSocket();
 
 const el = ref(null);
 const { height } = useElementSize(el);
 
 const msgHeight = computed(() => `${height.value - 60}px`);
+
+const msg = ref('');
+const typing = ref<any>({});
+
+const addMsg = () => {
+  if (!msg.value) return;
+
+  wsPlugin.send('WEB_Add_Message', msg.value);
+};
+
+const onPress = () => {
+  wsPlugin.sendTyping('WEB_Typing');
+};
+
+const debouncedFn = useDebounceFn(() => {
+  typing.value.content = '';
+}, 1000);
+
+onMounted(() => {
+  wsPlugin.sendInit('WEB_Init');
+
+  wsPlugin.ws.onmessage = event => {
+    let data = JSON.parse(event.data);
+
+    if (data.cmd === 'APP_Typing_Response') {
+      typing.value = data;
+      debouncedFn();
+    }
+
+    if (data.cmd === 'APP_Add_Message_Response') {
+      msg.value = '';
+    }
+
+    console.log('data: ', data);
+  };
+});
+
+onUnmounted(() => {
+  wsPlugin.sendLeave('WEB_User_Leave');
+});
 </script>
 
 <template>
@@ -29,7 +70,19 @@ const msgHeight = computed(() => `${height.value - 60}px`);
       </div>
     </div>
 
-    <input w="full" border="0 rounded-8px" m="t-3" type="text" placeholder="說一些話..." />
+    <input
+      v-model="msg"
+      w="full"
+      border="0 rounded-8px"
+      m="t-3 b-7x"
+      type="text"
+      placeholder="說一些話..."
+      @keyup.enter="addMsg"
+      @keyup="onPress"
+    />
+    <p v-show="store.user.name !== typing.name" position="absolute bottom-7px" text="sm">
+      {{ typing?.content }}
+    </p>
   </div>
 </template>
 

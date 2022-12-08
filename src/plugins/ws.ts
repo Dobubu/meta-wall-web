@@ -1,4 +1,6 @@
-import { inject, InjectionKey, Plugin } from 'vue';
+import { inject, InjectionKey, Plugin, computed } from 'vue';
+import { useUserStore } from '@/store/user';
+import { useAuth } from '@/service/useAuth';
 
 const useWebSocketCore = () => {
   const url =
@@ -7,12 +9,69 @@ const useWebSocketCore = () => {
       : 'ws://localhost:3001';
   const ws = new WebSocket(url);
 
+  const authService = useAuth();
+  const store = useUserStore();
+
   ws.onopen = () => {
     console.log(`%csocket.id = ${ws.url}:connection`, 'background: #1389fd; color: white');
   };
 
+  ws.onclose = () => {
+    console.log(`%csocket.id = ${ws.url}:disconnected`, 'background: #00684a; color: white');
+  };
+
+  const defaultPayload = computed(() => ({
+    name: store.user?.name,
+    photo: store.user?.photo,
+    user: authService.getUserId(),
+  }));
+
+  const sendInit = (cmd: string) => {
+    const payload = JSON.stringify({
+      ...defaultPayload.value,
+      cmd,
+      content: `${store.user?.name} say hi~`,
+    });
+
+    ws.send(payload);
+  };
+
+  const sendLeave = (cmd: string) => {
+    const payload = JSON.stringify({
+      ...defaultPayload.value,
+      cmd,
+      content: `${store.user?.name} say bye~`,
+    });
+
+    ws.send(payload);
+  };
+
+  const send = (cmd: string, content: string) => {
+    const payload = JSON.stringify({
+      ...defaultPayload.value,
+      cmd,
+      content,
+    });
+
+    ws.send(payload);
+  };
+
+  const sendTyping = (cmd: string) => {
+    const payload = JSON.stringify({
+      ...defaultPayload.value,
+      cmd,
+      content: `${store.user?.name} is typing`,
+    });
+
+    ws.send(payload);
+  };
+
   return {
     ws,
+    sendInit,
+    sendLeave,
+    send,
+    sendTyping,
   };
 };
 
