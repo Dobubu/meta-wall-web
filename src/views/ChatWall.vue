@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, computed } from 'vue';
 import { useUserStore } from '@/store/user';
 import { useElementSize, useDebounceFn } from '@vueuse/core';
 import { useWebSocket } from '@/plugins/ws';
@@ -13,6 +13,7 @@ const wsPlugin = useWebSocket();
 const chatroomService = useChatroom();
 
 const el = ref(null);
+const elScroll = ref<HTMLElement>();
 const { height } = useElementSize(el);
 
 const msgHeight = computed(() => `${height.value - 60}px`);
@@ -41,7 +42,11 @@ onMounted(async () => {
 
   wsPlugin.sendInit('WEB_Init');
 
-  wsPlugin.ws.onmessage = event => {
+  await nextTick();
+  if (!elScroll.value) return;
+  elScroll.value.scrollTop = elScroll.value.scrollHeight;
+
+  wsPlugin.ws.onmessage = async event => {
     let data = JSON.parse(event.data);
 
     if (data.cmd === 'APP_Typing_Response') {
@@ -52,6 +57,11 @@ onMounted(async () => {
     if (data.cmd === 'APP_Add_Message_Response') {
       chatroomService.updateList(data);
       msg.value = '';
+
+      await nextTick();
+
+      if (!elScroll.value) return;
+      elScroll.value.scrollTop = elScroll.value.scrollHeight;
     }
 
     console.log('data: ', data);
@@ -76,7 +86,13 @@ onUnmounted(() => {
     display="flex flex-col"
     position="relative"
   >
-    <div class="scroll-area wrap" p="x-2" display="flex-1" overflow="y-scroll x-hidden">
+    <div
+      ref="elScroll"
+      class="scroll-area wrap"
+      p="x-2"
+      display="flex-1"
+      overflow="y-scroll x-hidden"
+    >
       <template v-for="o in list" :key="o._id">
         <UserMessage :msg="o" />
       </template>

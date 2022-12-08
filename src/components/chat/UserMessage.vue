@@ -18,6 +18,7 @@ const store = useUserStore();
 <template>
   <div
     v-if="msg.role === 'user' && msg.user === store.user?._id"
+    class="animate__animated animate__fadeInRight animate__faster"
     display="flex flex-row-reverse"
     m="b-8"
   >
@@ -39,7 +40,12 @@ const store = useUserStore();
     </div>
   </div>
 
-  <div v-if="msg.role === 'user' && msg.user !== store.user?._id" display="flex" m="b-8">
+  <div
+    v-if="msg.role === 'user' && msg.user !== store.user?._id"
+    class="animate__animated animate__fadeInLeft animate__faster"
+    display="flex"
+    m="b-8"
+  >
     <UserItem :photo="msg.photo" display="flex-none self-end" margin="0.5rem" />
     <div>
       <p text="dark-500 sm">{{ msg.name }}</p>
