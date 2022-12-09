@@ -1,12 +1,15 @@
 import { inject, InjectionKey, Plugin, computed } from 'vue';
 import { useUserStore } from '@/store/user';
 import { useAuth } from '@/service/useAuth';
+import { useLocalhost } from '@/api/api';
 
 const useWebSocketCore = () => {
   const url =
     process.env.NODE_ENV === 'production'
       ? 'https://meta-wall-backend.onrender.com'
-      : 'ws://localhost:3001';
+      : useLocalhost
+      ? 'ws://localhost:3001'
+      : 'ws://192.168.168.16:3001';
   const ws = new WebSocket(url);
 
   const authService = useAuth();
