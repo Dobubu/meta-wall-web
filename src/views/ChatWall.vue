@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, nextTick, ref, computed } from 'vue';
 import { useUserStore } from '@/store/user';
 import { useElementSize, useDebounceFn } from '@vueuse/core';
 import { useWebSocket } from '@/plugins/ws';
+import { WebWSEventType, AppWSEventType } from '@/plugins/enums';
 import { useChatroom } from '@/service/useChatroom';
 
 import TitleBlock from '@/components/TitleBlock.vue';
@@ -24,11 +25,11 @@ const typing = ref<any>({});
 const addMsg = () => {
   if (!msg.value) return;
 
-  wsPlugin.send('WEB_Add_Message', msg.value);
+  wsPlugin.send(WebWSEventType.WebAddMessage, msg.value);
 };
 
 const onPress = () => {
-  wsPlugin.sendTyping('WEB_Typing');
+  wsPlugin.sendTyping(WebWSEventType.WebTyping);
 };
 
 const list = computed(() => chatroomService.list.value);
@@ -40,7 +41,7 @@ const debouncedFn = useDebounceFn(() => {
 onMounted(async () => {
   await chatroomService.fetchList();
 
-  wsPlugin.sendInit('WEB_Init');
+  wsPlugin.sendInit(WebWSEventType.WebInit);
 
   await nextTick();
   if (!elScroll.value) return;
@@ -49,12 +50,12 @@ onMounted(async () => {
   wsPlugin.ws.onmessage = async event => {
     let data = JSON.parse(event.data);
 
-    if (data.cmd === 'APP_Typing_Response') {
+    if (data.cmd === AppWSEventType.AppTypingResponse) {
       typing.value = data;
       debouncedFn();
     }
 
-    if (data.cmd === 'APP_Add_Message_Response') {
+    if (data.cmd === AppWSEventType.AppAddMessageResponse) {
       chatroomService.updateList(data);
       msg.value = '';
 
@@ -69,7 +70,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  wsPlugin.sendLeave('WEB_User_Leave');
+  wsPlugin.sendLeave(WebWSEventType.WebUserLeave);
 });
 </script>
 
