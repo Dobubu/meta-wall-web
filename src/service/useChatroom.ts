@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-import { apiGetMessageList } from '@/api/chat';
+import { apiGetMessageList, apiDeleteMessageList } from '@/api/chat';
 import { timeFormate } from '@/lib/formate';
 
 export const useChatroom = () => {
@@ -30,9 +30,19 @@ export const useChatroom = () => {
     ];
   };
 
+  const clearMessages = async () => {
+    try {
+      const res = await apiDeleteMessageList();
+      list.value = res.data;
+    } catch (error) {
+      //
+    }
+  };
+
   return {
     list,
     fetchList,
     updateList,
+    clearMessages,
   };
 };

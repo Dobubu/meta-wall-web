@@ -28,6 +28,10 @@ const addMsg = () => {
   wsPlugin.send(WebWSEventType.WebAddMessage, msg.value);
 };
 
+const clearMsg = async () => {
+  await chatroomService.clearMessages();
+};
+
 const onPress = () => {
   wsPlugin.sendTyping(WebWSEventType.WebTyping);
 };
@@ -87,7 +91,23 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <TitleBlock>聊天大廳</TitleBlock>
+  <TitleBlock
+    >聊天大廳
+
+    <button
+      v-if="store.user?.name === 'mischa'"
+      type="button"
+      transition="duration-base"
+      bg="primary hover:active"
+      p="y-1 x-2"
+      m="l-10px"
+      text="sm white hover:dark-500"
+      border="dark-500 rounded-8px"
+      @click="clearMsg"
+    >
+      clear
+    </button>
+  </TitleBlock>
 
   <div
     v-if="store.user"
