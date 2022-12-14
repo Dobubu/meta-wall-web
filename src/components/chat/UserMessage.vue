@@ -16,6 +16,13 @@ const store = useUserStore();
 </script>
 
 <template>
+  <div v-if="msg.role === 'system'" w="full" text="center">
+    <p bg="msg-400" display="inline-block" border="rounded-3xl" p="2" m="y-1 r-1" text="white sm">
+      {{ msg.content }}
+    </p>
+    <p text="msg-300 sm" display="inline-block">{{ msg.createdAt }}</p>
+  </div>
+
   <div
     v-if="msg.role === 'user' && msg.user === store.user?._id"
     class="animate__animated animate__fadeInRight animate__faster"

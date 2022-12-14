@@ -6,6 +6,8 @@ export enum WebWSEventType {
 }
 
 export enum AppWSEventType {
+  AppInitResponse = 'APP_Init_Response',
   AppTypingResponse = 'APP_Typing_Response',
   AppAddMessageResponse = 'APP_Add_Message_Response',
+  AppUserLeaveResponse = 'APP_User_Leave_Response',
 }

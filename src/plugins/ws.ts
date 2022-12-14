@@ -33,7 +33,7 @@ const useWebSocketCore = () => {
     const payload = JSON.stringify({
       ...defaultPayload.value,
       cmd,
-      content: `${store.user?.name} say hi~`,
+      content: `${store.user?.name} joined the chatroom`,
     });
 
     ws.send(payload);
@@ -43,7 +43,7 @@ const useWebSocketCore = () => {
     const payload = JSON.stringify({
       ...defaultPayload.value,
       cmd,
-      content: `${store.user?.name} say bye~`,
+      content: `${store.user?.name} left the chatroom 👋`,
     });
 
     ws.send(payload);

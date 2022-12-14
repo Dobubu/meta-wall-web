@@ -65,6 +65,18 @@ onMounted(async () => {
       elScroll.value.scrollTop = elScroll.value.scrollHeight;
     }
 
+    if (
+      data.cmd === AppWSEventType.AppInitResponse ||
+      data.cmd === AppWSEventType.AppUserLeaveResponse
+    ) {
+      chatroomService.updateList(data);
+
+      await nextTick();
+
+      if (!elScroll.value) return;
+      elScroll.value.scrollTop = elScroll.value.scrollHeight;
+    }
+
     console.log('data: ', data);
   };
 });
