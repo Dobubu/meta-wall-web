@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, nextTick, ref, computed } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, computed, watch } from 'vue';
 import { useUserStore } from '@/store/user';
-import { useElementSize, useDebounceFn } from '@vueuse/core';
+import { useElementSize } from '@vueuse/core';
 import { useWebSocket } from '@/plugins/ws';
-import { WebWSEventType, AppWSEventType } from '@/plugins/enums';
+import { WebWSEventType } from '@/plugins/enums';
 import { useChatroom } from '@/service/useChatroom';
 
 import TitleBlock from '@/components/TitleBlock.vue';
@@ -20,69 +20,45 @@ const { height } = useElementSize(el);
 const msgHeight = computed(() => `${height.value - 60}px`);
 
 const msg = ref('');
-const typing = ref<any>({});
 
-const addMsg = () => {
+const addMsg = async () => {
   if (!msg.value) return;
 
-  wsPlugin.send(WebWSEventType.WebAddMessage, msg.value);
+  await wsPlugin.send(WebWSEventType.WebAddMessage, msg.value);
+  msg.value = '';
 };
-
 const clearMsg = async () => {
   await chatroomService.clearMessages();
 };
-
 const onPress = () => {
   wsPlugin.sendTyping(WebWSEventType.WebTyping);
 };
 
 const list = computed(() => chatroomService.list.value);
 
-const debouncedFn = useDebounceFn(() => {
-  typing.value.content = '';
-}, 1000);
+const updateScrollView = async () => {
+  await nextTick();
+
+  if (!elScroll.value) return;
+  elScroll.value.scrollTop = elScroll.value.scrollHeight;
+};
+
+watch(
+  () => wsPlugin.newMsg.value,
+  async v => {
+    chatroomService.updateList(v);
+
+    await updateScrollView();
+  },
+),
+  { deep: true };
 
 onMounted(async () => {
   await chatroomService.fetchList();
 
   wsPlugin.sendInit(WebWSEventType.WebInit);
 
-  await nextTick();
-  if (!elScroll.value) return;
-  elScroll.value.scrollTop = elScroll.value.scrollHeight;
-
-  wsPlugin.ws.onmessage = async event => {
-    let data = JSON.parse(event.data);
-
-    if (data.cmd === AppWSEventType.AppTypingResponse) {
-      typing.value = data;
-      debouncedFn();
-    }
-
-    if (data.cmd === AppWSEventType.AppAddMessageResponse) {
-      chatroomService.updateList(data);
-      msg.value = '';
-
-      await nextTick();
-
-      if (!elScroll.value) return;
-      elScroll.value.scrollTop = elScroll.value.scrollHeight;
-    }
-
-    if (
-      data.cmd === AppWSEventType.AppInitResponse ||
-      data.cmd === AppWSEventType.AppUserLeaveResponse
-    ) {
-      chatroomService.updateList(data);
-
-      await nextTick();
-
-      if (!elScroll.value) return;
-      elScroll.value.scrollTop = elScroll.value.scrollHeight;
-    }
-
-    console.log('data: ', data);
-  };
+  await updateScrollView();
 });
 
 onUnmounted(() => {
@@ -141,8 +117,12 @@ onUnmounted(() => {
       @keyup.enter="addMsg"
       @keyup="onPress"
     />
-    <p v-show="store.user.name !== typing.name" position="absolute bottom-7px" text="sm">
-      {{ typing?.content }}
+    <p
+      v-show="store.user.name !== wsPlugin.chatTypingUser.value.name"
+      position="absolute bottom-7px"
+      text="sm"
+    >
+      {{ wsPlugin.chatTypingUser.value.content }}
     </p>
   </div>
 </template>

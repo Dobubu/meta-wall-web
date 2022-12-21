@@ -1,7 +1,10 @@
-import { inject, InjectionKey, Plugin, computed } from 'vue';
+import { inject, InjectionKey, Plugin, computed, ref } from 'vue';
+import { useDebounceFn } from '@vueuse/core';
+
 import { useUserStore } from '@/store/user';
 import { useAuth } from '@/service/useAuth';
 import { useLocalhost } from '@/api/api';
+import { AppWSEventType } from '@/plugins/enums';
 
 const useWebSocketCore = () => {
   const url =
@@ -21,6 +24,30 @@ const useWebSocketCore = () => {
 
   ws.onclose = () => {
     console.log(`%csocket.id = ${ws.url}:disconnected`, 'background: #00684a; color: white');
+  };
+
+  const chatTypingUser = ref<any>({});
+  const newMsg = ref();
+
+  const debouncedFn = useDebounceFn(() => {
+    chatTypingUser.value.content = '';
+  }, 1000);
+
+  ws.onmessage = e => {
+    let data = JSON.parse(e.data);
+
+    if (data.cmd === AppWSEventType.AppTypingResponse) {
+      chatTypingUser.value = data;
+      debouncedFn();
+    }
+
+    if (
+      data.cmd === AppWSEventType.AppAddMessageResponse ||
+      data.cmd === AppWSEventType.AppInitResponse ||
+      data.cmd === AppWSEventType.AppUserLeaveResponse
+    ) {
+      newMsg.value = data;
+    }
   };
 
   const defaultPayload = computed(() => ({
@@ -49,7 +76,7 @@ const useWebSocketCore = () => {
     ws.send(payload);
   };
 
-  const send = (cmd: string, content: string) => {
+  const send = async (cmd: string, content: string) => {
     const payload = JSON.stringify({
       ...defaultPayload.value,
       cmd,
@@ -71,6 +98,8 @@ const useWebSocketCore = () => {
 
   return {
     ws,
+    chatTypingUser,
+    newMsg,
     sendInit,
     sendLeave,
     send,
