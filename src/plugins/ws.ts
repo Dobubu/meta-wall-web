@@ -4,7 +4,7 @@ import { useDebounceFn } from '@vueuse/core';
 import { useUserStore } from '@/store/user';
 import { useAuth } from '@/service/useAuth';
 import { useLocalhost } from '@/api/api';
-import { AppWSEventType } from '@/plugins/enums';
+import { AppWSEventType, WebWSEventType } from '@/plugins/enums';
 
 const useWebSocketCore = () => {
   const url =
@@ -64,41 +64,11 @@ const useWebSocketCore = () => {
     user: authService.getUserId(),
   }));
 
-  const sendInit = (cmd: string) => {
-    const payload = JSON.stringify({
-      ...defaultPayload.value,
-      cmd,
-      content: `${store.user?.name} joined the chatroom`,
-    });
-
-    ws.send(payload);
-  };
-
-  const sendLeave = (cmd: string) => {
-    const payload = JSON.stringify({
-      ...defaultPayload.value,
-      cmd,
-      content: `${store.user?.name} left the chatroom 👋`,
-    });
-
-    ws.send(payload);
-  };
-
-  const send = async (cmd: string, content: string) => {
+  const send = async (cmd: WebWSEventType, content: string) => {
     const payload = JSON.stringify({
       ...defaultPayload.value,
       cmd,
       content,
-    });
-
-    ws.send(payload);
-  };
-
-  const sendTyping = (cmd: string) => {
-    const payload = JSON.stringify({
-      ...defaultPayload.value,
-      cmd,
-      content: `${store.user?.name} is typing`,
     });
 
     ws.send(payload);
@@ -109,10 +79,7 @@ const useWebSocketCore = () => {
     chatTypingUser,
     msgTotal,
     newMsg,
-    sendInit,
-    sendLeave,
     send,
-    sendTyping,
   };
 };
 

@@ -31,7 +31,7 @@ const clearMsg = async () => {
   await chatroomService.clearMessages();
 };
 const onPress = () => {
-  wsPlugin.sendTyping(WebWSEventType.WebTyping);
+  wsPlugin.send(WebWSEventType.WebTyping, `${store.user?.name} is typing`);
 };
 
 const list = computed(() => chatroomService.list.value);
@@ -56,13 +56,13 @@ watch(
 onMounted(async () => {
   await chatroomService.fetchList();
 
-  wsPlugin.sendInit(WebWSEventType.WebInit);
+  wsPlugin.send(WebWSEventType.WebInit, `${store.user?.name} joined the chatroom`);
 
   await updateScrollView();
 });
 
 onUnmounted(() => {
-  wsPlugin.sendLeave(WebWSEventType.WebUserLeave);
+  wsPlugin.send(WebWSEventType.WebUserLeave, `${store.user?.name} left the chatroom 👋`);
 });
 </script>
 
