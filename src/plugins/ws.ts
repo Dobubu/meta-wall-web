@@ -27,6 +27,7 @@ const useWebSocketCore = () => {
   };
 
   const chatTypingUser = ref<any>({});
+  const msgTotal = ref(0);
   const newMsg = ref();
 
   const debouncedFn = useDebounceFn(() => {
@@ -47,6 +48,13 @@ const useWebSocketCore = () => {
       data.cmd === AppWSEventType.AppUserLeaveResponse
     ) {
       newMsg.value = data;
+    }
+
+    if (
+      data.cmd === AppWSEventType.AppAddMessageResponse ||
+      data.cmd === AppWSEventType.AppInitResponse
+    ) {
+      msgTotal.value += 1;
     }
   };
 
@@ -99,6 +107,7 @@ const useWebSocketCore = () => {
   return {
     ws,
     chatTypingUser,
+    msgTotal,
     newMsg,
     sendInit,
     sendLeave,

@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { ref, watch, computed } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
+import { useWebSocket } from '@/plugins/ws';
 import UserItem from '@/components/UserItem.vue';
 
+const route = useRoute();
 const store = useUserStore();
+const wsPlugin = useWebSocket();
 
 const menuList = ref([
   {
@@ -24,6 +27,34 @@ const menuList = ref([
     routerName: 'ChatWall',
   },
 ]);
+
+const showMessagePrompt = ref(false);
+const showMessageAnimation = ref(false);
+
+const routeName = computed(() => route.name);
+
+watch(
+  () => routeName.value,
+  (v, prev) => {
+    if (v === 'Post' && prev === 'ChatWall') {
+      showMessagePrompt.value = false;
+    }
+  },
+);
+
+watch(
+  () => wsPlugin.msgTotal.value,
+  v => {
+    showMessagePrompt.value = true;
+    showMessageAnimation.value = true;
+
+    setTimeout(() => {
+      showMessageAnimation.value = false;
+    }, 1000);
+  },
+);
+
+const showPrompt = computed(() => showMessagePrompt.value && routeName.value !== 'ChatWall');
 </script>
 
 <template>
@@ -65,11 +96,22 @@ const menuList = ref([
             class="icon"
             m="r-4"
             display="flex justify-center items-center"
+            position="relative"
             bg="icon-100"
             border="2 dark-500 rounded-1/2"
             w="50px"
             h="50px"
           >
+            <div
+              v-if="showPrompt && o.routerName === 'ChatWall'"
+              class="animate__animated"
+              :class="{ animate__bounce: showMessageAnimation }"
+              bg="red-500"
+              border="rounded-1/2"
+              w="15px"
+              h="15px"
+              position="absolute right-0 -top-1"
+            ></div>
             <font-awesome-icon :icon="o.icon" size="lg" />
           </div>
           <p font="bold" text="hover:primary">{{ o.title }}</p>
