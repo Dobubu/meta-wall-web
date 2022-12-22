@@ -9,7 +9,7 @@ import { AppWSEventType, WebWSEventType } from '@/plugins/enums';
 const useWebSocketCore = () => {
   const url =
     process.env.NODE_ENV === 'production'
-      ? 'https://meta-wall-backend.onrender.com'
+      ? 'wss://meta-wall-backend.onrender.com'
       : useLocalhost
       ? 'ws://localhost:3001'
       : 'ws://192.168.168.16:3001';
