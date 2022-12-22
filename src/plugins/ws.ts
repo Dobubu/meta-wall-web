@@ -29,6 +29,7 @@ const useWebSocketCore = () => {
   const chatTypingUser = ref<any>({});
   const msgTotal = ref(0);
   const newMsg = ref();
+  const onlineTotal = ref(0);
 
   const debouncedFn = useDebounceFn(() => {
     chatTypingUser.value.content = '';
@@ -56,6 +57,10 @@ const useWebSocketCore = () => {
     ) {
       msgTotal.value += 1;
     }
+
+    if (data.cmd === AppWSEventType.AppOnlineTotalResponse) {
+      onlineTotal.value = data.total;
+    }
   };
 
   const defaultPayload = computed(() => ({
@@ -78,6 +83,7 @@ const useWebSocketCore = () => {
     ws,
     chatTypingUser,
     msgTotal,
+    onlineTotal,
     newMsg,
     send,
   };

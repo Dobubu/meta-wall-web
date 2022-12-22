@@ -10,4 +10,5 @@ export enum AppWSEventType {
   AppTypingResponse = 'APP_Typing_Response',
   AppAddMessageResponse = 'APP_Add_Message_Response',
   AppUserLeaveResponse = 'APP_User_Leave_Response',
+  AppOnlineTotalResponse = 'APP_Online_Total_Response',
 }

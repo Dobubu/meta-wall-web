@@ -114,7 +114,12 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
             ></div>
             <font-awesome-icon :icon="o.icon" size="lg" />
           </div>
-          <p font="bold" text="hover:primary">{{ o.title }}</p>
+          <div display="flex flex-col">
+            <p v-if="o.routerName === 'ChatWall'" text="sm">
+              在線人數：{{ wsPlugin.onlineTotal }} 人
+            </p>
+            <p font="bold" text="hover:primary">{{ o.title }}</p>
+          </div>
         </RouterLink>
       </li>
     </ul>
