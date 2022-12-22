@@ -1,7 +1,7 @@
 import { createWebHashHistory, createRouter } from 'vue-router';
 
 import { StorageType } from '@/service/type';
-import { apiGetProfile } from '@/plugins/user';
+import { apiGetProfile } from '@/api/user';
 
 import PostList from '@/views/PostList.vue';
 import PostInfo from '@/views/PostInfo.vue';
@@ -10,6 +10,7 @@ import FollowList from '@/views/FollowList.vue';
 import LikeList from '@/views/LikeList.vue';
 import UserWall from '@/views/UserWall.vue';
 import UserEdit from '@/views/UserEdit.vue';
+import ChatWall from '@/views/ChatWall.vue';
 import MenuLayout from '@/layouts/MenuLayout.vue';
 
 export const routes = [
@@ -51,6 +52,11 @@ export const routes = [
         path: 'userWall/:id',
         name: 'UserWall',
         component: UserWall,
+      },
+      {
+        path: 'chatWall',
+        name: 'ChatWall',
+        component: ChatWall,
       },
     ],
   },

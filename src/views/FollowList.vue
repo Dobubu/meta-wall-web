@@ -3,9 +3,10 @@ import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import { useUser } from '@/service/useUser';
-import { dayTimeToNow } from '@/plugins/formate';
+import { dayTimeToNow } from '@/lib/formate';
 
 import TitleBlock from '@/components/TitleBlock.vue';
+import UserItem from '@/components/UserItem.vue';
 
 const userService = useUser();
 
@@ -40,16 +41,8 @@ onMounted(async () => {
         shadow="item-bottom"
       >
         <div display="flex">
-          <div
-            :style="{
-              'background-image': `url(${o.user.photo})`,
-            }"
-            bg="center cover no-repeat"
-            border="2 dark-500 rounded-1/2"
-            w="40px"
-            h="40px"
-            m="r-4"
-          ></div>
+          <UserItem :photo="o.user.photo" />
+
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"

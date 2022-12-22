@@ -5,4 +5,6 @@ dayjs.extend(relativeTime);
 
 export const dayFormate = (date: string, format = 'YYYY/MM/DD HH:mm') => dayjs(date).format(format);
 
+export const timeFormate = (date: string, format = 'HH:mm') => dayjs(date).format(format);
+
 export const dayTimeToNow = (date: string) => dayjs(date).toNow(true);

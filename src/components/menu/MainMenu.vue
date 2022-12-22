@@ -2,9 +2,13 @@
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/user';
+import { useWebSocket } from '@/plugins/ws';
+
+import UserItem from '@/components/UserItem.vue';
 
 const router = useRouter();
 const store = useUserStore();
+const wsPlugin = useWebSocket();
 
 const dropDownMenu = ref(false);
 const menuList = ref([
@@ -24,6 +28,7 @@ const hideMenu = () => {
 
 const logout = () => {
   localStorage.clear();
+  wsPlugin.ws.close();
 
   alert('登出成功！');
 
@@ -47,15 +52,8 @@ const logout = () => {
         @mouseleave="hideMenu"
       >
         <div display="flex items-center">
-          <div
-            :style="{
-              'background-image': `url(${store.user.photo})`,
-            }"
-            bg="center cover no-repeat"
-            border="2 dark-500 rounded-1/2"
-            w="30px"
-            h="30px"
-          ></div>
+          <UserItem :photo="store.user.photo" size="30px" margin="0" />
+
           <div border="b-2 dark-500 hover:primary" m="ml-6.5px" p="x-3.5px" text="hover:primary">
             <p font="bold" text="dark-500" leading="text">{{ store.user.name }}</p>
           </div>

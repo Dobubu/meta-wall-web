@@ -4,12 +4,13 @@ import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 
 import { useUserStore } from '@/store/user';
-import { UpdateProfileReq } from '@/plugins/user';
-import { SexType } from '@/plugins/user';
+import { UpdateProfileReq } from '@/api/user';
+import { SexType } from '@/api/user';
 import { useUser } from '@/service/useUser';
 import { useUpload } from '@/service/useUpload';
 
 import TitleBlock from '@/components/TitleBlock.vue';
+import UserItem from '@/components/UserItem.vue';
 
 const store = useUserStore();
 const userService = useUser();
@@ -171,15 +172,7 @@ const isResetPassword = computed(() => {
     <div v-if="store.user" p="y-8" border="2 rounded-8px dark-500" shadow="item-bottom" bg="white">
       <div v-show="activeTab === 'info'" display="flex flex-col items-center">
         <div m="b-4">
-          <div
-            :style="{
-              'background-image': `url(${userPhoto})`,
-            }"
-            bg="center cover no-repeat"
-            border="2 dark-500 rounded-1/2"
-            w="107px"
-            h="107px"
-          ></div>
+          <UserItem :photo="(userPhoto as string)" size="107px" />
         </div>
 
         <div v-if="uploadService.file.file" display="flex items-center" m="b-2">

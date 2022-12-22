@@ -5,6 +5,7 @@ import { RouterLink, useRoute } from 'vue-router';
 import { useUserStore } from '@/store/user';
 import { usePost } from '@/service/usePost';
 import { User, Post, LikeType } from './type';
+import UserItem from '@/components/UserItem.vue';
 
 const props = defineProps({
   user: {
@@ -122,16 +123,7 @@ const deletePost = async (postId: string, userId: string) => {
 <template>
   <div bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" p="6" m="b-4">
     <div display="flex items-center" bg="red-500x" m="b-4">
-      <div
-        :style="{
-          'background-image': `url(${post.user.photo})`,
-        }"
-        bg="center cover no-repeat"
-        border="2 dark-500 rounded-1/2"
-        w="45px"
-        h="45px"
-        m="r-4"
-      ></div>
+      <UserItem :photo="post.user.photo" size="45px" />
       <div display="flex flex-col justify-center">
         <RouterLink
           :to="{ name: 'UserWall', params: { id: post.user._id } }"
@@ -179,16 +171,7 @@ const deletePost = async (postId: string, userId: string) => {
 
     <div display="flex" m="b-4">
       <div>
-        <div
-          :style="{
-            'background-image': `url(${user.photo})`,
-          }"
-          bg="center cover no-repeat"
-          border="2 dark-500 rounded-1/2"
-          w="40px"
-          h="40px"
-          m="r-8.5px"
-        ></div>
+        <UserItem :photo="user.photo" margin="8.5px" />
       </div>
       <input
         v-model="comment"
@@ -241,16 +224,7 @@ const deletePost = async (postId: string, userId: string) => {
         border="rounded-12px"
       >
         <div display="flex" m="r-2.5 b-4">
-          <div
-            :style="{
-              'background-image': `url(${o.user.photo})`,
-            }"
-            bg="center cover no-repeat"
-            border="2 dark-500 rounded-1/2"
-            w="40px"
-            h="40px"
-            m="r-4"
-          ></div>
+          <UserItem :photo="o.user.photo" />
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"
@@ -269,14 +243,4 @@ const deletePost = async (postId: string, userId: string) => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-.scroll-area {
-  &::-webkit-scrollbar {
-    @apply w-7px bg-white;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply bg-dark-300 rounded-20px;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
