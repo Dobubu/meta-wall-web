@@ -11,6 +11,10 @@ import { useUpload } from '@/service/useUpload';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
+import themeRilakkuma from '@/assets/images/theme_rilakkuma.jpg';
+import themeKorilakkuma from '@/assets/images/theme_korilakkuma.jpeg';
+import themeChairoikoguma from '@/assets/images/theme_chairoikoguma.jpeg';
+import themeConversation from '@/assets/images/login.svg';
 
 const store = useUserStore();
 const userService = useUser();
@@ -25,6 +29,10 @@ const tabList = ref([
   {
     type: 'password',
     title: '重設密碼',
+  },
+  {
+    type: 'theme',
+    title: '更換主題',
   },
 ]);
 const globalErrMsg = ref('');
@@ -137,17 +145,38 @@ const updateActive = (type: string) => {
   resetStatus();
 };
 
-const isActive = (type: string) =>
-  activeTab.value === type ? 'bg-dark-500 text-white' : 'bg-white';
+const isActive = (type: string) => (activeTab.value === type ? 'meta-primary-bg' : 'bg-white');
 
 const isResetPassword = computed(() => {
   return {
     'bg-disable-100 cursor-not-allowed':
       !password.new || !password.repeatNew || password.new !== password.repeatNew,
-    'bg-active text-dark-500':
-      password.new && password.repeatNew && password.new === password.repeatNew,
+    'meta-active-bg': password.new && password.repeatNew && password.new === password.repeatNew,
   };
 });
+
+const themeList = ref([
+  {
+    theme: 'theme-rilakkuma',
+    url: themeRilakkuma,
+  },
+  {
+    theme: 'theme-korilakkuma',
+    url: themeKorilakkuma,
+  },
+  {
+    theme: 'theme-chairoikoguma',
+    url: themeChairoikoguma,
+  },
+  {
+    theme: 'theme-conversation',
+    url: themeConversation,
+  },
+]);
+
+const changeTheme = (theme: string) => {
+  store.theme = theme;
+};
 </script>
 
 <template>
@@ -251,9 +280,8 @@ const isResetPassword = computed(() => {
 
           <button
             type="submit"
-            bg="active"
+            class="meta-active-bg"
             p="y-4"
-            text="dark-500"
             border="2 dark-500 rounded-8px"
             shadow="item-bottom"
             :disabled="loadingProfile"
@@ -339,8 +367,48 @@ const isResetPassword = computed(() => {
           </button>
         </div>
       </div>
+
+      <div v-show="activeTab === 'theme'" display="flex justify-center items-center">
+        <div
+          v-for="o in themeList"
+          :key="o.theme"
+          display="flex flex-col items-center"
+          m="not-first:l-10"
+          cursor="pointer"
+          @click="changeTheme(o.theme)"
+        >
+          <div
+            class="theme-img overflow-hidden"
+            :class="{ active: o.theme === store.theme }"
+            w="max-150px"
+            z="1"
+            border="rounded-1/2"
+          >
+            <img :src="o.url" alt="" border="rounded-1/2x " />
+          </div>
+          <span :class="{ 'text-amber-500': o.theme === store.theme }" m="t-4" font="bold">
+            {{ o.theme }}
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.theme-img {
+  img {
+    transition: 0.5s ease all;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  &.active {
+    @apply border-amber-500 border-7;
+  }
+
+  &:hover img {
+    transform: scale(1.1);
+  }
+}
+</style>

@@ -137,7 +137,7 @@ const updateLike = (postId: string, type: string) => {
       </div>
       <button
         type="button"
-        :class="{ 'bg-dark-600': isFollow, 'bg-active': !isFollow }"
+        :class="{ 'bg-dark-600': isFollow, 'meta-active-bg': !isFollow }"
         border="2 dark-500 rounded-lg"
         shadow="item-bottom"
         text="dark-500"
@@ -179,12 +179,11 @@ const updateLike = (postId: string, type: string) => {
         @keyup.enter="search"
       />
       <button
+        class="meta-primary"
         transition="duration-base"
         w="12"
         h="12"
         border="2 dark-500 rounded-none"
-        bg="primary hover:active"
-        text="white hover:dark-500"
         :disabled="isSearchLoading"
         @click="search"
       >

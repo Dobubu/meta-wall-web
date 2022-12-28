@@ -67,12 +67,11 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
     <RouterLink :to="{ name: 'Create' }" class="w-full">
       <button
         data-cy="menu-add-post-btn"
+        class="meta-primary"
         type="button"
         transition="duration-base"
-        bg="primary hover:active"
         p="y-3"
         m="b-6"
-        text="white hover:dark-500"
         border="2 dark-500 rounded-8px"
         w="full"
         font="bold"
@@ -86,7 +85,7 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
         <RouterLink :to="{ name: 'Edit' }" class="w-full flex items-center">
           <UserItem class="icon" :photo="store.user.photo" size="50px" />
 
-          <p font="bold" text="hover:primary">{{ store.user.name }}</p>
+          <p font="bold">{{ store.user.name }}</p>
         </RouterLink>
       </li>
 
@@ -97,7 +96,6 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
             m="r-4"
             display="flex justify-center items-center"
             position="relative"
-            bg="icon-100"
             border="2 dark-500 rounded-1/2"
             w="50px"
             h="50px"
@@ -118,7 +116,7 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
             <p v-if="o.routerName === 'ChatWall'" text="sm">
               在線人數：{{ wsPlugin.onlineTotal }} 人
             </p>
-            <p font="bold" text="hover:primary">{{ o.title }}</p>
+            <p font="bold">{{ o.title }}</p>
           </div>
         </RouterLink>
       </li>
@@ -137,13 +135,19 @@ li {
     @apply transition duration-base;
   }
 
+  .icon {
+    background-color: var(--primary);
+    color: var(--text);
+  }
+
   &:hover {
     .icon {
-      @apply bg-primary text-white;
+      background-color: var(--active);
+      color: var(--hover-text);
     }
 
     p {
-      @apply text-primary;
+      color: var(--primary);
     }
   }
 }

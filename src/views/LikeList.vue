@@ -57,10 +57,10 @@ const deleteLike = async (postId: string) => {
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"
-              class="text-dark-500 16px"
+              class="meta-primary-text-hover 16px"
               m="b-5px"
               font="bold"
-              hover="text-primary underline"
+              hover="underline"
             >
               {{ o.user.name }}
             </RouterLink>
@@ -75,7 +75,7 @@ const deleteLike = async (postId: string) => {
             m="r-9"
             @click="deleteLike(o._id)"
           >
-            <font-awesome-icon text="primary" :icon="['far', 'thumbs-up']" size="lg" />
+            <font-awesome-icon class="meta-primary-text" :icon="['far', 'thumbs-up']" size="lg" />
             <span text="14px dark-300">取消</span>
           </div>
           <RouterLink :to="{ name: 'PostInfo', params: { id: o._id } }">

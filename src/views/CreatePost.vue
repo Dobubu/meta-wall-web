@@ -32,7 +32,7 @@ const postImgs = computed(() => uploadService.file.url);
 const createPostClass = computed(() => {
   return {
     'bg-disable-100 cursor-not-allowed': !post.content || loading.value,
-    'bg-active': post.content,
+    'meta-active-bg': post.content,
   };
 });
 

@@ -34,7 +34,7 @@ const store = useUserStore();
       <div display="flex items-center">
         <p text="msg-300 right" m="t-2 mr-2">{{ msg.createdAt }}</p>
         <div
-          bg="msg-200"
+          class="meta-chat-user"
           w="5/6"
           border="rounded-t-3xl rounded-l-3xl"
           p="3"

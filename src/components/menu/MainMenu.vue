@@ -41,7 +41,9 @@ const logout = () => {
 <template>
   <header display="flex justify-center" w="full" bg="white" border="b-3 dark-500">
     <div h="60px" p="y-3" w="full max-1200px" display="flex justify-between items-center">
-      <RouterLink :to="{ name: 'Post' }" class="text-26px" font="paytone">MetaWall</RouterLink>
+      <RouterLink :to="{ name: 'Post' }" class="meta-primary-text text-26px" font="paytone"
+        >MetaWall</RouterLink
+      >
 
       <div
         v-if="store.user"
@@ -54,8 +56,10 @@ const logout = () => {
         <div display="flex items-center">
           <UserItem :photo="store.user.photo" size="30px" margin="0" />
 
-          <div border="b-2 dark-500 hover:primary" m="ml-6.5px" p="x-3.5px" text="hover:primary">
-            <p font="bold" text="dark-500" leading="text">{{ store.user.name }}</p>
+          <div class="line" border="b-2 dark-500" m="ml-6.5px" p="x-3.5px">
+            <p font="bold" class="meta-primary-text-hover" leading="text">
+              {{ store.user.name }}
+            </p>
           </div>
           <ul
             v-show="dropDownMenu"
@@ -94,4 +98,10 @@ const logout = () => {
   </header>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.line {
+  &:hover {
+    border-color: var(--primary);
+  }
+}
+</style>

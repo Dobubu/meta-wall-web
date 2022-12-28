@@ -46,10 +46,10 @@ onMounted(async () => {
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"
-              class="text-dark-500 16px"
+              class="meta-primary-text-hover 16px"
               m="b-5px"
               font="bold"
-              hover="text-primary underline"
+              hover="underline"
             >
               {{ o.user.name }}
             </RouterLink>

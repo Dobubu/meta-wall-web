@@ -80,12 +80,11 @@ const updateLike = (postId: string, type: string) => {
         @keyup.enter="search"
       />
       <button
+        class="meta-primary"
         transition="duration-base"
         w="12"
         h="12"
         border="2 dark-500 rounded-none"
-        bg="primary hover:active"
-        text="white hover:dark-500"
         :disabled="isSearchLoading"
         @click="search"
       >

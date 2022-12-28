@@ -29,7 +29,7 @@ const comment = ref('');
 const createPostClass = computed(() => {
   return {
     'bg-disable-100 cursor-not-allowed': !comment.value,
-    'bg-primary text-white hover:(bg-active text-dark-500)': comment.value,
+    'meta-primary': comment.value,
   };
 });
 
@@ -37,9 +37,9 @@ const isLikesExistUser = computed(() => !!props.post.likes.find(o => o === store
 
 const likesIconClass = computed(() => {
   return {
-    'text-primary': props.post.likes,
+    'meta-primary-text': props.post.likes,
     'text-dark-300': !props.post.likes,
-    'border-2 rounded-1/2 p-1 border-primary': isLikesExistUser.value,
+    'border-2 rounded-1/2 p-1 meta-primary-border': isLikesExistUser.value,
   };
 });
 
@@ -127,9 +127,9 @@ const deletePost = async (postId: string, userId: string) => {
       <div display="flex flex-col justify-center">
         <RouterLink
           :to="{ name: 'UserWall', params: { id: post.user._id } }"
-          class="text-dark-500"
+          class="meta-primary-text-hover"
           font="bold"
-          hover="text-primary underline"
+          hover="underline"
         >
           {{ post.user.name }}
         </RouterLink>
@@ -228,9 +228,9 @@ const deletePost = async (postId: string, userId: string) => {
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"
-              class="text-dark-500"
+              class="meta-primary-text-hover"
               font="bold"
-              hover="text-primary underline"
+              hover="underline"
             >
               {{ o.user.name }}
             </RouterLink>
