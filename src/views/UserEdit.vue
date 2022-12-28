@@ -14,7 +14,7 @@ import UserItem from '@/components/UserItem.vue';
 import themeRilakkuma from '@/assets/images/theme_rilakkuma.jpg';
 import themeKorilakkuma from '@/assets/images/theme_korilakkuma.jpeg';
 import themeChairoikoguma from '@/assets/images/theme_chairoikoguma.jpeg';
-import themeConversation from '@/assets/images/login.svg';
+import themeConversation from '@/assets/images/login_conversation.svg';
 
 const store = useUserStore();
 const userService = useUser();
@@ -201,7 +201,7 @@ const changeTheme = (theme: string) => {
     <div v-if="store.user" p="y-8" border="2 rounded-8px dark-500" shadow="item-bottom" bg="white">
       <div v-show="activeTab === 'info'" display="flex flex-col items-center">
         <div m="b-4">
-          <UserItem :photo="(userPhoto as string)" size="107px" />
+          <UserItem :photo="(userPhoto as string)" size="107px" margin="0" />
         </div>
 
         <div v-if="uploadService.file.file" display="flex items-center" m="b-2">
