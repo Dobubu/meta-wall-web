@@ -87,10 +87,10 @@ const login = async () => {
       bg="dark-100"
       shadow="main"
       p="y-96px x-50px"
-      display="flex justify-between"
+      display="flex justify-between items-center"
       border="2 dark-500"
     >
-      <img alt="login background" src="../assets/images/login.svg" />
+      <div class="login-bg" h="350px" w="350px" bg="center no-repeat contain"></div>
       <div>
         <form action="." display="flex flex-col" text="center">
           <h1 class="meta-primary-text" leading="text" text="60px" font="paytone bold">MetaWall</h1>
@@ -225,5 +225,9 @@ const login = async () => {
 <style lang="scss" scoped>
 .bg {
   background-image: url('@/assets/images/bg.svg');
+}
+
+.login-bg {
+  background-image: var(--login-bg);
 }
 </style>
