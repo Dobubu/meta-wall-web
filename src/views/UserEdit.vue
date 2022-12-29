@@ -8,6 +8,7 @@ import { UpdateProfileReq } from '@/api/user';
 import { SexType } from '@/api/user';
 import { useUser } from '@/service/useUser';
 import { useUpload } from '@/service/useUpload';
+import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
@@ -50,7 +51,9 @@ const rulesUser = {
 
 const v$User = useVuelidate(rulesUser, user);
 
-const userPhoto = computed(() => uploadService.file.url || store.user?.photo);
+const userPhotoService = useUserPhoto();
+
+const userPhoto = computed(() => uploadService.file.url || userPhotoService.getUserPhoto.value);
 
 const updateUser = async () => {
   try {

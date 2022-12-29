@@ -17,10 +17,6 @@ import {
   apiAddPostComment,
 } from '@/api/post';
 import { dayFormate } from '@/lib/formate';
-import { useAuth } from '@/service/useAuth';
-
-import DefaultPhotoUser from '@/assets/images/default_user.jpg';
-import DefaultPhotoUsers from '@/assets/images/default_users.jpg';
 
 export const usePost = () => {
   const list = ref<Post[]>([]);
@@ -38,7 +34,6 @@ export const usePost = () => {
   const store = useUserStore();
   const route = useRoute();
   const router = useRouter();
-  const authService = useAuth();
 
   const getQueryObject = computed(() => {
     return {
@@ -80,11 +75,7 @@ export const usePost = () => {
         createdAt: dayFormate(res.data.createdAt),
         user: {
           ...res.data.user,
-          photo: res.data.user.photo
-            ? res.data.user.photo
-            : authService.getUserId() === res.data.user._id
-            ? DefaultPhotoUser
-            : DefaultPhotoUsers,
+          photo: res.data.user.photo || '',
         },
         comments: res.data.comments.map((o: Comment) => {
           let dict = {
@@ -92,13 +83,7 @@ export const usePost = () => {
             createdAt: dayFormate(o.createdAt),
           };
 
-          const photo = o.user.photo
-            ? o.user.photo
-            : authService.getUserId() === o.user._id
-            ? DefaultPhotoUser
-            : DefaultPhotoUsers;
-
-          dict.user.photo = photo;
+          dict.user.photo = o.user.photo || '';
 
           return dict;
         }),
@@ -132,11 +117,7 @@ export const usePost = () => {
           createdAt: dayFormate(o.createdAt),
           user: {
             ...o.user,
-            photo: o.user.photo
-              ? o.user.photo
-              : authService.getUserId() === o.user._id
-              ? DefaultPhotoUser
-              : DefaultPhotoUsers,
+            photo: o.user.photo || '',
           },
           comments: o.comments.map(o2 => {
             let dict = {
@@ -144,13 +125,7 @@ export const usePost = () => {
               createdAt: dayFormate(o2.createdAt),
             };
 
-            const photo = o2.user.photo
-              ? o2.user.photo
-              : authService.getUserId() === o2.user._id
-              ? DefaultPhotoUser
-              : DefaultPhotoUsers;
-
-            dict.user.photo = photo;
+            dict.user.photo = o2.user.photo || '';
 
             return dict;
           }),
@@ -168,26 +143,19 @@ export const usePost = () => {
       loading.userWallList = true;
 
       const res = await apiGetUserPostsList(userId, query);
-      const photo = authService.getUserId() === userId ? DefaultPhotoUser : DefaultPhotoUsers;
 
       userPostList.value = res.data.map((o: Post) => {
         return {
           ...o,
           createdAt: dayFormate(o.createdAt),
-          user: { ...o.user, photo: o.user.photo || photo },
+          user: { ...o.user, photo: o.user.photo || '' },
           comments: o.comments.map(o2 => {
             let dict = {
               ...o2,
               createdAt: dayFormate(o2.createdAt),
             };
 
-            const photo2 = o2.user.photo
-              ? o2.user.photo
-              : authService.getUserId() === o2.user._id
-              ? DefaultPhotoUser
-              : DefaultPhotoUsers;
-
-            dict.user.photo = photo2;
+            dict.user.photo = o2.user.photo || '';
 
             return dict;
           }),
