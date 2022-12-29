@@ -4,12 +4,14 @@ import { RouterLink } from 'vue-router';
 
 import { useUser } from '@/service/useUser';
 import { usePost } from '@/service/usePost';
+import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
 
 const userService = useUser();
 const postService = usePost();
+const userPhotoService = useUserPhoto();
 
 const list = computed(() => userService.likeList.value);
 const isLoading = computed(() => userService.loading.likeList);
@@ -52,7 +54,7 @@ const deleteLike = async (postId: string) => {
         shadow="item-bottom"
       >
         <div display="flex">
-          <UserItem :photo="o.user.photo" />
+          <UserItem :photo="userPhotoService.getUsersPhoto(o.user._id, o.user.photo)" />
 
           <div display="flex flex-col justify-center">
             <RouterLink

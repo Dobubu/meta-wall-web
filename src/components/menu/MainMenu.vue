@@ -4,11 +4,14 @@ import { RouterLink, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/user';
 import { useWebSocket } from '@/plugins/ws';
 
+import { useUserPhoto } from '@/lib/useUserPhoto';
+
 import UserItem from '@/components/UserItem.vue';
 
 const router = useRouter();
 const store = useUserStore();
 const wsPlugin = useWebSocket();
+const userPhotoService = useUserPhoto();
 
 const dropDownMenu = ref(false);
 const menuList = ref([
@@ -54,7 +57,7 @@ const logout = () => {
         @mouseleave="hideMenu"
       >
         <div display="flex items-center">
-          <UserItem :photo="store.user.photo" size="30px" margin="0" />
+          <UserItem :photo="userPhotoService.getUserPhoto.value" size="30px" margin="0" />
 
           <div class="line" border="b-2 dark-500" m="ml-6.5px" p="x-3.5px">
             <p font="bold" class="meta-primary-text-hover" leading="text">

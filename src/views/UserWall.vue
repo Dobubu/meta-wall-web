@@ -8,6 +8,7 @@ import { GetProfileRes } from '@/api/user';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';
+import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import PostItem from '@/components/post/PostItem.vue';
 
@@ -17,6 +18,7 @@ const store = useUserStore();
 const userService = useUser();
 const postService = usePost();
 const authService = useAuth();
+const userPhotoService = useUserPhoto();
 
 const userInfo = ref<GetProfileRes>();
 const sort = ref(SortType.DESC);
@@ -118,8 +120,12 @@ const updateLike = (postId: string, type: string) => {
     >
       <div display="flex" border="rounded-8px">
         <div
+          v-if="userInfo"
           :style="{
-            'background-image': `url(${userInfo?.photo})`,
+            'background-image': `url(${userPhotoService.getUsersPhoto(
+              userInfo._id,
+              userInfo.photo,
+            )})`,
           }"
           bg="center cover no-repeat"
           display="flex justify-center items-center"

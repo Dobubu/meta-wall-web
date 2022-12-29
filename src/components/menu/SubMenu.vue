@@ -4,11 +4,14 @@ import { RouterLink, useRoute } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
 import { useWebSocket } from '@/plugins/ws';
+import { useUserPhoto } from '@/lib/useUserPhoto';
+
 import UserItem from '@/components/UserItem.vue';
 
 const route = useRoute();
 const store = useUserStore();
 const wsPlugin = useWebSocket();
+const userPhotoService = useUserPhoto();
 
 const menuList = ref([
   {
@@ -83,7 +86,12 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
     <ul w="full">
       <li v-if="store.user" cursor="pointer" display="flex items-center">
         <RouterLink :to="{ name: 'Edit' }" class="w-full flex items-center">
-          <UserItem class="icon" :photo="store.user.photo" size="50px" />
+          <UserItem
+            class="icon"
+            :class="{ '!bg-white': store.theme === 'theme-conversation' }"
+            :photo="userPhotoService.getUserPhoto.value"
+            size="50px"
+          />
 
           <p font="bold">{{ store.user.name }}</p>
         </RouterLink>

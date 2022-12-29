@@ -19,8 +19,6 @@ import { StorageType } from '@/service/type';
 import { useAuth } from '@/service/useAuth';
 
 import { User, Post } from '@/components/post/type';
-import DefaultPhotoUser from '@/assets/images/default_user.jpg';
-import DefaultPhotoUsers from '@/assets/images/default_users.jpg';
 
 export const useUser = () => {
   const list = ref<User[]>([]);
@@ -38,10 +36,9 @@ export const useUser = () => {
 
   const fetchProfile = async (userId: string) => {
     const res = await apiGetProfile(userId);
-    const photo = authService.getUserId() === userId ? DefaultPhotoUser : DefaultPhotoUsers;
 
     if (!res.data.photo) {
-      res.data.photo = photo;
+      res.data.photo = '';
     }
 
     if (userId === authService.getUserId()) {
@@ -56,7 +53,7 @@ export const useUser = () => {
       const res = await apiUpdateProfile(payload);
 
       if (!res.data.photo) {
-        res.data.photo = DefaultPhotoUser;
+        res.data.photo = '';
       }
 
       store.user = res.data;
@@ -101,11 +98,7 @@ export const useUser = () => {
           createdAt: dayFormate(o.createdAt),
           user: {
             ...o.user,
-            photo: o.user.photo
-              ? o.user.photo
-              : authService.getUserId() === o.user._id
-              ? DefaultPhotoUser
-              : DefaultPhotoUsers,
+            photo: o.user.photo || '',
           },
         };
       });
@@ -148,11 +141,7 @@ export const useUser = () => {
           createdAt: dayFormate(o.createdAt),
           user: {
             ...o.user,
-            photo: o.user.photo
-              ? o.user.photo
-              : authService.getUserId() === o.user._id
-              ? DefaultPhotoUser
-              : DefaultPhotoUsers,
+            photo: o.user.photo || '',
           },
         };
       });
