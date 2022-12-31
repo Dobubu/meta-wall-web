@@ -23,9 +23,12 @@ export interface GetProfileRes {
   sex: SexType;
   followers: FollowUser[];
   following: FollowUser[];
+  theme: string;
 }
 export type UpdateProfileReq = Partial<Pick<GetProfileRes, 'name' | 'photo' | 'sex'>> &
   Pick<GetProfileRes, 'name'>;
+
+export type UpdateThemeReq = Pick<GetProfileRes, 'theme'>;
 
 export interface UpdatePasswordReq {
   password: string;
@@ -53,6 +56,9 @@ export const apiUpdateProfile = async (payload: UpdateProfileReq) =>
 
 export const apiUpdatePassword = async (payload: UpdatePasswordReq) =>
   PostAPI.post('/user/updatePassword', payload);
+
+export const apiUpdateTheme = async (payload: UpdateThemeReq) =>
+  PostAPI.patch('/user/theme', payload);
 
 export const apiGetUserList = async () => PostAPI.get('/users');
 
