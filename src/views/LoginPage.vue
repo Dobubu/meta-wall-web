@@ -87,13 +87,13 @@ const login = async () => {
       bg="dark-100"
       shadow="main"
       p="y-96px x-50px"
-      display="flex justify-between"
+      display="flex justify-between items-center"
       border="2 dark-500"
     >
-      <img alt="login background" src="../assets/images/login.svg" />
+      <div class="login-bg" h="350px" w="350px" bg="center no-repeat contain"></div>
       <div>
         <form action="." display="flex flex-col" text="center">
-          <h1 leading="text" text="60px primary" font="paytone bold">MetaWall</h1>
+          <h1 class="meta-primary-text" leading="text" text="60px" font="paytone bold">MetaWall</h1>
           <h2 m="b-9" text="24px dark-500" font="helvetica bold">
             {{ isLogin ? '到元宇宙展開全新社交圈' : '註冊' }}
           </h2>
@@ -165,12 +165,11 @@ const login = async () => {
           <template v-if="isLogin">
             <button
               v-if="isLogin"
+              class="meta-primary"
               transition="duration-base"
               type="submit"
-              bg="primary hover:active"
               p="y-4"
               m="b-4"
-              text="white hover:dark-500"
               border="2 dark-500 rounded-8px"
               :disabled="authService.loading.auth"
               @click.prevent="login"
@@ -198,11 +197,10 @@ const login = async () => {
             <button
               type="submit"
               data-cy="register-btn"
+              class="meta-primary"
               transition="duration-base"
-              bg="primary hover:active"
               p="y-4"
               m="b-4"
-              text="white hover:dark-500"
               border="2 dark-500 rounded-8px"
               :disabled="authService.loading.auth"
               @click.prevent="signUp"
@@ -227,5 +225,9 @@ const login = async () => {
 <style lang="scss" scoped>
 .bg {
   background-image: url('@/assets/images/bg.svg');
+}
+
+.login-bg {
+  background-image: var(--login-bg);
 }
 </style>

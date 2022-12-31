@@ -7,6 +7,8 @@ import {
   apiUpdateProfile,
   UpdatePasswordReq,
   apiUpdatePassword,
+  UpdateThemeReq,
+  apiUpdateTheme,
   apiGetUserLikeList,
   apiFollowUser,
   apiUnFollowUser,
@@ -19,8 +21,6 @@ import { StorageType } from '@/service/type';
 import { useAuth } from '@/service/useAuth';
 
 import { User, Post } from '@/components/post/type';
-import DefaultPhotoUser from '@/assets/images/default_user.jpg';
-import DefaultPhotoUsers from '@/assets/images/default_users.jpg';
 
 export const useUser = () => {
   const list = ref<User[]>([]);
@@ -31,6 +31,7 @@ export const useUser = () => {
     password: false,
     likeList: false,
     followingList: false,
+    theme: false,
   });
 
   const store = useUserStore();
@@ -38,14 +39,16 @@ export const useUser = () => {
 
   const fetchProfile = async (userId: string) => {
     const res = await apiGetProfile(userId);
-    const photo = authService.getUserId() === userId ? DefaultPhotoUser : DefaultPhotoUsers;
 
     if (!res.data.photo) {
-      res.data.photo = photo;
+      res.data.photo = '';
     }
 
     if (userId === authService.getUserId()) {
       store.user = res.data;
+
+      store.theme = res.data.theme;
+      localStorage.setItem(StorageType.THEME, res.data.theme);
     }
 
     return res.data;
@@ -56,10 +59,11 @@ export const useUser = () => {
       const res = await apiUpdateProfile(payload);
 
       if (!res.data.photo) {
-        res.data.photo = DefaultPhotoUser;
+        res.data.photo = '';
       }
 
       store.user = res.data;
+      store.theme = res.data.theme;
     } catch (e) {
       console.error('error: ', e);
       throw e;
@@ -77,6 +81,24 @@ export const useUser = () => {
       throw e;
     } finally {
       loading.password = false;
+    }
+  };
+
+  const updateTheme = async (payload: UpdateThemeReq) => {
+    try {
+      loading.theme = true;
+
+      const res = await apiUpdateTheme(payload);
+
+      store.user = res.data;
+
+      store.theme = res.data.theme;
+      localStorage.setItem(StorageType.THEME, res.data.theme);
+    } catch (e) {
+      console.error('error: ', e);
+      throw e;
+    } finally {
+      loading.theme = false;
     }
   };
 
@@ -101,11 +123,7 @@ export const useUser = () => {
           createdAt: dayFormate(o.createdAt),
           user: {
             ...o.user,
-            photo: o.user.photo
-              ? o.user.photo
-              : authService.getUserId() === o.user._id
-              ? DefaultPhotoUser
-              : DefaultPhotoUsers,
+            photo: o.user.photo || '',
           },
         };
       });
@@ -148,11 +166,7 @@ export const useUser = () => {
           createdAt: dayFormate(o.createdAt),
           user: {
             ...o.user,
-            photo: o.user.photo
-              ? o.user.photo
-              : authService.getUserId() === o.user._id
-              ? DefaultPhotoUser
-              : DefaultPhotoUsers,
+            photo: o.user.photo || '',
           },
         };
       });
@@ -174,6 +188,7 @@ export const useUser = () => {
     updateLikeList,
     updateProfile,
     updatePassword,
+    updateTheme,
     followUser,
     unFollowUser,
     fetchUserFollowingList,

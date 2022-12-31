@@ -4,11 +4,13 @@ import { RouterLink } from 'vue-router';
 
 import { useUser } from '@/service/useUser';
 import { dayTimeToNow } from '@/lib/formate';
+import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
 
 const userService = useUser();
+const userPhotoService = useUserPhoto();
 
 const list = computed(() => userService.followList.value);
 const isLoading = computed(() => userService.loading.followingList);
@@ -41,15 +43,15 @@ onMounted(async () => {
         shadow="item-bottom"
       >
         <div display="flex">
-          <UserItem :photo="o.user.photo" />
+          <UserItem :photo="userPhotoService.getUsersPhoto(o.user._id, o.user.photo)" />
 
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"
-              class="text-dark-500 16px"
+              class="meta-primary-text-hover 16px"
               m="b-5px"
               font="bold"
-              hover="text-primary underline"
+              hover="underline"
             >
               {{ o.user.name }}
             </RouterLink>

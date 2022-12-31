@@ -72,12 +72,12 @@ onUnmounted(() => {
 
     <button
       v-if="store.user?.name === 'mischa'"
+      class="meta-primary"
       type="button"
       transition="duration-base"
-      bg="primary hover:active"
       p="y-1 x-2"
       m="l-10px"
-      text="sm white hover:dark-500"
+      text="sm"
       border="dark-500 rounded-8px"
       @click="clearMsg"
     >
@@ -88,9 +88,9 @@ onUnmounted(() => {
   <div
     v-if="store.user"
     ref="el"
+    class="meta-chat-bg"
     h="6/7"
     m="-t-4"
-    bg="icon-100"
     p="7"
     display="flex flex-col"
     position="relative"

@@ -4,6 +4,8 @@ import { RouterLink, useRoute } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
 import { usePost } from '@/service/usePost';
+import { useUserPhoto } from '@/lib/useUserPhoto';
+
 import { User, Post, LikeType } from './type';
 import UserItem from '@/components/UserItem.vue';
 
@@ -23,13 +25,14 @@ const emit = defineEmits(['updateLike', 'fetchUserPostList', 'fetchPostList', 'f
 const route = useRoute();
 const store = useUserStore();
 const postService = usePost();
+const userPhotoService = useUserPhoto();
 
 const comment = ref('');
 
 const createPostClass = computed(() => {
   return {
     'bg-disable-100 cursor-not-allowed': !comment.value,
-    'bg-primary text-white hover:(bg-active text-dark-500)': comment.value,
+    'meta-primary': comment.value,
   };
 });
 
@@ -37,9 +40,9 @@ const isLikesExistUser = computed(() => !!props.post.likes.find(o => o === store
 
 const likesIconClass = computed(() => {
   return {
-    'text-primary': props.post.likes,
+    'meta-primary-text': props.post.likes,
     'text-dark-300': !props.post.likes,
-    'border-2 rounded-1/2 p-1 border-primary': isLikesExistUser.value,
+    'border-2 rounded-1/2 p-1 meta-primary-border': isLikesExistUser.value,
   };
 });
 
@@ -123,13 +126,16 @@ const deletePost = async (postId: string, userId: string) => {
 <template>
   <div bg="white" border="2 b-4 dark-500 rounded-lg" w="full min-300px" p="6" m="b-4">
     <div display="flex items-center" bg="red-500x" m="b-4">
-      <UserItem :photo="post.user.photo" size="45px" />
+      <UserItem
+        :photo="userPhotoService.getUsersPhoto(post.user._id, post.user.photo)"
+        size="45px"
+      />
       <div display="flex flex-col justify-center">
         <RouterLink
           :to="{ name: 'UserWall', params: { id: post.user._id } }"
-          class="text-dark-500"
+          class="meta-primary-text-hover"
           font="bold"
-          hover="text-primary underline"
+          hover="underline"
         >
           {{ post.user.name }}
         </RouterLink>
@@ -171,7 +177,7 @@ const deletePost = async (postId: string, userId: string) => {
 
     <div display="flex" m="b-4">
       <div>
-        <UserItem :photo="user.photo" margin="8.5px" />
+        <UserItem :photo="userPhotoService.getUserPhoto.value" margin="8.5px" />
       </div>
       <input
         v-model="comment"
@@ -224,13 +230,13 @@ const deletePost = async (postId: string, userId: string) => {
         border="rounded-12px"
       >
         <div display="flex" m="r-2.5 b-4">
-          <UserItem :photo="o.user.photo" />
+          <UserItem :photo="userPhotoService.getUsersPhoto(o.user._id, o.user.photo)" />
           <div display="flex flex-col justify-center">
             <RouterLink
               :to="{ name: 'UserWall', params: { id: o.user._id } }"
-              class="text-dark-500"
+              class="meta-primary-text-hover"
               font="bold"
-              hover="text-primary underline"
+              hover="underline"
             >
               {{ o.user.name }}
             </RouterLink>

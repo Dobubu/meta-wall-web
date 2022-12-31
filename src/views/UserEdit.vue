@@ -8,9 +8,14 @@ import { UpdateProfileReq } from '@/api/user';
 import { SexType } from '@/api/user';
 import { useUser } from '@/service/useUser';
 import { useUpload } from '@/service/useUpload';
+import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
+import themeRilakkuma from '@/assets/images/theme_rilakkuma.jpg';
+import themeKorilakkuma from '@/assets/images/theme_korilakkuma.jpeg';
+import themeChairoikoguma from '@/assets/images/theme_chairoikoguma.jpeg';
+import themeConversation from '@/assets/images/login_conversation.svg';
 
 const store = useUserStore();
 const userService = useUser();
@@ -25,6 +30,10 @@ const tabList = ref([
   {
     type: 'password',
     title: '重設密碼',
+  },
+  {
+    type: 'theme',
+    title: '更換主題',
   },
 ]);
 const globalErrMsg = ref('');
@@ -42,7 +51,9 @@ const rulesUser = {
 
 const v$User = useVuelidate(rulesUser, user);
 
-const userPhoto = computed(() => uploadService.file.url || store.user?.photo);
+const userPhotoService = useUserPhoto();
+
+const userPhoto = computed(() => uploadService.file.url || userPhotoService.getUserPhoto.value);
 
 const updateUser = async () => {
   try {
@@ -137,17 +148,53 @@ const updateActive = (type: string) => {
   resetStatus();
 };
 
-const isActive = (type: string) =>
-  activeTab.value === type ? 'bg-dark-500 text-white' : 'bg-white';
+const isActive = (type: string) => (activeTab.value === type ? 'meta-primary-bg' : 'bg-white');
 
 const isResetPassword = computed(() => {
   return {
     'bg-disable-100 cursor-not-allowed':
       !password.new || !password.repeatNew || password.new !== password.repeatNew,
-    'bg-active text-dark-500':
-      password.new && password.repeatNew && password.new === password.repeatNew,
+    'meta-active-bg': password.new && password.repeatNew && password.new === password.repeatNew,
   };
 });
+
+const themeList = ref([
+  {
+    theme: 'theme-rilakkuma',
+    url: themeRilakkuma,
+  },
+  {
+    theme: 'theme-korilakkuma',
+    url: themeKorilakkuma,
+  },
+  {
+    theme: 'theme-chairoikoguma',
+    url: themeChairoikoguma,
+  },
+  {
+    theme: 'theme-conversation',
+    url: themeConversation,
+  },
+]);
+
+const previewTheme = async (theme: string) => {
+  store.theme = theme;
+};
+
+const isCurrentTheme = computed(() => store.theme === store.user?.theme);
+const themeBtnClass = computed(() => {
+  return {
+    'bg-disable-100 !cursor-not-allowed': store.theme === store.user?.theme,
+    'meta-active-bg': store.theme !== store.user?.theme,
+  };
+});
+
+const changeTheme = async () => {
+  if (isCurrentTheme.value) return;
+
+  await userService.updateTheme({ theme: store.theme });
+  alert('主題更新成功！');
+};
 </script>
 
 <template>
@@ -172,7 +219,7 @@ const isResetPassword = computed(() => {
     <div v-if="store.user" p="y-8" border="2 rounded-8px dark-500" shadow="item-bottom" bg="white">
       <div v-show="activeTab === 'info'" display="flex flex-col items-center">
         <div m="b-4">
-          <UserItem :photo="(userPhoto as string)" size="107px" />
+          <UserItem :photo="(userPhoto as string)" size="107px" margin="0" />
         </div>
 
         <div v-if="uploadService.file.file" display="flex items-center" m="b-2">
@@ -251,9 +298,8 @@ const isResetPassword = computed(() => {
 
           <button
             type="submit"
-            bg="active"
+            class="meta-active-bg"
             p="y-4"
-            text="dark-500"
             border="2 dark-500 rounded-8px"
             shadow="item-bottom"
             :disabled="loadingProfile"
@@ -339,8 +385,96 @@ const isResetPassword = computed(() => {
           </button>
         </div>
       </div>
+
+      <div v-show="activeTab === 'theme'" display="flex flex-col items-center">
+        <div display="flex justify-center items-center">
+          <div
+            v-for="o in themeList"
+            :key="o.theme"
+            display="flex flex-col items-center"
+            m="not-first:l-10"
+            cursor="pointer"
+            @click="previewTheme(o.theme)"
+          >
+            <div
+              class="theme-img overflow-hidden"
+              :class="{ active: o.theme === store.theme, 'preview-text': o.theme !== store.theme }"
+              w="max-150px"
+              z="1"
+              border="rounded-1/2"
+            >
+              <img :src="o.url" alt="" border="rounded-1/2x " />
+            </div>
+            <span :class="{ 'text-amber-500': o.theme === store.theme }" m="t-4" font="bold">
+              {{ o.theme }}
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          :class="themeBtnClass"
+          w="3/5"
+          m="t-10"
+          p="y-4"
+          border="2 dark-500 rounded-8px"
+          shadow="item-bottom"
+          :disabled="userService.loading.theme"
+          @click.prevent="changeTheme"
+        >
+          送出更新
+          <font-awesome-icon
+            v-if="userService.loading.theme"
+            :icon="['fa', 'circle-notch']"
+            pulse
+            size="lg"
+            m="l-2"
+          />
+        </button>
+        <span v-show="!isCurrentTheme" m="t-4" text="14px danger left">
+          提醒您，預覽的樣式尚未儲存
+        </span>
+        <span v-show="isCurrentTheme" class="meta-primary-text" m="t-4" text="14px left">
+          該樣式是您當前樣式
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.theme-img {
+  img {
+    transition: 0.5s ease all;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  &.active {
+    @apply border-amber-500 border-7;
+  }
+
+  &:hover img {
+    transform: scale(1.1);
+  }
+}
+
+.preview-text {
+  position: relative;
+
+  &::before {
+    content: 'preview';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 100px;
+    background: rgba(229, 229, 229, 0.5);
+    z-index: 10;
+  }
+}
+</style>

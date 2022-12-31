@@ -8,6 +8,7 @@ import { GetProfileRes } from '@/api/user';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';
+import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import PostItem from '@/components/post/PostItem.vue';
 
@@ -17,6 +18,7 @@ const store = useUserStore();
 const userService = useUser();
 const postService = usePost();
 const authService = useAuth();
+const userPhotoService = useUserPhoto();
 
 const userInfo = ref<GetProfileRes>();
 const sort = ref(SortType.DESC);
@@ -119,7 +121,10 @@ const updateLike = (postId: string, type: string) => {
       <div display="flex" border="rounded-8px">
         <div
           :style="{
-            'background-image': `url(${userInfo?.photo})`,
+            'background-image': `url(${userPhotoService.getUsersPhoto(
+              userInfo?._id,
+              userInfo?.photo,
+            )})`,
           }"
           bg="center cover no-repeat"
           display="flex justify-center items-center"
@@ -137,7 +142,7 @@ const updateLike = (postId: string, type: string) => {
       </div>
       <button
         type="button"
-        :class="{ 'bg-dark-600': isFollow, 'bg-active': !isFollow }"
+        :class="{ 'bg-dark-600': isFollow, 'meta-active-bg': !isFollow }"
         border="2 dark-500 rounded-lg"
         shadow="item-bottom"
         text="dark-500"
@@ -179,12 +184,11 @@ const updateLike = (postId: string, type: string) => {
         @keyup.enter="search"
       />
       <button
+        class="meta-primary"
         transition="duration-base"
         w="12"
         h="12"
         border="2 dark-500 rounded-none"
-        bg="primary hover:active"
-        text="white hover:dark-500"
         :disabled="isSearchLoading"
         @click="search"
       >
