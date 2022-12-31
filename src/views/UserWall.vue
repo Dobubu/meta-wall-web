@@ -120,10 +120,11 @@ const updateLike = (postId: string, type: string) => {
     >
       <div display="flex" border="rounded-8px">
         <div
+          v-if="userInfo"
           :style="{
             'background-image': `url(${userPhotoService.getUsersPhoto(
-              userInfo?._id,
-              userInfo?.photo,
+              userInfo._id,
+              userInfo.photo,
             )})`,
           }"
           bg="center cover no-repeat"
