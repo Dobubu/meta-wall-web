@@ -5,6 +5,7 @@ import { useUserStore } from '@/store/user';
 import { useWebSocket } from '@/plugins/ws';
 
 import { useUserPhoto } from '@/lib/useUserPhoto';
+import { StorageType } from '@/service/type';
 
 import UserItem from '@/components/UserItem.vue';
 
@@ -30,7 +31,9 @@ const hideMenu = () => {
 };
 
 const logout = () => {
-  localStorage.clear();
+  localStorage.removeItem(StorageType.ACCESSTOKEN);
+  localStorage.removeItem(StorageType.USERID);
+
   wsPlugin.ws.close();
 
   alert('登出成功！');

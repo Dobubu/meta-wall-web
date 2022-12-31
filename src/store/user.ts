@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', {
     return {
       userList: [] as User[],
       user: undefined as GetProfileRes | undefined,
-      theme: '',
+      theme: 'theme-rilakkuma',
     };
   },
   getters: {
