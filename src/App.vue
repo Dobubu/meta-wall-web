@@ -11,7 +11,7 @@ const storageTheme = () => localStorage.getItem(StorageType.THEME);
 
 <template>
   <ReloadPrompt />
-  <div :class="storageTheme() || store.userTheme">
+  <div :class="store.userTheme || storageTheme()">
     <router-view></router-view>
   </div>
 </template>
