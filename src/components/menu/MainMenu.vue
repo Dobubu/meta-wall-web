@@ -45,7 +45,13 @@ const logout = () => {
 </script>
 
 <template>
-  <header display="flex justify-center" w="full" bg="white" border="b-3 dark-500">
+  <header
+    display="flex justify-center"
+    w="full"
+    bg="white"
+    border="b-3 dark-500"
+    position="sticky top-0 z-20"
+  >
     <div h="60px" p="y-3" w="full max-1200px" display="flex justify-between items-center">
       <RouterLink :to="{ name: 'Post' }" class="meta-primary-text text-26px" font="paytone"
         >MetaWall</RouterLink
