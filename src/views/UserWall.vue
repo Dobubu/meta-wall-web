@@ -153,7 +153,8 @@ const updateModalImage = (image: string) => {
       </div>
       <button
         type="button"
-        :class="{ 'bg-dark-600': isFollow, 'meta-active-bg': !isFollow }"
+        class="optimistic-follow"
+        :class="{ 'bg-dark-600': isFollow, following: isFollow, 'meta-active-bg': !isFollow }"
         border="2 dark-500 rounded-lg"
         shadow="item-bottom"
         text="dark-500"
@@ -255,4 +256,24 @@ const updateModalImage = (image: string) => {
   </CommonModal>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.optimistic-follow {
+  /* transition: color 0.3s, background-color 0.3s; */
+
+  &.following {
+    animation: fade-in-out 0.3s ease-in-out;
+  }
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+</style>
