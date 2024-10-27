@@ -49,6 +49,7 @@ const likesIconClass = computed(() => {
     'meta-primary-text': props.post.likes,
     'text-dark-300': !props.post.likes,
     'border-2 rounded-1/2 p-1 meta-primary-border': isLikesExistUser.value,
+    liked: props.post.likes.length,
   };
 });
 
@@ -173,6 +174,7 @@ const handleShowImage = (image: string) => emit('updateModalImage', image);
 
     <div display="flex items-center" m="b-5">
       <font-awesome-icon
+        class="optimistic-like"
         :class="likesIconClass"
         :icon="['far', 'thumbs-up']"
         size="lg"
@@ -259,4 +261,29 @@ const handleShowImage = (image: string) => emit('updateModalImage', image);
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.optimistic-like {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.liked {
+    animation: like-pop 0.3s ease-out;
+  }
+}
+
+@keyframes like-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
