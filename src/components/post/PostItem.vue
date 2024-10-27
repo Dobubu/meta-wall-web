@@ -20,7 +20,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['updateLike', 'fetchUserPostList', 'fetchPostList', 'fetchPostInfo']);
+const emit = defineEmits([
+  'updateLike',
+  'fetchUserPostList',
+  'fetchPostList',
+  'fetchPostInfo',
+  'updateModalImage',
+]);
 
 const route = useRoute();
 const store = useUserStore();
@@ -36,7 +42,7 @@ const createPostClass = computed(() => {
   };
 });
 
-const isLikesExistUser = computed(() => !!props.post.likes.find(o => o === store.user?._id));
+const isLikesExistUser = computed(() => !!props.post.likes.find((o) => o === store.user?._id));
 
 const likesIconClass = computed(() => {
   return {
@@ -121,6 +127,8 @@ const deletePost = async (postId: string, userId: string) => {
     alert('刪除成功！');
   }
 };
+
+const handleShowImage = (image: string) => emit('updateModalImage', image);
 </script>
 
 <template>
@@ -159,6 +167,8 @@ const deletePost = async (postId: string, userId: string) => {
       border="2 rounded dark-500"
       m="b-5"
       bg="center no-repeat"
+      cursor="pointer"
+      @click="handleShowImage(post.image)"
     ></div>
 
     <div display="flex items-center" m="b-5">

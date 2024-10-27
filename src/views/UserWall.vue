@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
-
 import { useRoute } from 'vue-router';
-import { useUserStore } from '@/store/user';
+
 import { SortType } from '@/api/post';
 import { GetProfileRes } from '@/api/user';
+import { useUserStore } from '@/store/user';
+import { useModalStore } from '@/store/modal';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import PostItem from '@/components/post/PostItem.vue';
+import CommonModal from '@/components/common/Modal.vue';
 
 const route = useRoute();
 const store = useUserStore();
+const { updateShowModal } = useModalStore();
 
 const userService = useUser();
 const postService = usePost();
@@ -25,7 +28,7 @@ const sort = ref(SortType.DESC);
 const keyWord = ref('');
 
 const followWording = computed(() => (isFollow.value ? '取消追蹤' : '追蹤'));
-const isFollow = computed(() => store.user?.following.find(o => o.user === userId.value));
+const isFollow = computed(() => store.user?.following.find((o) => o.user === userId.value));
 
 const updateFollow = async () => {
   if (isFollow.value) {
@@ -74,7 +77,7 @@ const search = async () => {
 
 watch(
   () => userId.value,
-  async v => {
+  async (v) => {
     if (v) {
       keyWord.value = '';
       sort.value = SortType.DESC;
@@ -103,6 +106,13 @@ onMounted(async () => {
 
 const updateLike = (postId: string, type: string) => {
   postService.updateUserListLike(postId, type);
+};
+
+const modalImage = ref('');
+
+const updateModalImage = (image: string) => {
+  modalImage.value = image;
+  updateShowModal(true);
 };
 </script>
 
@@ -215,6 +225,7 @@ const updateLike = (postId: string, type: string) => {
         :user="store.user"
         @update-like="updateLike"
         @fetch-user-post-list="fetchUserPostList"
+        @update-modal-image="updateModalImage"
       />
     </template>
 
@@ -236,6 +247,12 @@ const updateLike = (postId: string, type: string) => {
       </div>
     </div>
   </template>
+
+  <CommonModal>
+    <template #body>
+      <img :src="modalImage" alt="" />
+    </template>
+  </CommonModal>
 </template>
 
 <style scoped></style>
