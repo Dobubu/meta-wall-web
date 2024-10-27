@@ -4,6 +4,7 @@ import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 
 import { useUserStore } from '@/store/user';
+import { useAlertStore, AlertState } from '@/store/alert';
 import { UpdateProfileReq } from '@/api/user';
 import { SexType } from '@/api/user';
 import { useUser } from '@/service/useUser';
@@ -18,6 +19,7 @@ import themeChairoikoguma from '@/assets/images/theme_chairoikoguma.jpeg';
 import themeConversation from '@/assets/images/login_conversation.svg';
 
 const store = useUserStore();
+const { show: showAlert } = useAlertStore();
 const userService = useUser();
 const uploadService = useUpload();
 
@@ -80,7 +82,7 @@ const updateUser = async () => {
 
     uploadService.resetFile();
     globalErrMsg.value = '';
-    alert('資料更新成功！');
+    showAlert('資料更新成功！', AlertState.SUCCESS);
   } catch (e: any) {
     globalErrMsg.value = e.message;
   } finally {
@@ -116,7 +118,7 @@ const updatePassword = async () => {
     await userService.updatePassword(dict);
 
     globalErrMsg.value = '';
-    alert('密碼更新成功！');
+    showAlert('密碼更新成功！', AlertState.SUCCESS);
   } catch (e: any) {
     globalErrMsg.value = e.message;
   }
@@ -124,7 +126,7 @@ const updatePassword = async () => {
 
 watch(
   () => store.user,
-  v => {
+  (v) => {
     if (v) {
       user.name = v.name;
       user.sex = v.sex;
@@ -193,7 +195,7 @@ const changeTheme = async () => {
   if (isCurrentTheme.value) return;
 
   await userService.updateTheme({ theme: store.theme });
-  alert('主題更新成功！');
+  showAlert('主題更新成功！', AlertState.SUCCESS);
 };
 </script>
 

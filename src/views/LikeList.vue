@@ -2,12 +2,15 @@
 import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 
+import { useAlertStore, AlertState } from '@/store/alert';
 import { useUser } from '@/service/useUser';
 import { usePost } from '@/service/usePost';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
+
+const { show: showAlert } = useAlertStore();
 
 const userService = useUser();
 const postService = usePost();
@@ -23,7 +26,8 @@ onMounted(async () => {
 const deleteLike = async (postId: string) => {
   try {
     await postService.deleteLike(postId);
-    alert('取消成功！');
+    showAlert('取消成功！', AlertState.SUCCESS);
+
     userService.updateLikeList(postId);
   } catch (e: any) {
     console.error(e.message);

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
-import { useUserStore } from '@/store/user';
-import { useWebSocket } from '@/plugins/ws';
 
+import { useUserStore } from '@/store/user';
+import { useAlertStore, AlertState } from '@/store/alert';
+import { useWebSocket } from '@/plugins/ws';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 import { StorageType } from '@/service/type';
 
@@ -11,6 +12,8 @@ import UserItem from '@/components/UserItem.vue';
 
 const router = useRouter();
 const store = useUserStore();
+const { show: showAlert } = useAlertStore();
+
 const wsPlugin = useWebSocket();
 const userPhotoService = useUserPhoto();
 
@@ -36,7 +39,7 @@ const logout = () => {
 
   wsPlugin.ws.close();
 
-  alert('登出成功！');
+  showAlert('登出成功！', AlertState.SUCCESS);
 
   router.push({
     name: 'Login',

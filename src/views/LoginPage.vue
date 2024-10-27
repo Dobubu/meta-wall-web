@@ -4,7 +4,10 @@ import { useRouter } from 'vue-router';
 import useVuelidate from '@vuelidate/core';
 import { required, email, minLength } from '@vuelidate/validators';
 
+import { useAlertStore, AlertState } from '@/store/alert';
 import { useAuth } from '@/service/useAuth';
+
+const { show: showAlert } = useAlertStore();
 
 const router = useRouter();
 const authService = useAuth();
@@ -52,7 +55,7 @@ const signUp = async () => {
     await authService.signUp(dict);
 
     await router.push({ name: 'Post' });
-    alert('註冊、登入成功！');
+    showAlert('註冊、登入成功！', AlertState.SUCCESS);
   } catch (e: any) {
     globalErrMsg.value = e.message;
   }
@@ -73,7 +76,7 @@ const login = async () => {
     await authService.login(dict);
 
     await router.push({ name: 'Post' });
-    alert('登入成功！');
+    showAlert('登入成功！', AlertState.SUCCESS);
   } catch (e: any) {
     globalErrMsg.value = e.message;
   }

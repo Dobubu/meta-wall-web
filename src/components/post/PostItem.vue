@@ -3,6 +3,8 @@ import { PropType, computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
+import { useAlertStore, AlertState } from '@/store/alert';
+
 import { usePost } from '@/service/usePost';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
@@ -30,6 +32,8 @@ const emit = defineEmits([
 
 const route = useRoute();
 const store = useUserStore();
+const { show: showAlert } = useAlertStore();
+
 const postService = usePost();
 const userPhotoService = useUserPhoto();
 
@@ -93,7 +97,7 @@ const updateLike = () => {
 
 const addPostComment = async () => {
   try {
-    if (!comment.value) return alert('留言內容必填');
+    if (!comment.value) return showAlert('留言內容必填', AlertState.WARNING);
 
     const dict = {
       comment: comment.value,
@@ -112,7 +116,7 @@ const addPostComment = async () => {
     }
 
     comment.value = '';
-    alert('留言成功');
+    showAlert('留言成功', AlertState.SUCCESS);
   } catch (e: any) {
     console.error(e.message);
     throw e;
@@ -125,7 +129,7 @@ const deletePost = async (postId: string, userId: string) => {
   if (isDelete) {
     await postService.deletePost(postId);
     emit('fetchUserPostList', userId);
-    alert('刪除成功！');
+    showAlert('刪除成功！', AlertState.SUCCESS);
   }
 };
 

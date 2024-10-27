@@ -6,6 +6,7 @@ import { SortType } from '@/api/post';
 import { GetProfileRes } from '@/api/user';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
+import { useAlertStore, AlertState } from '@/store/alert';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';
@@ -17,6 +18,7 @@ import CommonModal from '@/components/common/Modal.vue';
 const route = useRoute();
 const store = useUserStore();
 const { updateShowModal } = useModalStore();
+const { show: showAlert } = useAlertStore();
 
 const userService = useUser();
 const postService = usePost();
@@ -33,10 +35,10 @@ const isFollow = computed(() => store.user?.following.find((o) => o.user === use
 const updateFollow = async () => {
   if (isFollow.value) {
     await userService.unFollowUser(userId.value);
-    alert('您已成功取消追蹤！');
+    showAlert('您已成功取消追蹤！', AlertState.SUCCESS);
   } else {
     await userService.followUser(userId.value);
-    alert('您已成功追蹤！');
+    showAlert('您已成功追蹤！', AlertState.SUCCESS);
   }
 
   /*  update local profile */
