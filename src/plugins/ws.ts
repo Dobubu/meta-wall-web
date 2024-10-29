@@ -1,9 +1,9 @@
 import { inject, InjectionKey, Plugin, computed, ref } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 
+import { useLocalhost } from '@/api/api';
 import { useUserStore } from '@/store/user';
 import { useAuth } from '@/service/useAuth';
-import { useLocalhost } from '@/api/api';
 import { AppWSEventType, WebWSEventType } from '@/plugins/enums';
 
 const useWebSocketCore = () => {
@@ -35,7 +35,7 @@ const useWebSocketCore = () => {
     chatTypingUser.value.content = '';
   }, 1000);
 
-  ws.onmessage = e => {
+  ws.onmessage = (e) => {
     let data = JSON.parse(e.data);
 
     if (data.cmd === AppWSEventType.AppTypingResponse) {

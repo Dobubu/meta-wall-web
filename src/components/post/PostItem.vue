@@ -4,11 +4,10 @@ import { RouterLink, useRoute } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
-
 import { usePost } from '@/service/usePost';
 import { useUserPhoto } from '@/lib/useUserPhoto';
-
 import { User, Post, LikeType } from './type';
+
 import UserItem from '@/components/UserItem.vue';
 
 const props = defineProps({

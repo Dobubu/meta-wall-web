@@ -1,9 +1,6 @@
 import { reactive, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { useUserStore } from '@/store/user';
-
-import { Post, PostType, LikeType, Comment } from '@/components/post/type';
 import {
   apiGetPost,
   apiGetPostList,
@@ -16,7 +13,9 @@ import {
   AddPostComment,
   apiAddPostComment,
 } from '@/api/post';
+import { useUserStore } from '@/store/user';
 import { dayFormate } from '@/lib/formate';
+import { Post, PostType, LikeType, Comment } from '@/components/post/type';
 
 export const usePost = () => {
   const list = ref<Post[]>([]);
@@ -101,7 +100,7 @@ export const usePost = () => {
     if (type === LikeType.ADD) {
       postInfo.value.likes = [store.user._id, ...postInfo.value.likes];
     } else {
-      postInfo.value.likes = postInfo.value.likes.filter(o => o !== store.user?._id);
+      postInfo.value.likes = postInfo.value.likes.filter((o) => o !== store.user?._id);
     }
   };
 
@@ -119,7 +118,7 @@ export const usePost = () => {
             ...o.user,
             photo: o.user.photo || '',
           },
-          comments: o.comments.map(o2 => {
+          comments: o.comments.map((o2) => {
             let dict = {
               ...o2,
               createdAt: dayFormate(o2.createdAt),
@@ -149,7 +148,7 @@ export const usePost = () => {
           ...o,
           createdAt: dayFormate(o.createdAt),
           user: { ...o.user, photo: o.user.photo || '' },
-          comments: o.comments.map(o2 => {
+          comments: o.comments.map((o2) => {
             let dict = {
               ...o2,
               createdAt: dayFormate(o2.createdAt),
@@ -214,26 +213,26 @@ export const usePost = () => {
   };
 
   const updateListLike = (postId: string, type: string) => {
-    const target = list.value.find(o => o._id === postId);
+    const target = list.value.find((o) => o._id === postId);
 
     if (!target || !store.user) return;
 
     if (type === LikeType.ADD) {
       target.likes = [store.user._id, ...target.likes];
     } else {
-      target.likes = target.likes.filter(o => o !== store.user?._id);
+      target.likes = target.likes.filter((o) => o !== store.user?._id);
     }
   };
 
   const updateUserListLike = (postId: string, type: string) => {
-    const target = userPostList.value.find(o => o._id === postId);
+    const target = userPostList.value.find((o) => o._id === postId);
 
     if (!target || !store.user) return;
 
     if (type === LikeType.ADD) {
       target.likes = [store.user._id, ...target.likes];
     } else {
-      target.likes = target.likes.filter(o => o !== store.user?._id);
+      target.likes = target.likes.filter((o) => o !== store.user?._id);
     }
   };
 

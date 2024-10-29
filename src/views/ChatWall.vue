@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, nextTick, ref, computed, watch } from 'vue';
-import { useUserStore } from '@/store/user';
 import { useElementSize } from '@vueuse/core';
+
+import { useUserStore } from '@/store/user';
 import { useWebSocket } from '@/plugins/ws';
 import { WebWSEventType } from '@/plugins/enums';
 import { useChatroom } from '@/service/useChatroom';
@@ -45,7 +46,7 @@ const updateScrollView = async () => {
 
 watch(
   () => wsPlugin.newMsg.value,
-  async v => {
+  async (v) => {
     chatroomService.updateList(v);
 
     await updateScrollView();

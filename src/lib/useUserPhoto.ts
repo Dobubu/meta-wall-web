@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 
-import { useAuth } from '@/service/useAuth';
 import { useUserStore } from '@/store/user';
+import { useAuth } from '@/service/useAuth';
 
 import DefaultUserRilakkuma from '@/assets/images/default_user_rilakkuma.jpeg';
 import DefaultUserKorilakkuma from '@/assets/images/default_user_korilakkuma.jpeg';
