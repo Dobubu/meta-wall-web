@@ -3,10 +3,10 @@ import { reactive, ref, computed, watch } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 
-import { useUserStore } from '@/store/user';
-import { useAlertStore, AlertState } from '@/store/alert';
 import { UpdateProfileReq } from '@/api/user';
 import { SexType } from '@/api/user';
+import { useUserStore } from '@/store/user';
+import { useAlertStore, AlertState } from '@/store/alert';
 import { useUser } from '@/service/useUser';
 import { useUpload } from '@/service/useUpload';
 import { useUserPhoto } from '@/lib/useUserPhoto';

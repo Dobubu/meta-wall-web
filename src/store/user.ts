@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
-import type { User } from '@/components/post/type';
 import { GetProfileRes } from '@/api/user';
+import type { User } from '@/components/post/type';
 
 export const useUserStore = defineStore('user', {
   state: () => {

@@ -15,11 +15,10 @@ import {
   apiGetUserFollowingList,
   GetFollowListRes,
 } from '@/api/user';
-import { dayFormate } from '@/lib/formate';
 import { useUserStore } from '@/store/user';
 import { StorageType } from '@/service/type';
 import { useAuth } from '@/service/useAuth';
-
+import { dayFormate } from '@/lib/formate';
 import { User, Post } from '@/components/post/type';
 
 export const useUser = () => {
@@ -135,7 +134,7 @@ export const useUser = () => {
   };
 
   const updateLikeList = (postId: string) => {
-    likeList.value = likeList.value.filter(o => o._id !== postId);
+    likeList.value = likeList.value.filter((o) => o._id !== postId);
   };
 
   const followUser = async (userId: string) => {
