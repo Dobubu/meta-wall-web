@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
-
 import { useRoute } from 'vue-router';
-import { useUserStore } from '@/store/user';
+
 import { SortType } from '@/api/post';
 import { GetProfileRes } from '@/api/user';
+import { useUserStore } from '@/store/user';
+import { useModalStore } from '@/store/modal';
+import { useAlertStore, AlertState } from '@/store/alert';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/service/useAuth';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import PostItem from '@/components/post/PostItem.vue';
+import CommonModal from '@/components/common/Modal.vue';
 
 const route = useRoute();
 const store = useUserStore();
+const { updateShowModal } = useModalStore();
+const { show: showAlert } = useAlertStore();
 
 const userService = useUser();
 const postService = usePost();
@@ -25,15 +30,15 @@ const sort = ref(SortType.DESC);
 const keyWord = ref('');
 
 const followWording = computed(() => (isFollow.value ? '取消追蹤' : '追蹤'));
-const isFollow = computed(() => store.user?.following.find(o => o.user === userId.value));
+const isFollow = computed(() => store.user?.following.find((o) => o.user === userId.value));
 
 const updateFollow = async () => {
   if (isFollow.value) {
     await userService.unFollowUser(userId.value);
-    alert('您已成功取消追蹤！');
+    showAlert('您已成功取消追蹤！', AlertState.SUCCESS);
   } else {
     await userService.followUser(userId.value);
-    alert('您已成功追蹤！');
+    showAlert('您已成功追蹤！', AlertState.SUCCESS);
   }
 
   /*  update local profile */
@@ -74,7 +79,7 @@ const search = async () => {
 
 watch(
   () => userId.value,
-  async v => {
+  async (v) => {
     if (v) {
       keyWord.value = '';
       sort.value = SortType.DESC;
@@ -103,6 +108,13 @@ onMounted(async () => {
 
 const updateLike = (postId: string, type: string) => {
   postService.updateUserListLike(postId, type);
+};
+
+const modalImage = ref('');
+
+const updateModalImage = (image: string) => {
+  modalImage.value = image;
+  updateShowModal(true);
 };
 </script>
 
@@ -143,7 +155,8 @@ const updateLike = (postId: string, type: string) => {
       </div>
       <button
         type="button"
-        :class="{ 'bg-dark-600': isFollow, 'meta-active-bg': !isFollow }"
+        class="optimistic-follow"
+        :class="{ 'bg-dark-600': isFollow, following: isFollow, 'meta-active-bg': !isFollow }"
         border="2 dark-500 rounded-lg"
         shadow="item-bottom"
         text="dark-500"
@@ -215,6 +228,7 @@ const updateLike = (postId: string, type: string) => {
         :user="store.user"
         @update-like="updateLike"
         @fetch-user-post-list="fetchUserPostList"
+        @update-modal-image="updateModalImage"
       />
     </template>
 
@@ -236,6 +250,32 @@ const updateLike = (postId: string, type: string) => {
       </div>
     </div>
   </template>
+
+  <CommonModal>
+    <template #body>
+      <img :src="modalImage" alt="" />
+    </template>
+  </CommonModal>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.optimistic-follow {
+  /* transition: color 0.3s, background-color 0.3s; */
+
+  &.following {
+    animation: fade-in-out 0.3s ease-in-out;
+  }
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+</style>

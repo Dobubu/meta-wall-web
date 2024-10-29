@@ -1,36 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Paytone+One&display=swap");
 
 :root {
   /* rilakkuma mode */
-  --rilakkuma-primary: #bf7e12;
-  --rilakkuma-active: #fdd001;
-  --rilakkuma-chat-bg: #faeee2;
-  --rilakkuma-login-bg: url('@/assets/images/login_rilakkuma.png');
-  
+  --rilakkuma-primary: #BF7E12;
+  --rilakkuma-active: #FDD001;
+  --rilakkuma-chat-bg: #FAEEE2;
+  --rilakkuma-login-bg: url("@/assets/images/login_rilakkuma.png");
+
   /* korilakkuma mode */
-  --korilakkuma-primary: #f4e7c4;
-  --korilakkuma-active: #f09eb3;
+  --korilakkuma-primary: #F4E7C4;
+  --korilakkuma-active: #F09EB3;
   --korilakkuma-text: black;
-  --korilakkuma-chat-bg: #faf5e2;
-  --korilakkuma-login-bg: url('@/assets/images/login_korilakkuma.png');
-  
+  --korilakkuma-chat-bg: #FAF5E2;
+  --korilakkuma-login-bg: url("@/assets/images/login_korilakkuma.png");
+
   /* chairoikoguma mode */
-  --chairoikoguma-primary: #a16a44;
-  --chairoikoguma-active: #4e3a38;
+  --chairoikoguma-primary: #A16A44;
+  --chairoikoguma-active: #4E3A38;
   --chairoikoguma-hover-text: white;
-  --chairoikoguma-chat-bg: #faece2;
-  --chairoikoguma-login-bg: url('@/assets/images/login_chairoikoguma.png');
-  
+  --chairoikoguma-chat-bg: #FAECE2;
+  --chairoikoguma-login-bg: url("@/assets/images/login_chairoikoguma.png");
+
   /* conversation mode */
-  --conversation-primary: theme('colors.primary');
-  --conversation-active: theme('colors.active');
-  --conversation-login-bg: url('@/assets/images/login_conversation.svg');
+  --conversation-primary: theme("colors.primary");
+  --conversation-active: theme("colors.active");
+  --conversation-login-bg: url("@/assets/images/login_conversation.svg");
 
   /* default mode */
   --primary: var(--rilakkuma-primary);
   --active: var(--rilakkuma-active);
   --text: white;
-  --hover-text: theme('colors.dark.500');
+  --hover-text: theme("colors.dark.500");
   --chat-bg: var(--rilakkuma-chat-bg);
   --chat-user: var(--rilakkuma-primary);
   --login-bg: var(--rilakkuma-login-bg);
@@ -65,23 +65,23 @@
 .theme-conversation {
   --primary: var(--conversation-primary);
   --active: var(--conversation-active);
-  --chat-bg: theme('colors.icon.100');
+  --chat-bg: theme("colors.icon.100");
   --chat-user: var(--conversation-primary);
   --login-bg: var(--conversation-login-bg);
 }
 
 .meta-primary {
-  background-color: var(--primary);
   color: var(--text);
-  
+  background-color: var(--primary);
+
   &:hover {
-    background-color: var(--active);
     color: var(--hover-text);
+    background-color: var(--active);
   }
 }
 
 .meta-primary-text-hover {
-  color: theme('colors.dark.500');
+  color: theme("colors.dark.500");
 
   &:hover {
     color: var(--primary);
@@ -89,8 +89,8 @@
 }
 
 .meta-primary-bg {
-  background-color: var(--primary);
   color: var(--text);
+  background-color: var(--primary);
 }
 
 .meta-primary-text {
@@ -102,8 +102,8 @@
 }
 
 .meta-active-bg {
-  background-color: var(--active);
   color: var(--text);
+  background-color: var(--active);
 }
 
 .meta-chat-bg {

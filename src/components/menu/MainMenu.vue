@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
-import { useUserStore } from '@/store/user';
-import { useWebSocket } from '@/plugins/ws';
 
+import { useUserStore } from '@/store/user';
+import { useAlertStore, AlertState } from '@/store/alert';
+import { useWebSocket } from '@/plugins/ws';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 import { StorageType } from '@/service/type';
 
@@ -11,6 +12,8 @@ import UserItem from '@/components/UserItem.vue';
 
 const router = useRouter();
 const store = useUserStore();
+const { show: showAlert } = useAlertStore();
+
 const wsPlugin = useWebSocket();
 const userPhotoService = useUserPhoto();
 
@@ -36,7 +39,7 @@ const logout = () => {
 
   wsPlugin.ws.close();
 
-  alert('登出成功！');
+  showAlert('登出成功！', AlertState.SUCCESS);
 
   router.push({
     name: 'Login',
@@ -45,7 +48,13 @@ const logout = () => {
 </script>
 
 <template>
-  <header display="flex justify-center" w="full" bg="white" border="b-3 dark-500">
+  <header
+    display="flex justify-center"
+    w="full"
+    bg="white"
+    border="b-3 dark-500"
+    position="sticky top-0 z-20"
+  >
     <div h="60px" p="y-3" w="full max-1200px" display="flex justify-between items-center">
       <RouterLink :to="{ name: 'Post' }" class="meta-primary-text text-26px" font="paytone"
         >MetaWall</RouterLink

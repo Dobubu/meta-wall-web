@@ -3,6 +3,8 @@ import { PropType, computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
 import { useUserStore } from '@/store/user';
+import { useAlertStore, AlertState } from '@/store/alert';
+
 import { usePost } from '@/service/usePost';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
@@ -20,10 +22,18 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['updateLike', 'fetchUserPostList', 'fetchPostList', 'fetchPostInfo']);
+const emit = defineEmits([
+  'updateLike',
+  'fetchUserPostList',
+  'fetchPostList',
+  'fetchPostInfo',
+  'updateModalImage',
+]);
 
 const route = useRoute();
 const store = useUserStore();
+const { show: showAlert } = useAlertStore();
+
 const postService = usePost();
 const userPhotoService = useUserPhoto();
 
@@ -36,13 +46,14 @@ const createPostClass = computed(() => {
   };
 });
 
-const isLikesExistUser = computed(() => !!props.post.likes.find(o => o === store.user?._id));
+const isLikesExistUser = computed(() => !!props.post.likes.find((o) => o === store.user?._id));
 
 const likesIconClass = computed(() => {
   return {
     'meta-primary-text': props.post.likes,
     'text-dark-300': !props.post.likes,
     'border-2 rounded-1/2 p-1 meta-primary-border': isLikesExistUser.value,
+    liked: props.post.likes.length,
   };
 });
 
@@ -86,7 +97,7 @@ const updateLike = () => {
 
 const addPostComment = async () => {
   try {
-    if (!comment.value) return alert('留言內容必填');
+    if (!comment.value) return showAlert('留言內容必填', AlertState.WARNING);
 
     const dict = {
       comment: comment.value,
@@ -105,7 +116,7 @@ const addPostComment = async () => {
     }
 
     comment.value = '';
-    alert('留言成功');
+    showAlert('留言成功', AlertState.SUCCESS);
   } catch (e: any) {
     console.error(e.message);
     throw e;
@@ -118,9 +129,11 @@ const deletePost = async (postId: string, userId: string) => {
   if (isDelete) {
     await postService.deletePost(postId);
     emit('fetchUserPostList', userId);
-    alert('刪除成功！');
+    showAlert('刪除成功！', AlertState.SUCCESS);
   }
 };
+
+const handleShowImage = (image: string) => emit('updateModalImage', image);
 </script>
 
 <template>
@@ -159,10 +172,13 @@ const deletePost = async (postId: string, userId: string) => {
       border="2 rounded dark-500"
       m="b-5"
       bg="center no-repeat"
+      cursor="pointer"
+      @click="handleShowImage(post.image)"
     ></div>
 
     <div display="flex items-center" m="b-5">
       <font-awesome-icon
+        class="optimistic-like"
         :class="likesIconClass"
         :icon="['far', 'thumbs-up']"
         size="lg"
@@ -249,4 +265,29 @@ const deletePost = async (postId: string, userId: string) => {
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.optimistic-like {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.liked {
+    animation: like-pop 0.3s ease-out;
+  }
+}
+
+@keyframes like-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
