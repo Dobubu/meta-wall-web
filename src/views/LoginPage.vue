@@ -87,7 +87,7 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="bg" h="screen" bg="repeat" display="flex justify-center items-center">
+  <div class="login_wrap" h="screen" bg="repeat" display="flex justify-center items-center">
     <div
       w="869px"
       bg="dark-100"
@@ -96,7 +96,7 @@ const login = async () => {
       display="flex justify-between items-center"
       border="2 dark-500"
     >
-      <div class="login-bg" h="350px" w="350px" bg="center no-repeat contain"></div>
+      <div class="login_wrap_bg" h="350px" w="350px" bg="center no-repeat contain"></div>
       <div>
         <form action="." display="flex flex-col" text="center">
           <h1 class="meta-primary-text" leading="text" text="60px" font="paytone bold">
@@ -231,11 +231,11 @@ const login = async () => {
 </template>
 
 <style lang="scss" scoped>
-.bg {
+.login_wrap {
   background-image: url('@/assets/images/bg.svg');
-}
 
-.login-bg {
-  background-image: var(--login-bg);
+  &_bg {
+    background-image: var(--login-bg);
+  }
 }
 </style>

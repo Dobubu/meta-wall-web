@@ -399,8 +399,8 @@ const changeTheme = async () => {
             @click="previewTheme(o.theme)"
           >
             <div
-              class="theme-img overflow-hidden"
-              :class="{ active: o.theme === store.theme, 'preview-text': o.theme !== store.theme }"
+              class="theme_img overflow-hidden"
+              :class="{ active: o.theme === store.theme, theme_img_text: o.theme !== store.theme }"
               w="max-150px"
               z="1"
               border="rounded-1/2"
@@ -445,7 +445,7 @@ const changeTheme = async () => {
 </template>
 
 <style lang="scss" scoped>
-.theme-img {
+.theme_img {
   img {
     transition: 0.5s ease all;
     width: 100%;
@@ -459,24 +459,24 @@ const changeTheme = async () => {
   &:hover img {
     transform: scale(1.1);
   }
-}
 
-.preview-text {
-  position: relative;
+  &_text {
+    position: relative;
 
-  &::before {
-    content: 'preview';
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    line-height: 100px;
-    background: rgba(229, 229, 229, 0.5);
-    z-index: 10;
+    &::before {
+      content: 'preview';
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      line-height: 100px;
+      background: rgba(229, 229, 229, 0.5);
+      z-index: 10;
+    }
   }
 }
 </style>
