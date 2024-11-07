@@ -89,7 +89,7 @@ onUnmounted(() => {
   <div
     v-if="store.user"
     ref="el"
-    class="meta-chat-bg"
+    class="chat_wall"
     h="6/7"
     m="-t-4"
     p="7"
@@ -98,7 +98,7 @@ onUnmounted(() => {
   >
     <div
       ref="elScroll"
-      class="scroll-area wrap"
+      class="scroll-area chat_wall_wrap"
       p="x-2"
       display="flex-1"
       overflow="y-scroll x-hidden"
@@ -129,7 +129,11 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.wrap {
-  max-height: v-bind(msgHeight);
+.chat_wall {
+  background-color: var(--chat-bg);
+
+  &_wrap {
+    max-height: v-bind(msgHeight);
+  }
 }
 </style>
