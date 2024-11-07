@@ -105,7 +105,7 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
           <div
             class="icon"
             m="r-4"
-            display="flex justify-center items-center"
+            display="flex justify-center items-center flex-shrink-0"
             position="relative"
             border="2 dark-500 rounded-1/2"
             w="50px"
