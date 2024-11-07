@@ -3,11 +3,14 @@ import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import useVuelidate from '@vuelidate/core';
 import { required, email, minLength } from '@vuelidate/validators';
+import { storeToRefs } from 'pinia';
 
 import { useAlertStore, AlertState } from '@/store/alert';
+import { useAppStore } from '@/store/app';
 import { useAuth } from '@/service/useAuth';
 
 const { show: showAlert } = useAlertStore();
+const { projectName } = storeToRefs(useAppStore());
 
 const router = useRouter();
 const authService = useAuth();
@@ -96,9 +99,11 @@ const login = async () => {
       <div class="login-bg" h="350px" w="350px" bg="center no-repeat contain"></div>
       <div>
         <form action="." display="flex flex-col" text="center">
-          <h1 class="meta-primary-text" leading="text" text="60px" font="paytone bold">MetaWall</h1>
+          <h1 class="meta-primary-text" leading="text" text="60px" font="paytone bold">
+            {{ projectName }}
+          </h1>
           <h2 m="b-9" text="24px dark-500" font="helvetica bold">
-            {{ isLogin ? '到元宇宙展開全新社交圈' : '註冊' }}
+            {{ isLogin ? `到 ${projectName} 展開全新社交圈` : '註冊' }}
           </h2>
 
           <template v-if="!isLogin">
