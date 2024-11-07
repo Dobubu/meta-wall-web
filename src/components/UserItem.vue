@@ -21,6 +21,7 @@ defineProps({
     :style="{
       'background-image': `url(${photo})`,
     }"
+    display="flex-shrink-0"
     bg="center cover no-repeat"
     border="2 dark-500 rounded-1/2"
   ></div>
