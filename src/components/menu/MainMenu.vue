@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
+import { useAppStore } from '@/store/app';
 import { useWebSocket } from '@/plugins/ws';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 import { StorageType } from '@/service/type';
@@ -13,6 +15,8 @@ import UserItem from '@/components/UserItem.vue';
 const router = useRouter();
 const store = useUserStore();
 const { show: showAlert } = useAlertStore();
+
+const { projectName } = storeToRefs(useAppStore());
 
 const wsPlugin = useWebSocket();
 const userPhotoService = useUserPhoto();
@@ -56,9 +60,9 @@ const logout = () => {
     position="sticky top-0 z-20"
   >
     <div h="60px" p="y-3" w="full max-1200px" display="flex justify-between items-center">
-      <RouterLink :to="{ name: 'Post' }" class="meta-primary-text text-26px" font="paytone"
-        >MetaWall</RouterLink
-      >
+      <RouterLink :to="{ name: 'Post' }" class="meta-primary-text text-26px" font="paytone">{{
+        projectName
+      }}</RouterLink>
 
       <div
         v-if="store.user"

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store/user';
+import { useAppStore } from '@/store/app';
 import { useWebSocket } from '@/plugins/ws';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
@@ -12,6 +14,7 @@ const route = useRoute();
 const store = useUserStore();
 const wsPlugin = useWebSocket();
 const userPhotoService = useUserPhoto();
+const { isDemo } = storeToRefs(useAppStore());
 
 const menuList = ref([
   {
@@ -47,7 +50,7 @@ watch(
 
 watch(
   () => wsPlugin.msgTotal.value,
-  v => {
+  (v) => {
     showMessagePrompt.value = true;
     showMessageAnimation.value = true;
 
@@ -109,7 +112,7 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
             h="50px"
           >
             <div
-              v-if="showPrompt && o.routerName === 'ChatWall'"
+              v-if="showPrompt && o.routerName === 'ChatWall' && !isDemo"
               class="animate__animated"
               :class="{ animate__bounce: showMessageAnimation }"
               bg="red-500"
@@ -121,7 +124,7 @@ const showPrompt = computed(() => showMessagePrompt.value && routeName.value !==
             <font-awesome-icon :icon="o.icon" size="lg" />
           </div>
           <div display="flex flex-col">
-            <p v-if="o.routerName === 'ChatWall'" text="sm">
+            <p v-if="o.routerName === 'ChatWall' && !isDemo" text="sm">
               在線人數：{{ wsPlugin.onlineTotal }} 人
             </p>
             <p font="bold">{{ o.title }}</p>
