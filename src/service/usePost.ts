@@ -12,7 +12,7 @@ import {
   apiDeletePostLike,
   AddPostComment,
   apiAddPostComment,
-} from '@/api/post';
+} from '@/api/instances/post';
 import { useUserStore } from '@/store/user';
 import { dayFormate } from '@/lib/formate';
 import { Post, PostType, LikeType, Comment } from '@/components/post/type';

@@ -1,4 +1,4 @@
-import PostAPI from './api';
+import PostAPI from '../api';
 
 interface UploadImgurReq {
   files: any;

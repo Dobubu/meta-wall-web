@@ -2,8 +2,8 @@
 import { onMounted, ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { SortType } from '@/api/post';
-import { GetProfileRes } from '@/api/user';
+import { SortType } from '@/api/instances/post';
+import { GetProfileRes } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
 import { useAlertStore, AlertState } from '@/store/alert';

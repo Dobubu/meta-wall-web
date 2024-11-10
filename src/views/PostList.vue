@@ -2,7 +2,7 @@
 import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { SortType } from '@/api/post';
+import { SortType } from '@/api/instances/post';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
 import { usePost } from '@/service/usePost';
