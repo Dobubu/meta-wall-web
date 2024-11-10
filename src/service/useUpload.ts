@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 
-import { apiUploadImgur } from '@/api/upload';
+import { apiUploadImgur } from '@/api/instances/upload';
 
 interface UploadFile {
   file: File | null;

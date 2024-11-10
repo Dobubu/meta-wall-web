@@ -14,7 +14,7 @@ import {
   apiUnFollowUser,
   apiGetUserFollowingList,
   GetFollowListRes,
-} from '@/api/user';
+} from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { StorageType } from '@/service/type';
 import { useAuth } from '@/service/useAuth';
