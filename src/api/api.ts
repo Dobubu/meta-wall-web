@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { useAuth } from '@/service/useAuth';
+import { axiosErrorHandler } from './errorHandler';
 
 export const useLocalhost = import.meta.env.VITE_USE_LOCALHOST === 'true';
 
@@ -45,7 +46,10 @@ instance.interceptors.response.use(
   (res) => {
     return res.data;
   },
-  (error) => Promise.reject(error.response.data),
+  (error) => {
+    axiosErrorHandler(error);
+    Promise.reject(error.response.data);
+  },
 );
 
 export default instance;
