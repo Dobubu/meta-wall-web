@@ -20,8 +20,8 @@ const globalErrMsg = ref('');
 
 const user = reactive({
   name: '',
-  email: '',
-  password: '',
+  email: 'rkuma@gmail.com',
+  password: '12345678',
 });
 
 const rules = {
