@@ -49,7 +49,7 @@ export default defineConfig({
         ],
       },
     }),
-    eslintPlugin({ cache: true }),
+    eslintPlugin({ cache: false }),
     WindiCSS(),
   ],
   server: {
