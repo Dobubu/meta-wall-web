@@ -48,7 +48,7 @@ instance.interceptors.response.use(
   },
   (error) => {
     axiosErrorHandler(error);
-    Promise.reject(error.response.data);
+    return Promise.reject(error.response.data);
   },
 );
 
