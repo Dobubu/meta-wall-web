@@ -8,10 +8,12 @@ export const login2 = async (payload: LoginReq) => {
 
   console.log('payload: ', payload);
   updateLoading(true);
-  const res = await handleErrorAsync(() => apiLogin(payload));
+  const res = await handleErrorAsync({
+    callback: () => apiLogin(payload),
+    onFinally: () => updateLoading(false),
+  });
   localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
   localStorage.setItem(StorageType.USERID, res.data.id);
-  updateLoading(false);
 
   console.log('res: 2', res);
 
