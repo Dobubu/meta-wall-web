@@ -3,7 +3,7 @@ import { useAuthStore } from '@/store/auth';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
 import { StorageType } from '@/service/type';
 
-export const emailLogin = async (payload: LoginReq) => {
+export const postEmailLogin = async (payload: LoginReq) => {
   const { updateLoading } = useAuthStore();
 
   updateLoading(true);
@@ -15,7 +15,7 @@ export const emailLogin = async (payload: LoginReq) => {
   localStorage.setItem(StorageType.USERID, res.data.id);
 };
 
-export const emailSignUp = async (payload: SignUpReq) => {
+export const postEmailSignUp = async (payload: SignUpReq) => {
   const { updateLoading } = useAuthStore();
 
   updateLoading(true);

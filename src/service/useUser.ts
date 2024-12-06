@@ -17,7 +17,7 @@ import {
 } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { StorageType } from '@/service/type';
-import { useAuth } from '@/service/useAuth';
+import { useAuth } from '@/compositions/useAuth';
 import { dayFormate } from '@/lib/formate';
 import { User, Post } from '@/components/post/type';
 
@@ -34,7 +34,7 @@ export const useUser = () => {
   });
 
   const store = useUserStore();
-  const authService = useAuth();
+  const { getUserId } = useAuth();
 
   const fetchProfile = async (userId: string) => {
     const res = await apiGetProfile(userId);
@@ -43,7 +43,7 @@ export const useUser = () => {
       res.data.photo = '';
     }
 
-    if (userId === authService.getUserId()) {
+    if (userId === getUserId()) {
       store.user = res.data;
 
       store.theme = res.data.theme;

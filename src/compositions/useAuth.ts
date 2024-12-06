@@ -4,6 +4,9 @@ import { StorageType } from '@/service/type';
 // import { useWebSocket } from '@/plugins/ws';
 
 export const useAuth = () => {
+  const getToken = () => localStorage.getItem(StorageType.ACCESSTOKEN);
+  const getUserId = () => localStorage.getItem(StorageType.USERID);
+
   // TODO:fix inject ws plugin
   // const wsPlugin = useWebSocket();
 
@@ -19,6 +22,8 @@ export const useAuth = () => {
   };
 
   return {
+    getToken,
+    getUserId,
     logout,
   };
 };

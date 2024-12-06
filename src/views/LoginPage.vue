@@ -5,11 +5,10 @@ import { storeToRefs } from 'pinia';
 import useVuelidate from '@vuelidate/core';
 import { required, email, minLength } from '@vuelidate/validators';
 
-import { emailLogin, emailSignUp } from '@/api/modules/auth2';
+import { postEmailLogin, postEmailSignUp } from '@/api/modules/auth';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { useAppStore } from '@/store/app';
 import { useAuthStore } from '@/store/auth';
-import { useAuth } from '@/service/useAuth';
 
 const { show: showAlert } = useAlertStore();
 const { projectName } = storeToRefs(useAppStore());
@@ -17,7 +16,6 @@ const { projectName } = storeToRefs(useAppStore());
 const { loading } = storeToRefs(useAuthStore());
 
 const router = useRouter();
-const authService = useAuth();
 
 const isLogin = ref(true);
 const globalErrMsg = ref('');
@@ -59,7 +57,7 @@ const signUp = async () => {
       password: user.password,
     };
 
-    await emailSignUp(dict);
+    await postEmailSignUp(dict);
 
     await router.push({ name: 'Post' });
     showAlert('註冊、登入成功！', AlertState.SUCCESS);
@@ -80,7 +78,7 @@ const login = async () => {
       password: user.password,
     };
 
-    await emailLogin(dict);
+    await postEmailLogin(dict);
 
     await router.push({ name: 'Post' });
     showAlert('登入成功！', AlertState.SUCCESS);

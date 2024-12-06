@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { useAuth } from '@/service/useAuth';
+import { useAuth } from '@/compositions/useAuth';
 import { axiosErrorHandler } from './errorHandler';
 
 export const useLocalhost = import.meta.env.VITE_USE_LOCALHOST === 'true';
@@ -21,7 +21,7 @@ export const getApiNetworkUrl = (state = 'http') =>
     ? `ws${import.meta.env.VITE_API_NETWORK_URL}`
     : `http${import.meta.env.VITE_API_NETWORK_URL}`;
 
-const authService = useAuth();
+const { getToken } = useAuth();
 
 const instance = axios.create({
   baseURL:
@@ -35,7 +35,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     if (config.headers) {
-      config.headers['Authorization'] = `Bearer ${authService.getToken()}`;
+      config.headers['Authorization'] = `Bearer ${getToken()}`;
     }
     return config;
   },

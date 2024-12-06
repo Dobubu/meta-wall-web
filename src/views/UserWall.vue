@@ -9,7 +9,7 @@ import { useModalStore } from '@/store/modal';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
-import { useAuth } from '@/service/useAuth';
+import { useAuth } from '@/compositions/useAuth';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import PostItem from '@/components/post/PostItem.vue';
@@ -22,7 +22,7 @@ const { show: showAlert } = useAlertStore();
 
 const userService = useUser();
 const postService = usePost();
-const authService = useAuth();
+const { getUserId } = useAuth();
 const userPhotoService = useUserPhoto();
 
 const userInfo = ref<GetProfileRes>();
@@ -58,7 +58,7 @@ const list = computed(() => postService.userPostList.value);
 const isLoading = computed(() => postService.loading.userWallList);
 const isSearchLoading = computed(() => postService.loading.search);
 const userId = computed(() => route.params.id as string);
-const showUserBlock = computed(() => route.params.id !== authService.getUserId() && userInfo.value);
+const showUserBlock = computed(() => route.params.id !== getUserId() && userInfo.value);
 const emptyWording = computed(() => {
   if (showUserBlock.value) return '查無任何貼文！';
   // if (!showUserBlock.value && keyWord.value) return '查無任何貼文！';
