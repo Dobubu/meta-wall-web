@@ -1,41 +1,26 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, nextTick, ref, computed, watch } from 'vue';
 import { useElementSize } from '@vueuse/core';
+import { storeToRefs } from 'pinia';
 
+import { getMessageList, deleteMessageList } from '@/api/modules/chat';
 import { useUserStore } from '@/store/user';
 import { useWebSocket } from '@/plugins/ws';
 import { WebWSEventType } from '@/plugins/enums';
-import { useChatroom } from '@/service/useChatroom';
+import { timeFormate } from '@/lib/formate';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserMessage from '@/components/chat/UserMessage.vue';
 
-const store = useUserStore();
+const { user } = storeToRefs(useUserStore());
 const wsPlugin = useWebSocket();
-const chatroomService = useChatroom();
 
 const el = ref(null);
-const elScroll = ref<HTMLElement>();
 const { height } = useElementSize(el);
 
 const msgHeight = computed(() => `${height.value - 60}px`);
 
-const msg = ref('');
-
-const addMsg = async () => {
-  if (!msg.value) return;
-
-  await wsPlugin.send(WebWSEventType.WebAddMessage, msg.value);
-  msg.value = '';
-};
-const clearMsg = async () => {
-  await chatroomService.clearMessages();
-};
-const onPress = () => {
-  wsPlugin.send(WebWSEventType.WebTyping, `${store.user?.name} is typing`);
-};
-
-const list = computed(() => chatroomService.list.value);
+const elScroll = ref<HTMLElement>();
 
 const updateScrollView = async () => {
   await nextTick();
@@ -44,10 +29,48 @@ const updateScrollView = async () => {
   elScroll.value.scrollTop = elScroll.value.scrollHeight;
 };
 
+const message = ref('');
+
+const addMessage = async () => {
+  if (!message.value) return;
+
+  await wsPlugin.send(WebWSEventType.WebAddMessage, message.value);
+  message.value = '';
+};
+
+const onPress = () => {
+  wsPlugin.send(WebWSEventType.WebTyping, `${user.value?.name} is typing`);
+};
+
+const messageList = ref<any[]>([]);
+
+const fetchMessageList = async () => {
+  const res = await getMessageList();
+  messageList.value = res.data.map((o: any) => ({
+    ...o,
+    createdAt: timeFormate(o.createdAt),
+  }));
+};
+
+const updateMessageList = (msg2: any) => {
+  messageList.value = [
+    ...messageList.value,
+    {
+      ...msg2,
+      createdAt: timeFormate(msg2.createdAt),
+    },
+  ];
+};
+
+const clearMessageList = async () => {
+  const res = await deleteMessageList();
+  messageList.value = res.data;
+};
+
 watch(
   () => wsPlugin.newMsg.value,
   async (v) => {
-    chatroomService.updateList(v);
+    updateMessageList(v);
 
     await updateScrollView();
   },
@@ -55,15 +78,15 @@ watch(
   { deep: true };
 
 onMounted(async () => {
-  await chatroomService.fetchList();
+  await fetchMessageList();
 
-  wsPlugin.send(WebWSEventType.WebInit, `${store.user?.name} joined the chatroom`);
+  wsPlugin.send(WebWSEventType.WebInit, `${user.value?.name} joined the chatroom`);
 
   await updateScrollView();
 });
 
 onUnmounted(() => {
-  wsPlugin.send(WebWSEventType.WebUserLeave, `${store.user?.name} left the chatroom 👋`);
+  wsPlugin.send(WebWSEventType.WebUserLeave, `${user.value?.name} left the chatroom 👋`);
 });
 </script>
 
@@ -72,7 +95,7 @@ onUnmounted(() => {
     >聊天大廳
 
     <button
-      v-if="store.user?.name === 'mischa'"
+      v-if="user?.name === 'mischa'"
       class="meta-primary"
       type="button"
       transition="duration-base"
@@ -80,14 +103,14 @@ onUnmounted(() => {
       m="l-10px"
       text="sm"
       border="dark-500 rounded-8px"
-      @click="clearMsg"
+      @click="clearMessageList"
     >
       clear
     </button>
   </TitleBlock>
 
   <div
-    v-if="store.user"
+    v-if="user"
     ref="el"
     class="chat_wall"
     h="6/7"
@@ -103,23 +126,23 @@ onUnmounted(() => {
       display="flex-1"
       overflow="y-scroll x-hidden"
     >
-      <template v-for="o in list" :key="o._id">
-        <UserMessage :msg="o" />
+      <template v-for="o in messageList" :key="o._id">
+        <UserMessage :message="o" />
       </template>
     </div>
 
     <input
-      v-model="msg"
+      v-model="message"
       w="full"
       border="0 rounded-8px"
       m="t-3 b-7x"
       type="text"
       placeholder="說一些話..."
-      @keyup.enter="addMsg"
+      @keyup.enter="addMessage"
       @keyup="onPress"
     />
     <p
-      v-show="store.user.name !== wsPlugin.chatTypingUser.value.name"
+      v-show="user.name !== wsPlugin.chatTypingUser.value.name"
       position="absolute bottom-7px"
       text="sm"
     >
