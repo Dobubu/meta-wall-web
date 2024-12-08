@@ -1,4 +1,7 @@
+import type { AxiosResponse } from 'axios';
+
 import PostAPI from '@/api';
+import { Post } from '@/components/post/type';
 
 export interface GetPostListReq {
   sort?: string;
@@ -27,7 +30,8 @@ export interface AddPostComment {
 export const apiGetPostList = async (payload: GetPostListReq) =>
   PostAPI.get('/posts', { params: payload });
 
-export const apiGetPost = async (postId: string) => PostAPI.get(`/post/${postId}`);
+export const apiGetPost = (postId: string): Promise<AxiosResponse<Post>> =>
+  PostAPI.get(`/post/${postId}`);
 
 export const apiGetUserPostsList = async (userId: string, payload: GetUserPostListReq) =>
   PostAPI.get(`/posts/user/${userId}`, { params: payload });

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { PropType, computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
+import { deletePost, addPostLike, deletePostLike, addPostComment } from '@/api/modules/post';
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
-import { usePost } from '@/service/usePost';
+import { usePostStore } from '@/store/post';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 import { User, Post, LikeType } from './type';
 
@@ -32,8 +34,8 @@ const emit = defineEmits([
 const route = useRoute();
 const store = useUserStore();
 const { show: showAlert } = useAlertStore();
+const { loading } = storeToRefs(usePostStore());
 
-const postService = usePost();
 const userPhotoService = useUserPhoto();
 
 const comment = ref('');
@@ -69,19 +71,11 @@ const showDeletePost = computed(
 );
 
 const addLike = async () => {
-  try {
-    await postService.addLike(props.post._id);
-  } catch (e: any) {
-    console.error(e.message);
-  }
+  await addPostLike(props.post._id);
 };
 
 const deleteLike = async () => {
-  try {
-    await postService.deleteLike(props.post._id);
-  } catch (e: any) {
-    console.error(e.message);
-  }
+  await deletePostLike(props.post._id);
 };
 
 const updateLike = () => {
@@ -94,39 +88,36 @@ const updateLike = () => {
   }
 };
 
-const addPostComment = async () => {
-  try {
-    if (!comment.value) return showAlert('留言內容必填', AlertState.WARNING);
+const handleAddPostComment = async () => {
+  if (!comment.value) return showAlert('留言內容必填', AlertState.WARNING);
 
-    const dict = {
-      comment: comment.value,
-    };
+  const dict = {
+    comment: comment.value,
+  };
 
-    await postService.addPostComment(props.post._id, dict);
+  await addPostComment(props.post._id, dict);
 
-    if (route.name === 'Post') {
+  switch (route.name) {
+    case 'Post':
       emit('fetchPostList');
-    }
-    if (route.name === 'UserWall') {
+      break;
+    case 'UserWall':
       emit('fetchUserPostList', props.post.user._id);
-    }
-    if (route.name === 'PostInfo') {
+      break;
+    case 'PostInfo':
       emit('fetchPostInfo');
-    }
-
-    comment.value = '';
-    showAlert('留言成功', AlertState.SUCCESS);
-  } catch (e: any) {
-    console.error(e.message);
-    throw e;
+      break;
   }
+
+  comment.value = '';
+  showAlert('留言成功', AlertState.SUCCESS);
 };
 
-const deletePost = async (postId: string, userId: string) => {
+const handleDeletePost = async (postId: string, userId: string) => {
   let isDelete = confirm('確定該刪除貼文嗎？');
 
   if (isDelete) {
-    await postService.deletePost(postId);
+    await deletePost(postId);
     emit('fetchUserPostList', userId);
     showAlert('刪除成功！', AlertState.SUCCESS);
   }
@@ -160,7 +151,7 @@ const handleShowImage = (image: string) => emit('updateModalImage', image);
         size="lg"
         m="l-auto"
         cursor="pointer"
-        @click="deletePost(post._id, user._id)"
+        @click="handleDeletePost(post._id, user._id)"
       />
     </div>
     <p data-cy="post-item-content" m="b-4">{{ post.content }}</p>
@@ -202,8 +193,8 @@ const handleShowImage = (image: string) => emit('updateModalImage', image);
         w="full"
         h="10"
         p="l-6"
-        :disabled="postService.loading.comment"
-        @keyup.enter="addPostComment"
+        :disabled="loading.comment"
+        @keyup.enter="handleAddPostComment"
       />
       <div w="128px" position="relative">
         <button
@@ -212,13 +203,13 @@ const handleShowImage = (image: string) => emit('updateModalImage', image);
           h="full"
           border="2 dark-500 rounded-none"
           :class="createPostClass"
-          :disabled="postService.loading.comment"
-          @click="addPostComment"
+          :disabled="loading.comment"
+          @click="handleAddPostComment"
         >
           留言
 
           <font-awesome-icon
-            v-show="postService.loading.comment"
+            v-show="loading.comment"
             :icon="['fa', 'circle-notch']"
             pulse
             size="lg"

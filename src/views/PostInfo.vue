@@ -1,25 +1,59 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import type { AxiosResponse } from 'axios';
 
+import { getPost } from '@/api/modules/post';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
-import { usePost } from '@/service/usePost';
+import { usePostStore } from '@/store/post';
+import { Post, Comment, LikeType } from '@/components/post/type';
+import { dayFormate } from '@/lib/formate';
 
 import PostItem from '@/components/post/PostItem.vue';
 import CommonModal from '@/components/common/Modal.vue';
 
-const store = useUserStore();
+const { user } = storeToRefs(useUserStore());
 const { updateShowModal } = useModalStore();
+const { loading } = storeToRefs(usePostStore());
 
 const route = useRoute();
-const postService = usePost();
 
-const postInfo = computed(() => postService.postInfo.value);
-const isLoading = computed(() => postService.loading.postInfo);
+const postInfo = ref<Post>();
+
+const isLoading = computed(() => loading.value.postInfo);
 
 const fetchPostInfo = async () => {
-  await postService.fetchPost(route.params.id as string);
+  const updatePostInfo = (resPayload: AxiosResponse<Post>) => {
+    let _res;
+
+    _res = {
+      ...resPayload.data,
+      createdAt: dayFormate(resPayload.data.createdAt),
+      user: {
+        ...resPayload.data.user,
+        photo: resPayload.data.user.photo || '',
+      },
+      comments: resPayload.data.comments.map((o: Comment) => {
+        let dict = {
+          ...o,
+          createdAt: dayFormate(o.createdAt),
+        };
+
+        dict.user.photo = o.user.photo || '';
+
+        return dict;
+      }),
+    };
+
+    return _res;
+  };
+
+  const res = await getPost(route.params.id as string, updatePostInfo);
+
+  if (!res) return;
+  postInfo.value = res;
 };
 
 onMounted(async () => {
@@ -27,7 +61,13 @@ onMounted(async () => {
 });
 
 const updateLike = (postId: string, type: string) => {
-  postService.updatePostLike(postId, type);
+  if (!postInfo.value || !user.value) return;
+
+  if (type === LikeType.ADD) {
+    postInfo.value.likes = [user.value._id, ...postInfo.value.likes];
+  } else {
+    postInfo.value.likes = postInfo.value.likes.filter((o) => o !== user.value?._id);
+  }
 };
 
 const modalImage = ref('');
@@ -49,7 +89,7 @@ const updateModalImage = (image: string) => {
     <template v-if="postInfo">
       <PostItem
         :post="postInfo"
-        :user="store.user"
+        :user="user"
         @update-like="updateLike"
         @fetch-post-info="fetchPostInfo"
         @update-modal-image="updateModalImage"

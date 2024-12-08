@@ -23,7 +23,7 @@ export interface Post {
   tags: string[];
   type: PostType;
   image: string;
-  photo: string;
+  photo: string; // image
   createdAt: string;
   content: string;
   likes: string[];

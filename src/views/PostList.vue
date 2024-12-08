@@ -1,35 +1,34 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 import { SortType } from '@/api/instances/post';
+import { getPostList } from '@/api/modules/post';
 import { useUserStore } from '@/store/user';
+import { usePostStore } from '@/store/post';
 import { useModalStore } from '@/store/modal';
-import { usePost } from '@/service/usePost';
+import { usePost } from '@/compositions/usePost';
+import { LikeType } from '@/components/post/type';
 
 import PostItem from '@/components/post/PostItem.vue';
 import CommonModal from '@/components/common/Modal.vue';
 
-const store = useUserStore();
 const { updateShowModal } = useModalStore();
+const { user } = storeToRefs(useUserStore());
+const { postList, loading } = storeToRefs(usePostStore());
 
 const route = useRoute();
-const postService = usePost();
+const { search, getQueryObject } = usePost();
 
-const list = computed(() => postService.list.value);
-const isLoading = computed(() => postService.loading.list);
-const isSearchLoading = computed(() => postService.loading.search);
-
-const getQueryObject = computed(() => {
-  return {
-    ...route.query,
-  };
-});
+const list = computed(() => postList.value);
+const isLoading = computed(() => loading.value.list);
+const isSearchLoading = computed(() => loading.value.search);
 
 const sort = ref(SortType.DESC);
 const keyWord = ref('');
 
-const search = async () => {
+const handleSearch = async () => {
   if (isSearchLoading.value) return;
 
   const dict = {
@@ -37,11 +36,11 @@ const search = async () => {
     sort: sort.value,
   };
 
-  postService.search(dict);
+  search(dict);
 };
 
 const fetchList = async () => {
-  await postService.fetchList(getQueryObject.value);
+  await getPostList(getQueryObject.value);
 };
 
 onMounted(async () => {
@@ -57,7 +56,15 @@ onMounted(async () => {
 });
 
 const updateLike = (postId: string, type: string) => {
-  postService.updateListLike(postId, type);
+  const target = postList.value.find((o) => o._id === postId);
+
+  if (!target || !user.value) return;
+
+  if (type === LikeType.ADD) {
+    target.likes = [user.value._id, ...target.likes];
+  } else {
+    target.likes = target.likes.filter((o) => o !== user.value?._id);
+  }
 };
 
 const modalImage = ref('');
@@ -71,7 +78,13 @@ const updateModalImage = (image: string) => {
 <template>
   <div display="flex flex-col md:flex-row" m="b-4">
     <div position="relative" m="b-1.5 md:b-0 md:r-3">
-      <select v-model="sort" w="full md:156px" p="y-2.5 x-4" border="2 dark-500" @change="search">
+      <select
+        v-model="sort"
+        w="full md:156px"
+        p="y-2.5 x-4"
+        border="2 dark-500"
+        @change="handleSearch"
+      >
         <option :value="SortType.DESC">從新到舊</option>
         <option :value="SortType.ASC">從舊到新</option>
       </select>
@@ -88,7 +101,7 @@ const updateModalImage = (image: string) => {
         h="12"
         p="l-6"
         :disabled="isSearchLoading"
-        @keyup.enter="search"
+        @keyup.enter="handleSearch"
       />
       <button
         class="meta-primary"
@@ -97,7 +110,7 @@ const updateModalImage = (image: string) => {
         h="12"
         border="2 dark-500 rounded-none"
         :disabled="isSearchLoading"
-        @click="search"
+        @click="handleSearch"
       >
         <font-awesome-icon :icon="['fa', 'magnifying-glass']" size="lg" />
       </button>
@@ -118,7 +131,7 @@ const updateModalImage = (image: string) => {
         v-for="o in list"
         :key="o._id"
         :post="o"
-        :user="store.user"
+        :user="user"
         @update-like="updateLike"
         @fetch-post-list="fetchList"
         @update-modal-image="updateModalImage"
