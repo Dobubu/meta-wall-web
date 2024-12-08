@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 
-import { apiUploadImgur } from '@/api/instances/upload';
+import { postUploadImgur } from '@/api/modules/upload';
 
 interface UploadFile {
   file: File | null;
@@ -29,8 +29,8 @@ export const useUpload = () => {
 
   const uploadFile = async (type = 'post') => {
     const dict = { files: file.file, type };
+    const res = await postUploadImgur(dict);
 
-    const res = await apiUploadImgur(dict);
     return res.data.imgUrl;
   };
 

@@ -8,7 +8,7 @@ import { SexType } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { useUser } from '@/service/useUser';
-import { useUpload } from '@/service/useUpload';
+import { useUpload } from '@/compositions/useUpload';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
@@ -21,7 +21,7 @@ import themeConversation from '@/assets/images/login_conversation.svg';
 const store = useUserStore();
 const { show: showAlert } = useAlertStore();
 const userService = useUser();
-const uploadService = useUpload();
+const { file, uploadFile, onChangeFile, resetFile } = useUpload();
 
 const activeTab = ref('info');
 const tabList = ref([
@@ -55,7 +55,7 @@ const v$User = useVuelidate(rulesUser, user);
 
 const userPhotoService = useUserPhoto();
 
-const userPhoto = computed(() => uploadService.file.url || userPhotoService.getUserPhoto.value);
+const userPhoto = computed(() => file.url || userPhotoService.getUserPhoto.value);
 
 const updateUser = async () => {
   try {
@@ -71,8 +71,8 @@ const updateUser = async () => {
       sex: user.sex,
     };
 
-    if (uploadService.file.file) {
-      const res = await uploadService.uploadFile('user');
+    if (file.file) {
+      const res = await uploadFile('user');
 
       user.photo = res;
       dict = { ...dict, photo: user.photo };
@@ -80,7 +80,7 @@ const updateUser = async () => {
 
     await userService.updateProfile(dict);
 
-    uploadService.resetFile();
+    resetFile();
     globalErrMsg.value = '';
     showAlert('資料更新成功！', AlertState.SUCCESS);
   } catch (e: any) {
@@ -137,7 +137,7 @@ watch(
 const resetStatus = () => {
   user.name = store.user?.name;
   user.sex = store.user?.sex;
-  uploadService.resetFile();
+  resetFile();
 
   globalErrMsg.value = '';
   v$User.value.$reset();
@@ -224,14 +224,14 @@ const changeTheme = async () => {
           <UserItem :photo="(userPhoto as string)" size="107px" margin="0" />
         </div>
 
-        <div v-if="uploadService.file.file" display="flex items-center" m="b-2">
-          <span>{{ uploadService.file.name }}</span>
+        <div v-if="file.file" display="flex items-center" m="b-2">
+          <span>{{ file.name }}</span>
           <font-awesome-icon
             :icon="['fa', 'xmark']"
             size="lg"
             m="l-5"
             cursor="pointer"
-            @click="uploadService.resetFile"
+            @click="resetFile"
           />
         </div>
         <label htmlFor="uploadPostImage">
@@ -243,7 +243,7 @@ const changeTheme = async () => {
             accept="image/jpg,image/jpeg,image/png"
             class="hidden"
             h="0"
-            @change="uploadService.onChangeFile"
+            @change="onChangeFile"
           />
         </label>
 
