@@ -6,7 +6,7 @@ import { required } from '@vuelidate/validators';
 
 import { useAlertStore, AlertState } from '@/store/alert';
 import { usePost } from '@/service/usePost';
-import { useUpload } from '@/service/useUpload';
+import { useUpload } from '@/compositions/useUpload';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 
@@ -14,7 +14,7 @@ const { show: showAlert } = useAlertStore();
 
 const router = useRouter();
 const postService = usePost();
-const uploadService = useUpload();
+const { file, uploadFile, onChangeFile, resetFile } = useUpload();
 
 const globalErrMsg = ref('');
 const tmpImageUrl = ref('');
@@ -31,7 +31,7 @@ const rules = {
 
 const v$ = useVuelidate(rules, post);
 
-const postImgs = computed(() => uploadService.file.url);
+const postImgs = computed(() => file.url);
 const createPostClass = computed(() => {
   return {
     'bg-disable-100 cursor-not-allowed': !post.content || loading.value,
@@ -48,8 +48,8 @@ const createPost = async () => {
 
     loading.value = true;
 
-    if (uploadService.file.file) {
-      const res = await uploadService.uploadFile();
+    if (file.file) {
+      const res = await uploadFile();
       post.photos = res;
     }
 
@@ -135,24 +135,24 @@ const createPost = async () => {
             accept="image/jpg,image/jpeg,image/png"
             class="hidden"
             h="0"
-            @change="uploadService.onChangeFile"
+            @change="onChangeFile"
           />
         </label>
 
-        <template v-if="uploadService.file.file">
-          <span>{{ uploadService.file.name }}</span>
+        <template v-if="file.file">
+          <span>{{ file.name }}</span>
           <font-awesome-icon
             :icon="['fa', 'xmark']"
             size="lg"
             m="l-5"
             cursor="pointer"
-            @click="uploadService.resetFile"
+            @click="resetFile"
           />
         </template>
       </div>
 
       <div
-        v-if="uploadService.file.file"
+        v-if="file.file"
         :style="{
           'background-image': `url(${postImgs})`,
         }"
