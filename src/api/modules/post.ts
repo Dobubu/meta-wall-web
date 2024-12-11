@@ -12,16 +12,18 @@ import {
 } from '@/api/instances/post';
 import { usePostStore } from '@/store/post';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
+import { Post } from '@/components/post/type';
 
-export const getPost = async (postId: string) => {
+export const getPost = async (postId: string, payloadOnSuccess: any) => {
   const { updateLoading } = usePostStore();
 
   updateLoading('postInfo', true);
-  const res = await handleErrorAsync({
+  const res = await handleErrorAsync<Post>({
     callback: () => apiGetPost(postId),
+    onSuccess: (res) => payloadOnSuccess(res),
     onFinally: () => updateLoading('postInfo', false),
   });
-  console.log('res: ', res);
+
   return res;
 };
 

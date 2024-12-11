@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
+import { usePostStore } from '@/store/post';
+import { usePost2 } from '@/compositions/usePost';
 import { usePost } from '@/service/usePost';
+import { Post, Comment } from '@/components/post/type';
+import { dayFormate } from '@/lib/formate';
 
 import PostItem from '@/components/post/PostItem.vue';
 import CommonModal from '@/components/common/Modal.vue';
@@ -14,12 +19,46 @@ const { updateShowModal } = useModalStore();
 
 const route = useRoute();
 const postService = usePost();
+const { fetchPost } = usePost2();
+const { loading } = storeToRefs(usePostStore());
 
-const postInfo = computed(() => postService.postInfo.value);
-const isLoading = computed(() => postService.loading.postInfo);
+const postInfo = ref<Post>();
+
+// const postInfo = computed(() => postService.postInfo.value);
+const isLoading = computed(() => loading.value.postInfo);
 
 const fetchPostInfo = async () => {
-  await postService.fetchPost(route.params.id as string);
+  // await postService.fetchPost(route.params.id as string);
+  const updatePostInfo = (resPayload?: any) => {
+    let _res;
+
+    _res = {
+      ...resPayload.data,
+      createdAt: dayFormate(resPayload.data.createdAt),
+      user: {
+        ...resPayload.data.user,
+        photo: resPayload.data.user.photo || '',
+      },
+      comments: resPayload.data.comments.map((o: Comment) => {
+        let dict = {
+          ...o,
+          createdAt: dayFormate(o.createdAt),
+        };
+
+        dict.user.photo = o.user.photo || '';
+
+        return dict;
+      }),
+    };
+
+    return _res;
+  };
+
+  const res = await fetchPost(route.params.id as string, updatePostInfo);
+  // const res = await fetchPost(route.params.id as string, () => updatePostInfo());
+  if (!res) return;
+
+  postInfo.value = res;
 };
 
 onMounted(async () => {
