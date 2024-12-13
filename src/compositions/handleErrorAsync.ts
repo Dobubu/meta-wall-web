@@ -5,7 +5,7 @@ type AsyncCallback<T, A = void> = (cb_payload?: A) => Promise<AxiosResponse<T>>;
 interface HandleErrorAsyncOptions<T, A = void> {
   callback: AsyncCallback<T, A>;
   payload?: any;
-  onSuccess?: (result: T) => void;
+  onSuccess?: (result: AxiosResponse<T>) => void;
   onError?: (error: any) => void;
   onFinally?: () => void;
 }
@@ -28,7 +28,6 @@ export const handleErrorAsync = async <T, A = void>({
     // }
 
     const res = await callback();
-    console.log('res: ', res);
 
     if (onSuccess) {
       return onSuccess(res);

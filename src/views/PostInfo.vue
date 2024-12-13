@@ -2,6 +2,7 @@
 import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
+import type { AxiosResponse } from 'axios';
 
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
@@ -29,7 +30,7 @@ const isLoading = computed(() => loading.value.postInfo);
 
 const fetchPostInfo = async () => {
   // await postService.fetchPost(route.params.id as string);
-  const updatePostInfo = (resPayload?: any) => {
+  const updatePostInfo = (resPayload: AxiosResponse<Post>) => {
     let _res;
 
     _res = {

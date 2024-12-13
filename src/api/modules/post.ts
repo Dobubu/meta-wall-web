@@ -1,3 +1,5 @@
+import type { AxiosResponse } from 'axios';
+
 import {
   apiGetPost,
   apiGetPostList,
@@ -20,7 +22,7 @@ export const getPost = async (postId: string, payloadOnSuccess: any) => {
   updateLoading('postInfo', true);
   const res = await handleErrorAsync<Post>({
     callback: () => apiGetPost(postId),
-    onSuccess: (res) => payloadOnSuccess(res),
+    onSuccess: (successRes: AxiosResponse<Post>) => payloadOnSuccess(successRes),
     onFinally: () => updateLoading('postInfo', false),
   });
 
