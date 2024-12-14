@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import type { AxiosResponse } from 'axios';
 
+import { getPost } from '@/api/modules/post';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
 import { usePostStore } from '@/store/post';
@@ -55,7 +56,8 @@ const fetchPostInfo = async () => {
     return _res;
   };
 
-  const res = await fetchPost(route.params.id as string, updatePostInfo);
+  // const res = await fetchPost(route.params.id as string, updatePostInfo);
+  const res = await getPost(route.params.id as string, updatePostInfo);
   // const res = await fetchPost(route.params.id as string, () => updatePostInfo());
   if (!res) return;
 

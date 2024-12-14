@@ -26,7 +26,7 @@ export const getPost = async (postId: string, payloadOnSuccess: any) => {
     onFinally: () => updateLoading('postInfo', false),
   });
 
-  return res;
+  return 'data' in res ? res.data : res;
 };
 
 export const getPostList = async (query = {}) => {
