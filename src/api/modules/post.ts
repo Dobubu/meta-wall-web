@@ -69,7 +69,6 @@ export const deletePost = async (postId: string) => {
   const res = await handleErrorAsync({
     callback: () => apiDeletePost(postId),
   });
-  console.log('res: ', res);
   return res;
 };
 
@@ -77,7 +76,6 @@ export const addPostLike = async (postId: string) => {
   const res = await handleErrorAsync({
     callback: () => apiAddPostLike(postId),
   });
-  console.log('res: ', res);
   return res;
 };
 
@@ -85,7 +83,6 @@ export const deletePostLike = async (postId: string) => {
   const res = await handleErrorAsync({
     callback: () => apiDeletePostLike(postId),
   });
-  console.log('res: ', res);
   return res;
 };
 
@@ -97,6 +94,5 @@ export const addPostComment = async (postId: string, payload: AddPostComment) =>
     callback: () => apiAddPostComment(postId, payload),
     onFinally: () => updateLoading('comment', false),
   });
-  console.log('res: ', res);
   return res;
 };
