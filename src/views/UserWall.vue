@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 import { SortType } from '@/api/instances/post';
 import { GetProfileRes } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
 import { useAlertStore, AlertState } from '@/store/alert';
+import { usePostStore } from '@/store/post';
+import { usePost2 } from '@/compositions/usePost';
 import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/compositions/useAuth';
@@ -19,11 +22,13 @@ const route = useRoute();
 const store = useUserStore();
 const { updateShowModal } = useModalStore();
 const { show: showAlert } = useAlertStore();
+const { userPostList } = storeToRefs(usePostStore());
 
 const userService = useUser();
 const postService = usePost();
 const { getUserId } = useAuth();
 const userPhotoService = useUserPhoto();
+const { search } = usePost2();
 
 const userInfo = ref<GetProfileRes>();
 const sort = ref(SortType.DESC);
@@ -54,7 +59,7 @@ const getQueryObject = computed(() => {
   };
 });
 
-const list = computed(() => postService.userPostList.value);
+const list = computed(() => userPostList.value);
 const isLoading = computed(() => postService.loading.userWallList);
 const isSearchLoading = computed(() => postService.loading.search);
 const userId = computed(() => route.params.id as string);
@@ -66,7 +71,7 @@ const emptyWording = computed(() => {
   return '目前尚無動態，新增一則貼文吧！';
 });
 
-const search = async () => {
+const handleSearch = async () => {
   if (isSearchLoading.value) return;
 
   const dict = {
@@ -74,7 +79,7 @@ const search = async () => {
     sort: sort.value,
   };
 
-  postService.search(dict, userId.value);
+  await search(dict, userId.value);
 };
 
 watch(
@@ -179,7 +184,13 @@ const updateModalImage = (image: string) => {
 
   <div display="flex flex-col md:flex-row" m="b-4">
     <div position="relative" m="b-1.5 md:b-0 md:r-3">
-      <select v-model="sort" w="full md:156px" p="y-2.5 x-4" border="2 dark-500" @change="search">
+      <select
+        v-model="sort"
+        w="full md:156px"
+        p="y-2.5 x-4"
+        border="2 dark-500"
+        @change="handleSearch"
+      >
         <option :value="SortType.DESC">從新到舊</option>
         <option :value="SortType.ASC">從舊到新</option>
       </select>
@@ -195,7 +206,7 @@ const updateModalImage = (image: string) => {
         h="12"
         p="l-6"
         :disabled="isSearchLoading"
-        @keyup.enter="search"
+        @keyup.enter="handleSearch"
       />
       <button
         class="meta-primary"
@@ -204,7 +215,7 @@ const updateModalImage = (image: string) => {
         h="12"
         border="2 dark-500 rounded-none"
         :disabled="isSearchLoading"
-        @click="search"
+        @click="handleSearch"
       >
         <font-awesome-icon :icon="['fa', 'magnifying-glass']" size="lg" />
       </button>

@@ -17,6 +17,7 @@ import { usePostStore } from '@/store/post';
 import { useUserStore } from '@/store/user';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
 import { Post, PostType } from '@/components/post/type';
+import { dayFormate } from '@/lib/formate';
 
 export const getPost = async (postId: string, payloadOnSuccess: any) => {
   const { updateLoading } = usePostStore();
@@ -32,26 +33,83 @@ export const getPost = async (postId: string, payloadOnSuccess: any) => {
 };
 
 export const getPostList = async (query = {}) => {
-  const { updateLoading } = usePostStore();
+  const { updateLoading, updatePostList } = usePostStore();
+
+  const handleUpdatePostList = (resPayload: AxiosResponse<Post[]>) => {
+    let _res;
+
+    _res = resPayload.data.map((o: Post) => {
+      return {
+        ...o,
+        createdAt: dayFormate(o.createdAt),
+        user: {
+          ...o.user,
+          photo: o.user.photo || '',
+        },
+        comments: o.comments.map((o2) => {
+          let dict = {
+            ...o2,
+            createdAt: dayFormate(o2.createdAt),
+          };
+
+          dict.user.photo = o2.user.photo || '';
+
+          return dict;
+        }),
+      };
+    });
+
+    updatePostList(_res);
+    return _res;
+  };
 
   updateLoading('list', true);
   const res = await handleErrorAsync({
     callback: () => apiGetPostList(query),
+    onSuccess: (successRes: AxiosResponse<Post[]>) => handleUpdatePostList(successRes),
     onFinally: () => updateLoading('list', false),
   });
-  console.log('res: ', res);
   return res;
 };
 
 export const getUserPostsList = async (userId: string, query?: any) => {
-  const { updateLoading } = usePostStore();
+  const { updateLoading, updateUserPostList } = usePostStore();
 
   updateLoading('userWallList', true);
+
+  const handleUpdateUserPostList = (resPayload: AxiosResponse<Post[]>) => {
+    let _res;
+
+    _res = resPayload.data.map((o: Post) => {
+      return {
+        ...o,
+        createdAt: dayFormate(o.createdAt),
+        user: {
+          ...o.user,
+          photo: o.user.photo || '',
+        },
+        comments: o.comments.map((o2) => {
+          let dict = {
+            ...o2,
+            createdAt: dayFormate(o2.createdAt),
+          };
+
+          dict.user.photo = o2.user.photo || '';
+
+          return dict;
+        }),
+      };
+    });
+
+    updateUserPostList(_res);
+    return _res;
+  };
+
   const res = await handleErrorAsync({
     callback: () => apiGetUserPostsList(userId, query),
+    onSuccess: (successRes: AxiosResponse<Post[]>) => handleUpdateUserPostList(successRes),
     onFinally: () => updateLoading('userWallList', false),
   });
-  console.log('res: ', res);
   return res;
 };
 

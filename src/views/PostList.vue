@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 import { SortType } from '@/api/instances/post';
+import { getPostList } from '@/api/modules/post';
 import { useUserStore } from '@/store/user';
+import { usePostStore } from '@/store/post';
 import { useModalStore } from '@/store/modal';
 import { usePost } from '@/service/usePost';
 
@@ -15,10 +18,11 @@ const { updateShowModal } = useModalStore();
 
 const route = useRoute();
 const postService = usePost();
+const { postList, loading } = storeToRefs(usePostStore());
 
-const list = computed(() => postService.list.value);
-const isLoading = computed(() => postService.loading.list);
-const isSearchLoading = computed(() => postService.loading.search);
+const list = computed(() => postList.value);
+const isLoading = computed(() => loading.value.list);
+const isSearchLoading = computed(() => loading.value.search);
 
 const getQueryObject = computed(() => {
   return {
@@ -41,7 +45,7 @@ const search = async () => {
 };
 
 const fetchList = async () => {
-  await postService.fetchList(getQueryObject.value);
+  await getPostList(getQueryObject.value);
 };
 
 onMounted(async () => {
