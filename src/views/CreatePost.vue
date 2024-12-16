@@ -4,8 +4,8 @@ import { useRouter } from 'vue-router';
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
+import { addPost } from '@/api/modules/post';
 import { useAlertStore, AlertState } from '@/store/alert';
-import { usePost } from '@/service/usePost';
 import { useUpload } from '@/compositions/useUpload';
 
 import TitleBlock from '@/components/TitleBlock.vue';
@@ -13,7 +13,6 @@ import TitleBlock from '@/components/TitleBlock.vue';
 const { show: showAlert } = useAlertStore();
 
 const router = useRouter();
-const postService = usePost();
 const { file, uploadFile, onChangeFile, resetFile } = useUpload();
 
 const globalErrMsg = ref('');
@@ -58,7 +57,7 @@ const createPost = async () => {
       content: post.content,
     };
 
-    await postService.addPost(dict);
+    await addPost(dict);
     showAlert('貼文成功！', AlertState.SUCCESS);
 
     router.push({ name: 'Post' });

@@ -1,3 +1,4 @@
+import { storeToRefs } from 'pinia';
 import type { AxiosResponse } from 'axios';
 
 import {
@@ -13,8 +14,9 @@ import {
   apiAddPostComment,
 } from '@/api/instances/post';
 import { usePostStore } from '@/store/post';
+import { useUserStore } from '@/store/user';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
-import { Post } from '@/components/post/type';
+import { Post, PostType } from '@/components/post/type';
 
 export const getPost = async (postId: string, payloadOnSuccess: any) => {
   const { updateLoading } = usePostStore();
@@ -53,15 +55,26 @@ export const getUserPostsList = async (userId: string, query?: any) => {
   return res;
 };
 
-export const addPost = async (payload: any) => {
+export const addPost = async (payload: Pick<AddPostReq, 'image' | 'content'>) => {
+  const { user } = storeToRefs(useUserStore());
+
   const { updateLoading } = usePostStore();
 
+  if (!user.value) throw new Error('找不到使用者');
+
   updateLoading('add', true);
+
+  const dict = {
+    user: user.value._id,
+    tags: ['test'],
+    type: PostType.PERSON,
+    ...payload,
+  };
+
   const res = await handleErrorAsync({
-    callback: () => apiAddPost(payload),
+    callback: () => apiAddPost(dict),
     onFinally: () => updateLoading('add', false),
   });
-  console.log('res: ', res);
   return res;
 };
 
