@@ -1,5 +1,6 @@
-import PostAPI from '../api';
+import type { AxiosResponse } from 'axios';
 
+import PostAPI from '../api';
 import { FollowUser } from '@/components/post/type';
 
 export interface SignUpReq {
@@ -9,6 +10,12 @@ export interface SignUpReq {
 }
 
 export type LoginReq = Pick<SignUpReq, 'email' | 'password'>;
+
+export interface LoginRes {
+  token: string;
+  name: string;
+  id: string;
+}
 
 export enum SexType {
   MALE = 'male',
@@ -47,7 +54,8 @@ export interface GetFollowListRes {
 
 export const apiSignUp = async (payload: SignUpReq) => PostAPI.post('/user/sign_up', payload);
 
-export const apiLogin = async (payload: LoginReq) => PostAPI.post('/user/sign_in', payload);
+export const apiLogin = async (payload: LoginReq): Promise<AxiosResponse<LoginRes>> =>
+  PostAPI.post('/user/sign_in', payload);
 
 export const apiGetProfile = async (userId: string) => PostAPI.get(`/user/profile/${userId}`);
 

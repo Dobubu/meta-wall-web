@@ -1,11 +1,18 @@
+import type { AxiosResponse } from 'axios';
 import router from '@/router';
 
 import { StorageType } from '@/service/type';
 // import { useWebSocket } from '@/plugins/ws';
+import { LoginRes } from '@/api/instances/user';
 
 export const useAuth = () => {
   const getToken = () => localStorage.getItem(StorageType.ACCESSTOKEN);
   const getUserId = () => localStorage.getItem(StorageType.USERID);
+
+  const updateTokenAndUserId = (res: AxiosResponse<LoginRes>) => {
+    localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
+    localStorage.setItem(StorageType.USERID, res.data.id);
+  };
 
   // TODO:fix inject ws plugin
   // const wsPlugin = useWebSocket();
@@ -24,6 +31,7 @@ export const useAuth = () => {
   return {
     getToken,
     getUserId,
+    updateTokenAndUserId,
     logout,
   };
 };

@@ -1,28 +1,27 @@
-import { LoginReq, apiLogin, SignUpReq, apiSignUp } from '@/api/instances/user';
+import type { AxiosResponse } from 'axios';
+
+import { LoginReq, LoginRes, apiLogin, SignUpReq, apiSignUp } from '@/api/instances/user';
 import { useAuthStore } from '@/store/auth';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
-import { StorageType } from '@/service/type';
 
-export const postEmailLogin = async (payload: LoginReq) => {
+export const postEmailLogin = async (payload: LoginReq, payloadOnSuccess: any) => {
   const { updateLoading } = useAuthStore();
 
   updateLoading(true);
-  const res = await handleErrorAsync({
+  await handleErrorAsync({
     callback: () => apiLogin(payload),
+    onSuccess: (successRes: AxiosResponse<LoginRes>) => payloadOnSuccess(successRes),
     onFinally: () => updateLoading(false),
   });
-  localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
-  localStorage.setItem(StorageType.USERID, res.data.id);
 };
 
-export const postEmailSignUp = async (payload: SignUpReq) => {
+export const postEmailSignUp = async (payload: SignUpReq, payloadOnSuccess: any) => {
   const { updateLoading } = useAuthStore();
 
   updateLoading(true);
-  const res = await handleErrorAsync({
+  await handleErrorAsync({
     callback: () => apiSignUp(payload),
+    onSuccess: (successRes: AxiosResponse<LoginRes>) => payloadOnSuccess(successRes),
     onFinally: () => updateLoading(false),
   });
-  localStorage.setItem(StorageType.ACCESSTOKEN, res.data.token);
-  localStorage.setItem(StorageType.USERID, res.data.id);
 };

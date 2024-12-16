@@ -9,6 +9,7 @@ import { postEmailLogin, postEmailSignUp } from '@/api/modules/auth';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { useAppStore } from '@/store/app';
 import { useAuthStore } from '@/store/auth';
+import { useAuth } from '@/compositions/useAuth';
 
 const { show: showAlert } = useAlertStore();
 const { projectName } = storeToRefs(useAppStore());
@@ -45,6 +46,8 @@ const changeStatus = () => {
   user.password = '';
 };
 
+const { updateTokenAndUserId } = useAuth();
+
 const signUp = async () => {
   try {
     const isValidate = await v$.value.$validate();
@@ -57,7 +60,7 @@ const signUp = async () => {
       password: user.password,
     };
 
-    await postEmailSignUp(dict);
+    await postEmailSignUp(dict, updateTokenAndUserId);
 
     await router.push({ name: 'Post' });
     showAlert('註冊、登入成功！', AlertState.SUCCESS);
@@ -78,7 +81,7 @@ const login = async () => {
       password: user.password,
     };
 
-    await postEmailLogin(dict);
+    await postEmailLogin(dict, updateTokenAndUserId);
 
     await router.push({ name: 'Post' });
     showAlert('登入成功！', AlertState.SUCCESS);
