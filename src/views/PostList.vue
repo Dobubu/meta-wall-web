@@ -8,7 +8,8 @@ import { getPostList } from '@/api/modules/post';
 import { useUserStore } from '@/store/user';
 import { usePostStore } from '@/store/post';
 import { useModalStore } from '@/store/modal';
-import { usePost } from '@/service/usePost';
+import { usePost2 } from '@/compositions/usePost';
+import { LikeType } from '@/components/post/type';
 
 import PostItem from '@/components/post/PostItem.vue';
 import CommonModal from '@/components/common/Modal.vue';
@@ -17,7 +18,7 @@ const store = useUserStore();
 const { updateShowModal } = useModalStore();
 
 const route = useRoute();
-const postService = usePost();
+const { search } = usePost2();
 const { postList, loading } = storeToRefs(usePostStore());
 
 const list = computed(() => postList.value);
@@ -33,7 +34,7 @@ const getQueryObject = computed(() => {
 const sort = ref(SortType.DESC);
 const keyWord = ref('');
 
-const search = async () => {
+const handleSearch = async () => {
   if (isSearchLoading.value) return;
 
   const dict = {
@@ -41,7 +42,7 @@ const search = async () => {
     sort: sort.value,
   };
 
-  postService.search(dict);
+  search(dict);
 };
 
 const fetchList = async () => {
@@ -61,7 +62,15 @@ onMounted(async () => {
 });
 
 const updateLike = (postId: string, type: string) => {
-  postService.updateListLike(postId, type);
+  const target = postList.value.find((o) => o._id === postId);
+
+  if (!target || !store.user) return;
+
+  if (type === LikeType.ADD) {
+    target.likes = [store.user._id, ...target.likes];
+  } else {
+    target.likes = target.likes.filter((o) => o !== store.user?._id);
+  }
 };
 
 const modalImage = ref('');
@@ -75,7 +84,13 @@ const updateModalImage = (image: string) => {
 <template>
   <div display="flex flex-col md:flex-row" m="b-4">
     <div position="relative" m="b-1.5 md:b-0 md:r-3">
-      <select v-model="sort" w="full md:156px" p="y-2.5 x-4" border="2 dark-500" @change="search">
+      <select
+        v-model="sort"
+        w="full md:156px"
+        p="y-2.5 x-4"
+        border="2 dark-500"
+        @change="handleSearch"
+      >
         <option :value="SortType.DESC">從新到舊</option>
         <option :value="SortType.ASC">從舊到新</option>
       </select>
@@ -92,7 +107,7 @@ const updateModalImage = (image: string) => {
         h="12"
         p="l-6"
         :disabled="isSearchLoading"
-        @keyup.enter="search"
+        @keyup.enter="handleSearch"
       />
       <button
         class="meta-primary"
@@ -101,7 +116,7 @@ const updateModalImage = (image: string) => {
         h="12"
         border="2 dark-500 rounded-none"
         :disabled="isSearchLoading"
-        @click="search"
+        @click="handleSearch"
       >
         <font-awesome-icon :icon="['fa', 'magnifying-glass']" size="lg" />
       </button>

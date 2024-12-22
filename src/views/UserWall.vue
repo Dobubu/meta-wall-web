@@ -4,16 +4,17 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { SortType } from '@/api/instances/post';
+import { getUserPostsList } from '@/api/modules/post';
 import { GetProfileRes } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { usePostStore } from '@/store/post';
 import { usePost2 } from '@/compositions/usePost';
-import { usePost } from '@/service/usePost';
 import { useUser } from '@/service//useUser';
 import { useAuth } from '@/compositions/useAuth';
 import { useUserPhoto } from '@/lib/useUserPhoto';
+import { LikeType } from '@/components/post/type';
 
 import PostItem from '@/components/post/PostItem.vue';
 import CommonModal from '@/components/common/Modal.vue';
@@ -22,10 +23,9 @@ const route = useRoute();
 const store = useUserStore();
 const { updateShowModal } = useModalStore();
 const { show: showAlert } = useAlertStore();
-const { userPostList } = storeToRefs(usePostStore());
+const { userPostList, loading } = storeToRefs(usePostStore());
 
 const userService = useUser();
-const postService = usePost();
 const { getUserId } = useAuth();
 const userPhotoService = useUserPhoto();
 const { search } = usePost2();
@@ -60,8 +60,8 @@ const getQueryObject = computed(() => {
 });
 
 const list = computed(() => userPostList.value);
-const isLoading = computed(() => postService.loading.userWallList);
-const isSearchLoading = computed(() => postService.loading.search);
+const isLoading = computed(() => loading.value.userWallList);
+const isSearchLoading = computed(() => loading.value.search);
 const userId = computed(() => route.params.id as string);
 const showUserBlock = computed(() => route.params.id !== getUserId() && userInfo.value);
 const emptyWording = computed(() => {
@@ -89,13 +89,13 @@ watch(
       keyWord.value = '';
       sort.value = SortType.DESC;
 
-      await postService.fetchUserPostsList(v);
+      await getUserPostsList(v);
     }
   },
 );
 
 const fetchUserPostList = async (user: string) => {
-  await postService.fetchUserPostsList(user, getQueryObject.value);
+  await getUserPostsList(user, getQueryObject.value);
 };
 
 onMounted(async () => {
@@ -108,11 +108,21 @@ onMounted(async () => {
   }
 
   userInfo.value = await userService.fetchProfile(userId.value);
-  await postService.fetchUserPostsList(userId.value, getQueryObject.value);
+  // await postService.fetchUserPostsList(userId.value, getQueryObject.value);
+  await getUserPostsList(userId.value, getQueryObject.value);
 });
 
 const updateLike = (postId: string, type: string) => {
-  postService.updateUserListLike(postId, type);
+  // postService.updateUserListLike(postId, type);
+  const target = userPostList.value.find((o) => o._id === postId);
+
+  if (!target || !store.user) return;
+
+  if (type === LikeType.ADD) {
+    target.likes = [store.user._id, ...target.likes];
+  } else {
+    target.likes = target.likes.filter((o) => o !== store.user?._id);
+  }
 };
 
 const modalImage = ref('');

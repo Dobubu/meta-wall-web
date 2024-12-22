@@ -9,8 +9,7 @@ import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
 import { usePostStore } from '@/store/post';
 import { usePost2 } from '@/compositions/usePost';
-import { usePost } from '@/service/usePost';
-import { Post, Comment } from '@/components/post/type';
+import { Post, Comment, LikeType } from '@/components/post/type';
 import { dayFormate } from '@/lib/formate';
 
 import PostItem from '@/components/post/PostItem.vue';
@@ -20,17 +19,14 @@ const store = useUserStore();
 const { updateShowModal } = useModalStore();
 
 const route = useRoute();
-const postService = usePost();
 const { fetchPost } = usePost2();
 const { loading } = storeToRefs(usePostStore());
 
 const postInfo = ref<Post>();
 
-// const postInfo = computed(() => postService.postInfo.value);
 const isLoading = computed(() => loading.value.postInfo);
 
 const fetchPostInfo = async () => {
-  // await postService.fetchPost(route.params.id as string);
   const updatePostInfo = (resPayload: AxiosResponse<Post>) => {
     let _res;
 
@@ -56,9 +52,7 @@ const fetchPostInfo = async () => {
     return _res;
   };
 
-  // const res = await fetchPost(route.params.id as string, updatePostInfo);
   const res = await getPost(route.params.id as string, updatePostInfo);
-  // const res = await fetchPost(route.params.id as string, () => updatePostInfo());
   if (!res) return;
 
   postInfo.value = res;
@@ -69,7 +63,13 @@ onMounted(async () => {
 });
 
 const updateLike = (postId: string, type: string) => {
-  postService.updatePostLike(postId, type);
+  if (!postInfo.value || !store.user) return;
+
+  if (type === LikeType.ADD) {
+    postInfo.value.likes = [store.user._id, ...postInfo.value.likes];
+  } else {
+    postInfo.value.likes = postInfo.value.likes.filter((o) => o !== store.user?._id);
+  }
 };
 
 const modalImage = ref('');
