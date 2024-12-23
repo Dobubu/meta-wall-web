@@ -1,14 +1,8 @@
+import type { AxiosResponse } from 'axios';
+
 import PostAPI from '@/api';
 
 import { FollowUser } from '@/components/post/type';
-
-export interface SignUpReq {
-  name: string;
-  email: string;
-  password: string;
-}
-
-export type LoginReq = Pick<SignUpReq, 'email' | 'password'>;
 
 export enum SexType {
   MALE = 'male',
@@ -44,10 +38,6 @@ export interface GetFollowListRes {
   _id: string;
   createdAt: string;
 }
-
-export const apiSignUp = async (payload: SignUpReq) => PostAPI.post('/user/sign_up', payload);
-
-export const apiLogin = async (payload: LoginReq) => PostAPI.post('/user/sign_in', payload);
 
 export const apiGetProfile = async (userId: string) => PostAPI.get(`/user/profile/${userId}`);
 

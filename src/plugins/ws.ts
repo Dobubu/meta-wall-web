@@ -3,7 +3,7 @@ import { useDebounceFn } from '@vueuse/core';
 
 import { useLocalhost, getApiUrl, getApiNetworkUrl } from '@/api';
 import { useUserStore } from '@/store/user';
-import { useAuth } from '@/service/useAuth';
+import { useAuth } from '@/compositions/useAuth';
 import { AppWSEventType, WebWSEventType } from '@/plugins/enums';
 
 const useWebSocketCore = () => {
@@ -15,7 +15,7 @@ const useWebSocketCore = () => {
       : getApiNetworkUrl('ws');
   const ws = new WebSocket(url);
 
-  const authService = useAuth();
+  const { getUserId } = useAuth();
   const store = useUserStore();
 
   ws.onopen = () => {
@@ -66,7 +66,7 @@ const useWebSocketCore = () => {
   const defaultPayload = computed(() => ({
     name: store.user?.name,
     photo: store.user?.photo,
-    user: authService.getUserId(),
+    user: getUserId(),
   }));
 
   const send = async (cmd: WebWSEventType, content: string) => {

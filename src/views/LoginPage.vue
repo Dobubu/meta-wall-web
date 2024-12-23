@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import useVuelidate from '@vuelidate/core';
 import { required, email, minLength } from '@vuelidate/validators';
-import { storeToRefs } from 'pinia';
 
+import { postEmailLogin, postEmailSignUp } from '@/api/modules/auth';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { useAppStore } from '@/store/app';
-import { useAuth } from '@/service/useAuth';
+import { useAuthStore } from '@/store/auth';
+import { useAuth } from '@/compositions/useAuth';
 
 const { show: showAlert } = useAlertStore();
 const { projectName } = storeToRefs(useAppStore());
 
+const { loading } = storeToRefs(useAuthStore());
+
 const router = useRouter();
-const authService = useAuth();
 
 const isLogin = ref(true);
 const globalErrMsg = ref('');
@@ -42,6 +45,7 @@ const changeStatus = () => {
   user.email = '';
   user.password = '';
 };
+const { updateTokenAndUserId } = useAuth();
 
 const signUp = async () => {
   try {
@@ -55,7 +59,7 @@ const signUp = async () => {
       password: user.password,
     };
 
-    await authService.signUp(dict);
+    await postEmailSignUp(dict, updateTokenAndUserId);
 
     await router.push({ name: 'Post' });
     showAlert('註冊、登入成功！', AlertState.SUCCESS);
@@ -76,7 +80,7 @@ const login = async () => {
       password: user.password,
     };
 
-    await authService.login(dict);
+    await postEmailLogin(dict, updateTokenAndUserId);
 
     await router.push({ name: 'Post' });
     showAlert('登入成功！', AlertState.SUCCESS);
@@ -179,12 +183,12 @@ const login = async () => {
               p="y-4"
               m="b-4"
               border="2 dark-500 rounded-8px"
-              :disabled="authService.loading.auth"
+              :disabled="loading"
               @click.prevent="login"
             >
               登入
               <font-awesome-icon
-                v-if="authService.loading.auth"
+                v-if="loading"
                 :icon="['fa', 'circle-notch']"
                 pulse
                 size="lg"
@@ -210,12 +214,12 @@ const login = async () => {
               p="y-4"
               m="b-4"
               border="2 dark-500 rounded-8px"
-              :disabled="authService.loading.auth"
+              :disabled="loading"
               @click.prevent="signUp"
             >
               註冊
               <font-awesome-icon
-                v-if="authService.loading.auth"
+                v-if="loading"
                 :icon="['fa', 'circle-notch']"
                 pulse
                 size="lg"

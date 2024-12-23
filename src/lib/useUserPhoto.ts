@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 
 import { useUserStore } from '@/store/user';
-import { useAuth } from '@/service/useAuth';
+import { useAuth } from '@/compositions/useAuth';
 
 import DefaultUserRilakkuma from '@/assets/images/default_user_rilakkuma.jpeg';
 import DefaultUserKorilakkuma from '@/assets/images/default_user_korilakkuma.jpeg';
@@ -11,7 +11,7 @@ import DefaultPhotoUsers from '@/assets/images/default_users.jpeg';
 
 export const useUserPhoto = () => {
   const store = useUserStore();
-  const authService = useAuth();
+  const { getUserId } = useAuth();
 
   const defaultPhotoUser = computed(() => {
     if (store.theme === 'theme-rilakkuma') {
@@ -35,7 +35,7 @@ export const useUserPhoto = () => {
     if (photo) {
       return photo;
     } else {
-      if (authService.getUserId() === userId) {
+      if (getUserId() === userId) {
         return getUserPhoto.value;
       }
       return DefaultPhotoUsers;
