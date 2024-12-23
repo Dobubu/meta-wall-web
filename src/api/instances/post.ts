@@ -1,4 +1,4 @@
-import PostAPI from './api';
+import PostAPI from '@/api';
 
 export interface GetPostListReq {
   sort?: string;

@@ -1,7 +1,7 @@
 import { inject, InjectionKey, Plugin, computed, ref } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 
-import { useLocalhost } from '@/api/api';
+import { useLocalhost, getApiUrl, getApiNetworkUrl } from '@/api';
 import { useUserStore } from '@/store/user';
 import { useAuth } from '@/service/useAuth';
 import { AppWSEventType, WebWSEventType } from '@/plugins/enums';
@@ -9,10 +9,10 @@ import { AppWSEventType, WebWSEventType } from '@/plugins/enums';
 const useWebSocketCore = () => {
   const url =
     process.env.NODE_ENV === 'production'
-      ? 'wss://meta-wall-backend.onrender.com'
+      ? getApiUrl('ws')
       : useLocalhost
-      ? 'ws://localhost:3001'
-      : 'ws://192.168.168.16:3001';
+      ? getApiUrl('ws')
+      : getApiNetworkUrl('ws');
   const ws = new WebSocket(url);
 
   const authService = useAuth();

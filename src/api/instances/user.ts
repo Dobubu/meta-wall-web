@@ -1,4 +1,4 @@
-import PostAPI from './api';
+import PostAPI from '@/api';
 
 import { FollowUser } from '@/components/post/type';
 

@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-import { apiGetMessageList, apiDeleteMessageList } from '@/api/chat';
+import { apiGetMessageList, apiDeleteMessageList } from '@/api/instances/chat';
 import { timeFormate } from '@/lib/formate';
 
 export const useChatroom = () => {
