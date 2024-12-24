@@ -15,6 +15,7 @@ onMounted(async () => {
   if (!userId) return;
 
   await userService.fetchProfile(userId);
+  console.log('fetchProfile');
 });
 </script>
 

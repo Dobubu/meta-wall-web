@@ -86,6 +86,7 @@ const isAuthenticated = async () => {
     if (!userId || !token) return false;
 
     const res = await apiGetProfile(userId);
+    console.log('res: ', res);
     return !!token && !!res.data;
   } catch (error) {
     return false;
