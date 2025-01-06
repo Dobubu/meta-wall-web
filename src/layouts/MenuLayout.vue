@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 
-import { useUser } from '@/service//useUser';
+import { fetchProfile } from '@/api/modules/user';
 import { useAuth } from '@/compositions/useAuth';
 
 import MainMenu from '@/components/menu/MainMenu.vue';
 import SubMenu from '@/components/menu/SubMenu.vue';
 
 const { getUserId } = useAuth();
-const userService = useUser();
 
 onMounted(async () => {
   const userId = getUserId();
   if (!userId) return;
 
-  await userService.fetchProfile(userId);
-  console.log('fetchProfile');
+  await fetchProfile(userId);
 });
 </script>
 

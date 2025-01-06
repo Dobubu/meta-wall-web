@@ -1,32 +1,36 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 import { deletePostLike } from '@/api/modules/post';
+import { fetchLikeList } from '@/api/modules/user';
 import { useAlertStore, AlertState } from '@/store/alert';
-import { useUser } from '@/service/useUser';
+import { useUserStore } from '@/store/user';
+import { useUser } from '@/compositions/useUser';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
 
 const { show: showAlert } = useAlertStore();
+const { likeList, loading } = storeToRefs(useUserStore());
 
-const userService = useUser();
+const { updateLikeList } = useUser();
 const userPhotoService = useUserPhoto();
 
-const list = computed(() => userService.likeList.value);
-const isLoading = computed(() => userService.loading.likeList);
+const list = computed(() => likeList.value);
+const isLoading = computed(() => loading.value.likeList);
 
 onMounted(async () => {
-  await userService.fetchLikeList();
+  await fetchLikeList();
 });
 
 const deleteLike = async (postId: string) => {
   await deletePostLike(postId);
 
   showAlert('取消成功！', AlertState.SUCCESS);
-  userService.updateLikeList(postId);
+  updateLikeList(postId);
 };
 </script>
 

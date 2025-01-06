@@ -6,12 +6,12 @@ import { storeToRefs } from 'pinia';
 import { SortType } from '@/api/instances/post';
 import { GetProfileRes } from '@/api/instances/user';
 import { getUserPostsList } from '@/api/modules/post';
+import { fetchProfile, followUser, unFollowUser } from '@/api/modules/user';
 import { useUserStore } from '@/store/user';
 import { useModalStore } from '@/store/modal';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { usePostStore } from '@/store/post';
 import { usePost } from '@/compositions/usePost';
-import { useUser } from '@/service//useUser';
 import { useAuth } from '@/compositions/useAuth';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 import { LikeType } from '@/components/post/type';
@@ -25,7 +25,6 @@ const { show: showAlert } = useAlertStore();
 const { user } = storeToRefs(useUserStore());
 const { userPostList, loading } = storeToRefs(usePostStore());
 
-const userService = useUser();
 const { getUserId } = useAuth();
 const userPhotoService = useUserPhoto();
 const { search, getQueryObject } = usePost();
@@ -39,18 +38,18 @@ const isFollow = computed(() => user.value?.following.find((o) => o.user === use
 
 const updateFollow = async () => {
   if (isFollow.value) {
-    await userService.unFollowUser(userId.value);
+    await unFollowUser(userId.value);
     showAlert('您已成功取消追蹤！', AlertState.SUCCESS);
   } else {
-    await userService.followUser(userId.value);
+    await followUser(userId.value);
     showAlert('您已成功追蹤！', AlertState.SUCCESS);
   }
 
   /*  update local profile */
   if (user.value) {
-    await userService.fetchProfile(user.value._id);
+    await fetchProfile(user.value._id);
   }
-  userInfo.value = await userService.fetchProfile(userId.value);
+  userInfo.value = await fetchProfile(userId.value);
 };
 
 const list = computed(() => userPostList.value);
@@ -101,7 +100,7 @@ onMounted(async () => {
     sort.value = querySort as SortType;
   }
 
-  userInfo.value = await userService.fetchProfile(userId.value);
+  userInfo.value = await fetchProfile(userId.value);
   await getUserPostsList(userId.value, getQueryObject.value);
 });
 

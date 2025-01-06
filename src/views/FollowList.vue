@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
-import { useUser } from '@/service/useUser';
+import { fetchUserFollowingList } from '@/api/modules/user';
+import { useUserStore } from '@/store/user';
 import { dayTimeToNow } from '@/lib/formate';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';
 
-const userService = useUser();
 const userPhotoService = useUserPhoto();
+const { followList, loading } = storeToRefs(useUserStore());
 
-const list = computed(() => userService.followList.value);
-const isLoading = computed(() => userService.loading.followingList);
+const list = computed(() => followList.value);
+const isLoading = computed(() => loading.value.followingList);
 
 onMounted(async () => {
-  await userService.fetchUserFollowingList();
+  await fetchUserFollowingList();
 });
 </script>
 

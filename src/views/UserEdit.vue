@@ -3,11 +3,11 @@ import { reactive, ref, computed, watch } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 
+import { updateProfile, updatePassword, updateTheme } from '@/api/modules/user';
 import { UpdateProfileReq } from '@/api/instances/user';
 import { SexType } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
-import { useUser } from '@/service/useUser';
 import { useUpload } from '@/compositions/useUpload';
 import { useUserPhoto } from '@/lib/useUserPhoto';
 
@@ -18,9 +18,8 @@ import themeKorilakkuma from '@/assets/images/theme_korilakkuma.jpeg';
 import themeChairoikoguma from '@/assets/images/theme_chairoikoguma.jpeg';
 import themeConversation from '@/assets/images/login_conversation.svg';
 
-const store = useUserStore();
+const userStore = useUserStore();
 const { show: showAlert } = useAlertStore();
-const userService = useUser();
 const { file, uploadFile, onChangeFile, resetFile } = useUpload();
 
 const activeTab = ref('info');
@@ -42,9 +41,9 @@ const globalErrMsg = ref('');
 const loadingProfile = ref(false);
 
 const user = reactive({
-  name: store.user?.name,
-  sex: store.user?.sex,
-  photo: store.user?.photo,
+  name: userStore.user?.name,
+  sex: userStore.user?.sex,
+  photo: userStore.user?.photo,
 });
 
 const rulesUser = {
@@ -78,7 +77,7 @@ const updateUser = async () => {
       dict = { ...dict, photo: user.photo };
     }
 
-    await userService.updateProfile(dict);
+    await updateProfile(dict);
 
     resetFile();
     globalErrMsg.value = '';
@@ -102,7 +101,7 @@ const rulesPassword = {
 
 const v$Password = useVuelidate(rulesPassword, password);
 
-const updatePassword = async () => {
+const handleUpdatePassword = async () => {
   try {
     if (!password.new || !password.repeatNew) throw new Error('上述欄位有誤！');
     if (password.new !== password.repeatNew) throw new Error('密碼不一致！');
@@ -115,7 +114,7 @@ const updatePassword = async () => {
       confirmPassword: password.repeatNew,
     };
 
-    await userService.updatePassword(dict);
+    await updatePassword(dict);
 
     globalErrMsg.value = '';
     showAlert('密碼更新成功！', AlertState.SUCCESS);
@@ -125,7 +124,7 @@ const updatePassword = async () => {
 };
 
 watch(
-  () => store.user,
+  () => userStore.user,
   (v) => {
     if (v) {
       user.name = v.name;
@@ -135,8 +134,8 @@ watch(
 );
 
 const resetStatus = () => {
-  user.name = store.user?.name;
-  user.sex = store.user?.sex;
+  user.name = userStore.user?.name;
+  user.sex = userStore.user?.sex;
   resetFile();
 
   globalErrMsg.value = '';
@@ -180,21 +179,22 @@ const themeList = ref([
 ]);
 
 const previewTheme = async (theme: string) => {
-  store.theme = theme;
+  userStore.theme = theme;
 };
 
-const isCurrentTheme = computed(() => store.theme === store.user?.theme);
+const isCurrentTheme = computed(() => userStore.theme === userStore.user?.theme);
 const themeBtnClass = computed(() => {
   return {
-    'bg-disable-100 !cursor-not-allowed': store.theme === store.user?.theme,
-    'meta-active-bg': store.theme !== store.user?.theme,
+    'bg-disable-100 !cursor-not-allowed': userStore.theme === userStore.user?.theme,
+    'meta-active-bg': userStore.theme !== userStore.user?.theme,
   };
 });
 
 const changeTheme = async () => {
   if (isCurrentTheme.value) return;
 
-  await userService.updateTheme({ theme: store.theme });
+  await updateTheme({ theme: userStore.theme });
+
   showAlert('主題更新成功！', AlertState.SUCCESS);
 };
 </script>
@@ -218,7 +218,13 @@ const changeTheme = async () => {
       </button>
     </div>
 
-    <div v-if="store.user" p="y-8" border="2 rounded-8px dark-500" shadow="item-bottom" bg="white">
+    <div
+      v-if="userStore.user"
+      p="y-8"
+      border="2 rounded-8px dark-500"
+      shadow="item-bottom"
+      bg="white"
+    >
       <div v-show="activeTab === 'info'" display="flex flex-col items-center">
         <div m="b-4">
           <UserItem :photo="(userPhoto as string)" size="107px" margin="0" />
@@ -373,12 +379,12 @@ const changeTheme = async () => {
             text="dark-500"
             border="2 dark-500 rounded-8px"
             shadow="item-bottom"
-            :disabled="userService.loading.password"
-            @click.prevent="updatePassword"
+            :disabled="userStore.loading.password"
+            @click.prevent="handleUpdatePassword"
           >
             重設密碼
             <font-awesome-icon
-              v-if="userService.loading.password"
+              v-if="userStore.loading.password"
               :icon="['fa', 'circle-notch']"
               pulse
               size="lg"
@@ -400,14 +406,17 @@ const changeTheme = async () => {
           >
             <div
               class="theme_img overflow-hidden"
-              :class="{ active: o.theme === store.theme, theme_img_text: o.theme !== store.theme }"
+              :class="{
+                active: o.theme === userStore.theme,
+                theme_img_text: o.theme !== userStore.theme,
+              }"
               w="max-150px"
               z="1"
               border="rounded-1/2"
             >
               <img :src="o.url" alt="" border="rounded-1/2x " />
             </div>
-            <span :class="{ 'text-amber-500': o.theme === store.theme }" m="t-4" font="bold">
+            <span :class="{ 'text-amber-500': o.theme === userStore.theme }" m="t-4" font="bold">
               {{ o.theme }}
             </span>
           </div>
@@ -421,12 +430,12 @@ const changeTheme = async () => {
           p="y-4"
           border="2 dark-500 rounded-8px"
           shadow="item-bottom"
-          :disabled="userService.loading.theme"
+          :disabled="userStore.loading.theme"
           @click.prevent="changeTheme"
         >
           送出更新
           <font-awesome-icon
-            v-if="userService.loading.theme"
+            v-if="userStore.loading.theme"
             :icon="['fa', 'circle-notch']"
             pulse
             size="lg"
