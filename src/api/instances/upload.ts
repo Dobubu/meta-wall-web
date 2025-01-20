@@ -1,9 +1,5 @@
 import PostAPI from '@/api';
-
-interface UploadImgurReq {
-  files: any;
-  type: string;
-}
+import { UploadImgurReq } from '@/typings/api/upload';
 
 export const apiUploadImgur = async (payload: UploadImgurReq) => {
   let data = new FormData();

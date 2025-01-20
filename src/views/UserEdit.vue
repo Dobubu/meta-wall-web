@@ -4,12 +4,11 @@ import useVuelidate from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
 
 import { updateProfile, updatePassword, updateTheme } from '@/api/modules/user';
-import { UpdateProfileReq } from '@/api/instances/user';
-import { SexType } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { useUpload } from '@/compositions/useUpload';
 import { useUserPhoto } from '@/lib/useUserPhoto';
+import { SexType, UpdateProfileReq } from '@/typings/api/user';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';

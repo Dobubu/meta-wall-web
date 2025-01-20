@@ -6,11 +6,9 @@ import {
   apiGetPostList,
   apiGetUserPostsList,
   apiAddPost,
-  AddPostReq,
   apiDeletePost,
   apiAddPostLike,
   apiDeletePostLike,
-  AddPostComment,
   apiAddPostComment,
 } from '@/api/instances/post';
 import { usePostStore } from '@/store/post';
@@ -18,6 +16,7 @@ import { useUserStore } from '@/store/user';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
 import { Post, PostType } from '@/components/post/type';
 import { dayFormate } from '@/lib/formate';
+import { AddPostReq, AddPostCommentReq } from '@/typings/api/post';
 
 export const getPost = async (postId: string, payloadOnSuccess: any) => {
   const { updateLoading } = usePostStore();
@@ -158,7 +157,7 @@ export const deletePostLike = async (postId: string) => {
   return res;
 };
 
-export const addPostComment = async (postId: string, payload: AddPostComment) => {
+export const addPostComment = async (postId: string, payload: AddPostCommentReq) => {
   const { updateLoading } = usePostStore();
 
   updateLoading('comment', true);

@@ -3,13 +3,13 @@ import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
-import { SortType } from '@/api/instances/post';
 import { getPostList } from '@/api/modules/post';
 import { useUserStore } from '@/store/user';
 import { usePostStore } from '@/store/post';
 import { useModalStore } from '@/store/modal';
 import { usePost } from '@/compositions/usePost';
 import { LikeType } from '@/components/post/type';
+import { SortType } from '@/typings/api/post';
 
 import PostItem from '@/components/post/PostItem.vue';
 import CommonModal from '@/components/common/Modal.vue';

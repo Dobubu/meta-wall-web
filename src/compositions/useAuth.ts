@@ -3,7 +3,7 @@ import router from '@/router';
 
 import { StorageType } from '@/typings/enums';
 // import { useWebSocket } from '@/plugins/ws';
-import { LoginRes } from '@/api/instances/auth';
+import { LoginRes } from '@/typings/api/auth';
 
 export const useAuth = () => {
   const getToken = () => localStorage.getItem(StorageType.ACCESSTOKEN);

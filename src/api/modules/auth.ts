@@ -1,9 +1,10 @@
 import type { AxiosResponse } from 'axios';
 
-import { LoginReq, LoginRes, apiLogin, SignUpReq, apiSignUp } from '@/api/instances/auth';
+import { apiLogin, apiSignUp } from '@/api/instances/auth';
 import { useAuthStore } from '@/store/auth';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
 import { useAuth } from '@/compositions/useAuth';
+import { SignUpReq, LoginReq, LoginRes } from '@/typings/api/auth';
 
 export const postEmailLogin = async (payload: LoginReq) => {
   const { updateLoading } = useAuthStore();

@@ -1,43 +1,6 @@
-import type { AxiosResponse } from 'axios';
-
 import PostAPI from '@/api';
 
-import { FollowUser } from '@/components/post/type';
-
-export enum SexType {
-  MALE = 'male',
-  FEMALE = 'female',
-}
-export interface GetProfileRes {
-  _id: string;
-  name: string;
-  email: string;
-  createdAt: string;
-  photo: string;
-  sex: SexType;
-  followers: FollowUser[];
-  following: FollowUser[];
-  theme: string;
-}
-export type UpdateProfileReq = Partial<Pick<GetProfileRes, 'name' | 'photo' | 'sex'>> &
-  Pick<GetProfileRes, 'name'>;
-
-export type UpdateThemeReq = Pick<GetProfileRes, 'theme'>;
-
-export interface UpdatePasswordReq {
-  password: string;
-  confirmPassword: string;
-}
-
-export interface GetFollowListRes {
-  user: {
-    _id: string;
-    name: string;
-    photo: string;
-  };
-  _id: string;
-  createdAt: string;
-}
+import { UpdateProfileReq, UpdatePasswordReq, UpdateThemeReq } from '@/typings/api/user';
 
 export const apiGetProfile = async (userId: string) => PostAPI.get(`/user/profile/${userId}`);
 

@@ -4,24 +4,26 @@ import type { AxiosResponse } from 'axios';
 import {
   apiGetProfile,
   apiUpdateProfile,
-  UpdateProfileReq,
   apiUpdatePassword,
-  UpdatePasswordReq,
-  UpdateThemeReq,
   apiUpdateTheme,
   apiGetUserLikeList,
   apiFollowUser,
   apiUnFollowUser,
   apiGetUserFollowingList,
-  GetFollowListRes,
 } from '@/api/instances/user';
 import { useUserStore } from '@/store/user';
 import { handleErrorAsync } from '@/compositions/handleErrorAsync';
 import { Post } from '@/components/post/type';
 import { dayFormate } from '@/lib/formate';
 import { useAuth } from '@/compositions/useAuth';
-import { LoginRes } from '@/api/instances/auth';
 import { useUser } from '@/compositions/useUser';
+import {
+  UpdateProfileReq,
+  UpdatePasswordReq,
+  UpdateThemeReq,
+  GetFollowListRes,
+} from '@/typings/api/user';
+import { LoginRes } from '@/typings/api/auth';
 
 export const fetchProfile = async (userId: string) => {
   const { user, theme } = storeToRefs(useUserStore());

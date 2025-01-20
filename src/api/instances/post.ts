@@ -2,30 +2,12 @@ import type { AxiosResponse } from 'axios';
 
 import PostAPI from '@/api';
 import { Post } from '@/components/post/type';
-
-export interface GetPostListReq {
-  sort?: string;
-  q?: SortType;
-}
-
-export enum SortType {
-  ASC = 'asc',
-  DESC = 'desc',
-}
-
-export interface AddPostReq {
-  user: string;
-  tags: string[];
-  type: string;
-  image?: string;
-  content: string;
-}
-
-type GetUserPostListReq = GetPostListReq;
-
-export interface AddPostComment {
-  comment: string;
-}
+import {
+  GetPostListReq,
+  AddPostReq,
+  GetUserPostListReq,
+  AddPostCommentReq,
+} from '@/typings/api/post';
 
 export const apiGetPostList = async (payload: GetPostListReq) =>
   PostAPI.get('/posts', { params: payload });
@@ -44,5 +26,5 @@ export const apiAddPostLike = async (postId: string) => PostAPI.post(`/post/${po
 
 export const apiDeletePostLike = async (postId: string) => PostAPI.delete(`/post/${postId}/like`);
 
-export const apiAddPostComment = async (postId: string, payload: AddPostComment) =>
+export const apiAddPostComment = async (postId: string, payload: AddPostCommentReq) =>
   PostAPI.post(`/post/${postId}/comment`, payload);
