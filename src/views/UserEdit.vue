@@ -7,7 +7,7 @@ import { updateProfile, updatePassword, updateTheme } from '@/api/modules/user';
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { useUpload } from '@/compositions/useUpload';
-import { useUserPhoto } from '@/lib/useUserPhoto';
+import { useUserPhoto } from '@/compositions/useUserPhoto';
 import { SexType, UpdateProfileReq } from '@/typings/api/user';
 
 import TitleBlock from '@/components/TitleBlock.vue';

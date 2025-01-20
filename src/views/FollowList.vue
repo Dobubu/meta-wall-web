@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia';
 import { fetchUserFollowingList } from '@/api/modules/user';
 import { useUserStore } from '@/store/user';
 import { dayTimeToNow } from '@/lib/formate';
-import { useUserPhoto } from '@/lib/useUserPhoto';
+import { useUserPhoto } from '@/compositions/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';

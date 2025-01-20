@@ -11,7 +11,7 @@ import { useAlertStore, AlertState } from '@/store/alert';
 import { usePostStore } from '@/store/post';
 import { usePost } from '@/compositions/usePost';
 import { useAuth } from '@/compositions/useAuth';
-import { useUserPhoto } from '@/lib/useUserPhoto';
+import { useUserPhoto } from '@/compositions/useUserPhoto';
 import { LikeType } from '@/components/post/type';
 import { SortType } from '@/typings/api/post';
 import { GetProfileRes } from '@/typings/api/user';

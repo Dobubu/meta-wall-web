@@ -8,7 +8,7 @@ import { fetchLikeList } from '@/api/modules/user';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { useUserStore } from '@/store/user';
 import { useUser } from '@/compositions/useUser';
-import { useUserPhoto } from '@/lib/useUserPhoto';
+import { useUserPhoto } from '@/compositions/useUserPhoto';
 
 import TitleBlock from '@/components/TitleBlock.vue';
 import UserItem from '@/components/UserItem.vue';

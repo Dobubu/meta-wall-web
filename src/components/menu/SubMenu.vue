@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia';
 import { useUserStore } from '@/store/user';
 import { useAppStore } from '@/store/app';
 import { useWebSocket } from '@/plugins/ws';
-import { useUserPhoto } from '@/lib/useUserPhoto';
+import { useUserPhoto } from '@/compositions/useUserPhoto';
 
 import UserItem from '@/components/UserItem.vue';
 

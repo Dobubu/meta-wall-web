@@ -7,7 +7,7 @@ import { deletePost, addPostLike, deletePostLike, addPostComment } from '@/api/m
 import { useUserStore } from '@/store/user';
 import { useAlertStore, AlertState } from '@/store/alert';
 import { usePostStore } from '@/store/post';
-import { useUserPhoto } from '@/lib/useUserPhoto';
+import { useUserPhoto } from '@/compositions/useUserPhoto';
 import { User, Post, LikeType } from './type';
 
 import UserItem from '@/components/UserItem.vue';
