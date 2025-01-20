@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import router from '@/router';
 
-import { StorageType } from '@/service/type';
+import { StorageType } from '@/typings/enums';
 // import { useWebSocket } from '@/plugins/ws';
 import { LoginRes } from '@/api/instances/auth';
 

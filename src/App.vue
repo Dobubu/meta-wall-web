@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store/user';
 import { useAppStore } from '@/store/app';
-import { StorageType } from '@/service/type';
+import { StorageType } from '@/typings/enums';
 
 import ReloadPrompt from '@/components/ReloadPrompt.vue';
 import Alert from '@/components/common/Alert.vue';

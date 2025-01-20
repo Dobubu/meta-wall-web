@@ -4,7 +4,7 @@ import { useDebounceFn } from '@vueuse/core';
 import { useLocalhost, getApiUrl, getApiNetworkUrl } from '@/api';
 import { useUserStore } from '@/store/user';
 import { useAuth } from '@/compositions/useAuth';
-import { AppWSEventType, WebWSEventType } from '@/plugins/enums';
+import { AppWSEventType, WebWSEventType } from '@/typings/enums';
 
 const useWebSocketCore = () => {
   const url =
@@ -38,27 +38,27 @@ const useWebSocketCore = () => {
   ws.onmessage = (e) => {
     let data = JSON.parse(e.data);
 
-    if (data.cmd === AppWSEventType.AppTypingResponse) {
+    if (data.cmd === AppWSEventType.APP_TYPING_RESPONSE) {
       chatTypingUser.value = data;
       debouncedFn();
     }
 
     if (
-      data.cmd === AppWSEventType.AppAddMessageResponse ||
-      data.cmd === AppWSEventType.AppInitResponse ||
-      data.cmd === AppWSEventType.AppUserLeaveResponse
+      data.cmd === AppWSEventType.APP_ADD_MESSAGE_RESPONSE ||
+      data.cmd === AppWSEventType.APP_INIT_RESPONSE ||
+      data.cmd === AppWSEventType.APP_USER_LEAVE_RESPONSE
     ) {
       newMsg.value = data;
     }
 
     if (
-      data.cmd === AppWSEventType.AppAddMessageResponse ||
-      data.cmd === AppWSEventType.AppInitResponse
+      data.cmd === AppWSEventType.APP_ADD_MESSAGE_RESPONSE ||
+      data.cmd === AppWSEventType.APP_INIT_RESPONSE
     ) {
       msgTotal.value += 1;
     }
 
-    if (data.cmd === AppWSEventType.AppOnlineTotalResponse) {
+    if (data.cmd === AppWSEventType.APP_ONLINE_TOTAL_RESPONSE) {
       onlineTotal.value = data.total;
     }
   };

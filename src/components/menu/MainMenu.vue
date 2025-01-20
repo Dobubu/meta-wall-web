@@ -8,7 +8,7 @@ import { useAlertStore, AlertState } from '@/store/alert';
 import { useAppStore } from '@/store/app';
 import { useWebSocket } from '@/plugins/ws';
 import { useUserPhoto } from '@/lib/useUserPhoto';
-import { StorageType } from '@/service/type';
+import { StorageType } from '@/typings/enums';
 
 import UserItem from '@/components/UserItem.vue';
 

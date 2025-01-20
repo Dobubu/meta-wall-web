@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia';
 import { getMessageList, deleteMessageList } from '@/api/modules/chat';
 import { useUserStore } from '@/store/user';
 import { useWebSocket } from '@/plugins/ws';
-import { WebWSEventType } from '@/plugins/enums';
+import { WebWSEventType } from '@/typings/enums';
 import { timeFormate } from '@/lib/formate';
 
 import TitleBlock from '@/components/TitleBlock.vue';
@@ -34,12 +34,12 @@ const message = ref('');
 const addMessage = async () => {
   if (!message.value) return;
 
-  await wsPlugin.send(WebWSEventType.WebAddMessage, message.value);
+  await wsPlugin.send(WebWSEventType.WEB_ADD_MESSAGE, message.value);
   message.value = '';
 };
 
 const onPress = () => {
-  wsPlugin.send(WebWSEventType.WebTyping, `${user.value?.name} is typing`);
+  wsPlugin.send(WebWSEventType.WEB_TYPING, `${user.value?.name} is typing`);
 };
 
 const isLoading = ref(true);
@@ -56,13 +56,13 @@ const fetchMessageList = async () => {
 onMounted(async () => {
   await fetchMessageList();
 
-  wsPlugin.send(WebWSEventType.WebInit, `${user.value?.name} joined the chatroom`);
+  wsPlugin.send(WebWSEventType.WEB_INIT, `${user.value?.name} joined the chatroom`);
 
   await updateScrollView();
 });
 
 onUnmounted(() => {
-  wsPlugin.send(WebWSEventType.WebUserLeave, `${user.value?.name} left the chatroom 👋`);
+  wsPlugin.send(WebWSEventType.WEB_USER_LEAVE, `${user.value?.name} left the chatroom 👋`);
 });
 
 const updateMessageList = (msg2: any) => {

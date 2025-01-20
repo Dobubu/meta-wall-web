@@ -1,5 +1,5 @@
 import { useUserStore } from '@/store/user';
-import { StorageType } from '@/service/type';
+import { StorageType } from '@/typings/enums';
 import { storeToRefs } from 'pinia';
 
 export const useUser = () => {
